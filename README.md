@@ -3,7 +3,7 @@ A Discord rich presence implementation for Wiimmfi, made as user friendly as pos
 
 ## Installing
 ### For Windows Users
-If you're using Windows, the easiest way would be to go over to the releases section and download the latest release. It contains a pre-compiled .exe, so there's no need to install additional programs and stuff. However, if you want to receive "beta" updates and stuff, you can follow the instructions for Unix systems below.
+If you're using Windows, the easiest way would be to go over to the [releases section](https://github.com/DismissedGuy/wiimmfi-rpc/) and download the latest release. It contains a pre-compiled .exe, so there's no need to install additional programs and stuff. However, if you want to receive "beta" updates and stuff, you can follow the instructions for Unix systems below.
 
 ### For Unix Users
 Unfortunately, I don't compile this program for OSX/Linux systems, so this'll require some more work.
@@ -12,7 +12,7 @@ First off, let's clone this repository.
 git clone https://github.com/DismissedGuy/wiimmfi-rpc.git
 ```
 That wasn't too hard, right? Good. Let's proceed then.
-You'll have to have the latest **python 3** version installed (not py2). At the time of this writing, it's [3.6.5](https://www.python.org/downloads/release/python-365/), so head over to [the download page](https://www.python.org/downloads/) and install the correct release according to your system.
+You'll have to have the latest **Python 3** version installed (**NOT** Python 2!). At the time of this writing, it's [3.6.5](https://www.python.org/downloads/release/python-365/), so head over to [the Download page](https://www.python.org/downloads/) and install the correct release according to your system.
 
 Once you've finished these instructions, you're done! Well, almost. To make this program recognize you when you're playing a game, you will have to add your friend code(s). Let's go to the next section, shall we?
 
@@ -33,10 +33,10 @@ This is the most important file. When you open it up, its contents should look l
   "samplegame": "1234-5678-9012"
 }
 ```
-where "samplegame" is your Wiimfi Game ID© (yes, i made that name up) and the code, well.. your friend code.
+where "samplegame" is the game name, and the ID is the Wiimfi Game ID© (yes, i made that name up) and the code, well.. your friend code.
 And that brings us to the following sub-sub-subsection:
 
-#### Getting your Wiimfi Game ID©
-This is actually not too hard. Just go to [this page](https://wiimmfi.de/stat?m=25) and look for your game in that huuuuugge list. After you've found it, click on the status of your game and you'll be brought to the game history list.
+#### Getting your cool Wiimfi Game ID©
+This is actually not too hard. Just go to the [Stats page](https://wiimmfi.de/stat?m=25) from Wiimmfi and look for your game in that huuuuugge list. After you've found it, click on the status of your game and you'll be brought to the game history list.
 Now, just look at your address bar and copy the line after the slash. That's it!
 
