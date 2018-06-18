@@ -34,7 +34,7 @@ An example file:
 ```
 And that brings us to the following sub-sub-subsection:
 
-#### Getting your Wiimfi Game ID©
+#### Getting your Wiimmfi Game ID©
 This is actually not too hard. Just go to [this page](https://wiimmfi.de/stat?m=25) and look for your game in that huuuuugge list. After you've found it, click on the status of your game and you'll be brought to the game history list.
 Now, just look at your address bar and copy the line after the slash. That's it!
 And just in case you couldn't follow it, here's some screenshots to help you.
