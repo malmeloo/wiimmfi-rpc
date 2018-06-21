@@ -1,8 +1,8 @@
 {
-  "1": "In Menu",
-  "2": "Spectating",
-  "3": "Searching for Opponents",
-  "4": "Unknown Status",
-  "5": "In-Game",
-  "6": "Friend Game"
+  "1": "Is in the Menu",
+  "2": "Is spectating",
+  "3": "Is searching for Opponents",
+  "4": "Unknown Status :/",
+  "5": "Is playing",
+  "6": "Is in a Friend Room"
 }
