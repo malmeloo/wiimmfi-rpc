@@ -1,5 +1,6 @@
 {
   "rpc_id": "444906848437665803",
-  "show_game": "1",
+  "show_game": 1,
+  "show_mkwii_room_data": 1,
   "timeout": 15
 }

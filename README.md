@@ -24,7 +24,7 @@ This is the most important file. When you open it up, its contents should look l
   "samplegame": "1234-5678-9012"
 }
 ```
-where "samplegame" is the Wiimfi Game ID© (yes, i made that name up) and the code, well.. your friend code **with hyphens as separators**.
+where "samplegame" is the Wiimfi Game ID© (yes, i made that name up) and the code, well.. your friend code.
 An example file:
 ```json
 {
@@ -60,6 +60,28 @@ As every icon has to be added manually, turning this off can often fix problems 
 This parameter controls your presence refresh rate in seconds.
 Lowering this will make your presence update more often, but also increases the amount of web requests that are sent.
 
+**show_mkwii_room_data**
+This parameter controls whether the rpc should show more detailed data when you're playing Mario Kart Wii, for example player 2 and the room hoster.
+
 ### status_codes.json
 This file stores the text corresponding to Wiimmfi's status codes (1-6).
 Should be pretty straightforward, however when you notice your status being off, you can change the shown text in this file.
+
+## Troubleshooting
+There is a chance that the program crashes or just refuses to work. To read the error the program gives you, please run it in the terminal instead of executing it by double-clicking. I've listed a few common problems and their solutions here.
+
+### It says my config files are invalid. What do I do now?
+This probably means that you edited one of the files incorrectly. Please reinstall this program and refer to a page [like this](https://www.tutorialspoint.com/json/json_syntax.htm) to read up on JSON and its syntax, and try again.
+
+### The rich presence doesn't show.
+This problem can have multiple causes, so I'll go through them here.
+- Does the program say that it's found you online? If not, check your friend code and try again.
+- Does the program say that it couldn't find a specific game ID? If so, double check your ID(s) and try again.
+- Make sure to have the Discord desktop client running and "display currently running game" turned on (settings -> games).
+- For some games, the presence doesn't work because I haven't uploaded its images yet. To fix this, please read on.
+
+### Fixing unsupported games
+If a game doesn't seem to work, it might be because there is no image for it. There are three ways to fix this:
+1. Edit the `config/rpc_config.json` file and set `show_game` to 0. This will disable images for all of your games.
+2. Open an issue and tell me your game ID + an image of at least 512x512 so I can add your game.
+3. Create your own RPC Application (undocumented).
