@@ -1,5 +1,5 @@
 # wiimmfi-rpc
-A Discord rich presence implementation for Wiimmfi, made as user friendly as possible
+A Discord rich presence implementation for Wiimmfi.
 
 ## Installing
 For normal usage, you should head over to the [releases section](https://github.com/DismissedGuy/wiimmfi-rpc/releases) and download the latest release. You can then just run `start.py` using the latest python 3 version (3.6.5 atm).
