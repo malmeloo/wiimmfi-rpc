@@ -72,7 +72,7 @@ class wiimmfi_rpc():
         if our_user:
             return our_user
 
-    def change_presence(self, pres_data, start_time=None, game=None,):
+    def change_presence(self, pres_data, start_time=None):
         if not pres_data: # no data to send, we'll clear the rpc
             to_send = {'cmd': 'SET_ACTIVITY',
                 'args': {'pid': os.getpid()},
@@ -99,7 +99,7 @@ class wiimmfi_rpc():
 
         if config["show_game"]:
             activity['assets'] = {
-                	'large_image': game,
+                	'large_image': pres_data[0].lower(),
                     'large_text': self.full_game_name,
 
                     'small_image': 'wiimmfi',
@@ -127,13 +127,13 @@ def main():
                     #playing same game, changed statuses
                     logging.info(f'User is now {status_codes[online_data[7]]}')
                     last_status = online_data[7]
-                    wiimmfi_obj.change_presence(online_data, start_time, game[0])
+                    wiimmfi_obj.change_presence(online_data, start_time)
                 else:
                     logging.info(f'Friend code {game[1]} changed game to {wiimmfi_obj.full_game_name}')
                     last_game = online_data[0]
                     last_status = online_data[7]
                     start_time = time.time()
-                    wiimmfi_obj.change_presence(online_data, start_time, game[0])
+                    wiimmfi_obj.change_presence(online_data, start_time)
 
         if not is_playing and last_game:
             # user not found online on any game, remove rpc
