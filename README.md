@@ -21,17 +21,18 @@ The first file is required for this program to work, so let's begin with that fi
 This is the most important file. When you open it up, its contents should look like this:
 ```json
 {
-  "samplegame": "1234-5678-9012"
+  "XXXX": "1234-5678-9012"
 }
 ```
 where "samplegame" is the Game ID and the code, well.. your friend code.
 An example file:
 ```json
 {
-  "mariokartwii": "1234-4321-1234",
-  "smashbrosxwii": "0987-7890-0987"
+  "RMCJ": "1234-4321-1234",
+  "RSBJ": "0987-7890-0987"
 }
 ```
+Note the comma that's present at the end of each entry, except for the last.
 And that brings us to the following sub-sub-subsection:
 
 #### Getting your Game ID

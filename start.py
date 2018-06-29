@@ -30,7 +30,7 @@ except Exception as e:
 
 class wiimmfi_rpc():
     def __init__(self):
-        logging.info(f'using codes: {friend_codes}')
+        logging.info(f'{len(friend_codes)} game(s) registered')
         self.rpc_obj = rpc.DiscordIpcClient.for_platform(config['rpc_id'])
         logging.info('Rich Presence initialized, listening for changes...')
 
@@ -86,25 +86,24 @@ class wiimmfi_rpc():
             'timestamps': {'start': start_time},
         }
 
-        if pres_data[0] == 'RMCJ' and pres_data[7] != '1' and config['show_mkwii_room_data']:
-            # playing mkwii friend room, show extra presence
-            user_room = self.get_mkwii_data(pres_data)
-            if user_room:
-                activity.update(user_room)
-
         user1 = pres_data[10]
         user2 = pres_data[11]
         if user1:
             activity['details'] = user1 + (f' | {user2}' if user2 else '')
 
-        if config["show_game"]:
-            activity['assets'] = {
-                	'large_image': pres_data[0].lower(),
-                    'large_text': self.full_game_name,
+        activity['assets'] = {
+            	'large_image': pres_data[0].lower(),
+                'large_text': self.full_game_name,
 
-                    'small_image': 'wiimmfi',
-                    'small_text': 'Wiimmfi'
-            }
+                'small_image': 'wiimmfi',
+                'small_text': 'Wiimmfi'
+        }
+
+        if pres_data[0] == 'RMCJ' and pres_data[7] != '1' and config['show_mkwii_room_data']:
+            # playing mkwii friend room, show extra presence
+            user_room = self.get_mkwii_data(pres_data)
+            if user_room:
+                activity.update(user_room)
 
         self.rpc_obj.set_activity(activity)
 
