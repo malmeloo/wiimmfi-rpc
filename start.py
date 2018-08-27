@@ -1,32 +1,76 @@
 import os
 import time
-import json
+import sys
+from ruamel.yaml import YAML
 from datetime import datetime
 import logging
-import traceback
 from bs4 import BeautifulSoup
 import requests
+import traceback
 import rpc.rpc as rpc
 
-logging.basicConfig(
-    level=logging.INFO,
-    format='[%(asctime)s.%(msecs)03d] [%(levelname)s] %(message)s',
-    datefmt="%X"
-)
+yaml = YAML(typ='safe')
+now = datetime.utcnow()
+
+def exception_handler(exc_type, exc_value, tb):
+    if not exc_type == KeyboardInterrupt:
+        # don't handle when user exits on purpose
+        print(f'{exc_value}\n')
+        print('Shoot! An unhandled error has occured. Building traceback...')
+
+        with open('logs/crashes/{0.day}.{0.month}.{0.year}.log'.format(now), 'a+') as f:
+            f.write('-------- CRASH AT {0.hour}:{0.minute}:{0.second} --------\n'.format(now))
+            f.write(f'LINE: {tb.tb_lineno}\n')
+            f.write(f'NEXT: {tb.tb_next}\n')
+            f.write(f'TYPE: {exc_type}\n')
+            f.write(f'VALUE: {exc_value}\n')
+            f.write('-- FULL TRACEBACK --\n')
+            f.write(''.join(traceback.format_exception(exc_type, exc_value, tb)))
+
+        print('Successfully created traceback in:')
+        print('logs/crashes/{0.day}.{0.month}.{0.year}.log\n'.format(now))
+        print('Please contact the creator (DismissedGuy#2118) on discord and attach this file to your message.')
+
+    sys.exit()
+sys.excepthook = exception_handler
 
 # for explanations on how to edit these config files and their purposes,
 # please see the README.
 try:
-    status_codes = json.load(open('config/status_codes.json'))
-    friend_codes = {game:key.replace(' ', '-') for (game,key) in json.load(open('config/friend_codes.json')).items()}
-    config = json.load(open('config/rpc_config.json'))
-except json.decoder.JSONDecodeError:
-    logging.critical(f'One of the config files seems to be invalid. This probably means that you edited it incorrectly. Please reinstall this program and refer to the README for the correct format.')
-    exit()
+    status_codes = yaml.load(open('config/status_codes.yaml'))
+    friend_codes = {game:key.replace(' ', '-') for (game,key) in yaml.load(open('config/friend_codes.yaml')).items()}
+    config = yaml.load(open('config/rpc_config.yaml'))
 except Exception as e:
-    logging.critical('An unknown error has occured while trying to read one of the config files. Please try closing all programs and try again. Traceback:\n')
-    traceback.print_tb(e.__traceback__)
-    exit()
+    print('An unknown error has occured while trying to read one of the config files.\n')
+    raise e
+
+if 'RAAE' in friend_codes.keys():
+    print('Please insert the RPC Startup Disc.')
+    print('This will set up your Rich Presence.')
+
+    rpc_obj = rpc.DiscordIpcClient.for_platform(config['rpc_id'])
+    activity = {
+    'state': 'Setting up RPC',
+    'timestamps': {'start': time.time()},
+    'assets': {
+        'large_image': 'startup_disc',
+        'large_text': 'RPC Startup Disc'
+        }
+    }
+    rpc_obj.set_activity(activity)
+
+    input()
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='[%(asctime)s.%(msecs)03d] [%(levelname)s] %(message)s',
+    datefmt="%X",
+    handlers=[
+    logging.FileHandler('logs/starts/{0.day}.{0.month}.{0.year}.log'.format(now)),
+    logging.StreamHandler()
+    ]
+)
+logging.info('-------- BOOT AT {0.hour}:{0.minute}:{0.second} --------'.format(now))
 
 class wiimmfi_rpc():
     def __init__(self):
@@ -107,7 +151,48 @@ class wiimmfi_rpc():
 
         self.rpc_obj.set_activity(activity)
 
-def main():
+class GUI():
+    def __init__(self):
+        self.main_menu()
+
+    def clear(self, print_header=True):
+        os.system('cls' if sys.platform.startswith('win') else 'clear')
+        if print_header:
+            print('Wiimmfi-rpc by DismissedGuy#2118 on Discord')
+            print('-----------------------------------------------------\n')
+
+    def main_menu(self):
+        self.clear()
+        print('Please enter a number.')
+        print('1. Start up the rich presence')
+        print('2. Edit your friend codes')
+        print('3. Exit\n')
+
+        done = False
+        while not done:
+            choice = input('> ')
+            print(choice)
+            actions = {
+                '1': start_script,
+                '2': self.edit_codes,
+                '3': sys.exit
+                }
+            try:
+                to_do = actions[choice]
+            except KeyError:
+                print('Invalid choice.')
+                continue
+            done = True
+            self.clear(print_header=False)
+            to_do()
+
+    def edit_codes(self):
+        print('Coming soon... :tm:')
+        print('Press Enter to return to the main menu.')
+        input()
+        self.main_menu()
+
+def start_script():
     wiimmfi_obj = wiimmfi_rpc()
     last_game = None #game ID can be found at index 0
     last_status = None
@@ -142,11 +227,10 @@ def main():
             start_time = None
             wiimmfi_obj.change_presence(None)
 
-        try:
-            time.sleep(config['timeout'])
-        except KeyboardInterrupt:
-            # don't show traceback
-            exit()
+        time.sleep(config['timeout'])
+
+def main():
+    GUI()
 
 if __name__ == '__main__':
     main()
