@@ -75,7 +75,7 @@ This problem can have multiple causes, so I'll go through them here.
 If a game doesn't seem to work, it might be because there is no image for it. Please check the list below to check whether that's the case. There are three ways to fix this:
 1. Edit the `config/rpc_config.json` file and set `show_game` to 0. This will disable images for all of your games.
 2. Open an issue and tell me your game ID + an image of at least 512x512 so I can add your game.
-3. Create your own RPC Application (undocumented).
+3. Create your own RPC Application (https://discordapp.com/developers/docs/rich-presence/how-to).
 
 ## Visually supported games
 I've made a list below that contains all the games with rich presence artwork.
