@@ -1,13 +1,13 @@
 import os
 import time
 import sys
-from ruamel.yaml import YAML
-from datetime import datetime
 import logging
-from bs4 import BeautifulSoup
 import requests
 import traceback
 import rpc.rpc as rpc
+from ruamel.yaml import YAML
+from datetime import datetime
+from bs4 import BeautifulSoup
 
 yaml = YAML(typ='safe')
 now = datetime.utcnow()
@@ -29,7 +29,7 @@ def exception_handler(exc_type, exc_value, tb):
 
         print('Successfully created traceback in:')
         print('logs/crashes/{0.day}.{0.month}.{0.year}.log\n'.format(now))
-        print('Please contact the creator (DismissedGuy#2118) on discord and attach this file to your message.')
+        print('Please contact the creator (DismissedGuy#2118) on Discord and attach this file to your message.')
 
     sys.exit()
 sys.excepthook = exception_handler
@@ -41,11 +41,11 @@ try:
     friend_codes = {game:key.replace(' ', '-') for (game,key) in yaml.load(open('config/friend_codes.yaml')).items()}
     config = yaml.load(open('config/rpc_config.yaml'))
 except Exception as e:
-    print('An unknown error has occured while trying to read one of the config files.\n')
+    print('An error has occured while trying to read one of the config files.\n')
     raise e
 
 if 'RAAE' in friend_codes.keys():
-    print('Please insert the RPC Startup Disc.')
+    print('Please insert the RPC Startup Disc!')
     print('This will set up your Rich Presence.')
 
     rpc_obj = rpc.DiscordIpcClient.for_platform(config['rpc_id'])
@@ -77,7 +77,7 @@ class wiimmfi_rpc():
         logging.info(f'{len(friend_codes)} game(s) registered')
         self.rpc_obj = rpc.DiscordIpcClient.for_platform(config['rpc_id'])
         logging.info('Rich Presence initialized, listening for changes...')
-
+    
     def get_online_data(self, game):
         html = requests.get('https://wiimmfi.de/game/' + game).text
         soup = BeautifulSoup(html, 'html.parser')
@@ -122,7 +122,7 @@ class wiimmfi_rpc():
                 'args': {'pid': os.getpid()},
                 'nonce': '0' # gotta input something /shrug
             }
-            logging.info('Rich Presence has been removed')
+            logging.info('Rich Presence has been removed.')
             return self.rpc_obj.send(to_send)
 
         activity = {
@@ -158,12 +158,19 @@ class GUI():
     def clear(self, print_header=True):
         os.system('cls' if sys.platform.startswith('win') else 'clear')
         if print_header:
-            print('Wiimmfi-rpc by DismissedGuy#2118 on Discord')
+            print('wiimmfi-rpc by DismissedGuy#2118')
             print('-----------------------------------------------------\n')
+    def openeditor(self):
+        if sys.platform.startswith('darwin'):
+            subprocess.call(('open config/friend_codes.yaml'))
+        elif os.name == 'nt':
+            os.startfile('config/friend_codes.yaml')
+        elif os.name == 'posix':
+            subprocess.call(('xdg-open config/friend_codes.yaml'))
 
     def main_menu(self):
         self.clear()
-        print('Please enter a number.')
+        print('Please enter a number!')
         print('1. Start up the rich presence')
         print('2. Edit your friend codes')
         print('3. Exit\n')
@@ -187,7 +194,8 @@ class GUI():
             to_do()
 
     def edit_codes(self):
-        print('Coming soon... :tm:')
+        print('Opening the friend-codes config...')
+        openeditor()
         print('Press Enter to return to the main menu.')
         input()
         self.main_menu()
@@ -213,7 +221,7 @@ def start_script():
                     last_status = online_data[7]
                     wiimmfi_obj.change_presence(online_data, start_time)
                 else:
-                    logging.info(f'Friend code {game[1]} changed game to {wiimmfi_obj.full_game_name}')
+                    logging.info(f'Friend code {game[1]} changed game to {wiimmfi_obj.full_game_name}.')
                     last_game = online_data[0]
                     last_status = online_data[7]
                     start_time = time.time()
@@ -221,7 +229,7 @@ def start_script():
 
         if not is_playing and last_game:
             # user not found online on any game, remove rpc
-            logging.info('User went offline')
+            logging.info('User went offline.')
             last_game = None
             last_status = None
             start_time = None
