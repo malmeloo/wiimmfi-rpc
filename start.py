@@ -160,13 +160,6 @@ class GUI():
         if print_header:
             print('wiimmfi-rpc by DismissedGuy#2118')
             print('-----------------------------------------------------\n')
-    def openeditor(self):
-        if sys.platform.startswith('darwin'):
-            subprocess.call(('open config/friend_codes.yaml'))
-        elif os.name == 'nt':
-            os.startfile('config/friend_codes.yaml')
-        elif os.name == 'posix':
-            subprocess.call(('xdg-open config/friend_codes.yaml'))
 
     def main_menu(self):
         self.clear()
@@ -195,7 +188,12 @@ class GUI():
 
     def edit_codes(self):
         print('Opening the friend-codes config...')
-        openeditor()
+        if sys.platform.startswith('darwin'):
+            subprocess.call(('open config/friend_codes.yaml'))
+        elif os.name == 'nt':
+            os.startfile('.\\config\\friend_codes.yaml')
+        elif os.name == 'posix':
+            subprocess.call(('xdg-open config/friend_codes.yaml'))
         print('Press Enter to return to the main menu.')
         input()
         self.main_menu()
