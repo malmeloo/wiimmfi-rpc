@@ -231,7 +231,7 @@ def start_script():
 
 def main():
     if __file__.endswith(".pyw"):
-            GUI().start_script()
+            start_script()
     GUI()
 
 if __name__ == '__main__':
