@@ -1,6 +1,8 @@
 from tkinter import *
 from tkinter.ttk import *
 
+import util
+
 
 class NotebookTab(Frame):
     def __init__(self, *args, **kwargs):
@@ -42,5 +44,10 @@ if __name__ == '__main__':
     root = Tk()
     app = Application(root)
     app.pack(side="top", fill="both", expand=True)
+
+    config = util.Config('config.yml')
+
     root.wm_geometry("400x400")
+    root.title(f'Wiimmfi-RPC v{config.version}')
+
     root.mainloop()
