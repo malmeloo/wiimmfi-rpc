@@ -27,16 +27,34 @@ class SettingsTab(NotebookTab):
         super().__init__(*args, **kwargs)
 
 
-class Application(Notebook):
-    TABS = (OverviewTab, SettingsTab)
+class DebugTab(NotebookTab):
+    OPTIONS = {
+        'text': 'Debug'
+    }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+
+class Application(Notebook):
+    TABS = (OverviewTab, SettingsTab)
+    DEBUG_TABS = (DebugTab,)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.config = util.Config('config/config.yml')
+
+        self._load_tabs()
+
+    def _load_tabs(self):
         self._add_tabs(self.TABS)
+        if self.config.debug:
+            self._add_tabs(self.DEBUG_TABS)
 
     def _add_tabs(self, tabs):
         for tab in tabs:
+            tab.config = self.config
             self.add(tab(), **tab.OPTIONS)
 
 
@@ -45,9 +63,7 @@ if __name__ == '__main__':
     app = Application(root)
     app.pack(side="top", fill="both", expand=True)
 
-    config = util.Config('config.yml')
-
     root.wm_geometry("400x400")
-    root.title(f'Wiimmfi-RPC v{config.version}')
+    root.title(f'Wiimmfi-RPC v{app.config.version}')
 
     root.mainloop()
