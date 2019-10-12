@@ -10,12 +10,7 @@ logging.basicConfig(filename='logs/test.log',
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
 
-class NotebookTab(Frame):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-
-class OverviewTab(NotebookTab):
+class OverviewTab(Frame):
     OPTIONS = {
         'text': 'Overview'
     }
@@ -24,7 +19,7 @@ class OverviewTab(NotebookTab):
         super().__init__(*args, **kwargs)
 
 
-class SettingsTab(NotebookTab):
+class SettingsTab(Frame):
     OPTIONS = {
         'text': 'Settings'
     }
@@ -33,7 +28,7 @@ class SettingsTab(NotebookTab):
         super().__init__(*args, **kwargs)
 
 
-class LogsTab(NotebookTab):
+class LogsTab(Frame):
     OPTIONS = {
         'text': 'Logs'
     }
