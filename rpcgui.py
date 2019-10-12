@@ -5,9 +5,8 @@ from tkinter.ttk import *
 
 import util
 
-logging.basicConfig(filename='logs/test.log',
-                    level=logging.INFO,
-                    format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(filename='test.log',
+                    level=logging.INFO)
 
 
 class OverviewTab(Frame):
@@ -44,6 +43,9 @@ class LogsTab(Frame):
         log_window.pack()
 
         handler = util.GUILoggerHandler(log_window)
+        formatter = logging.Formatter('[%(asctime)s, %(threadName)s, %(levelname)s] %(message)s')
+        handler.setFormatter(formatter)
+
         logger = logging.getLogger()
         logger.addHandler(handler)
 
