@@ -1,7 +1,13 @@
+import logging
 from tkinter import *
+from tkinter import scrolledtext
 from tkinter.ttk import *
 
 import util
+
+logging.basicConfig(filename='logs/test.log',
+                    level=logging.INFO,
+                    format='%(asctime)s - %(levelname)s - %(message)s')
 
 
 class NotebookTab(Frame):
@@ -27,18 +33,29 @@ class SettingsTab(NotebookTab):
         super().__init__(*args, **kwargs)
 
 
-class DebugTab(NotebookTab):
+class LogsTab(NotebookTab):
     OPTIONS = {
-        'text': 'Debug'
+        'text': 'Logs'
     }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        self.build()
+
+    def build(self):
+        log_window = scrolledtext.ScrolledText(self, state='disabled')
+        log_window.configure(font='TkFixedFont')
+        log_window.pack()
+
+        handler = util.GUILoggerHandler(log_window)
+        logger = logging.getLogger()
+        logger.addHandler(handler)
+
 
 class Application(Notebook):
     TABS = (OverviewTab, SettingsTab)
-    DEBUG_TABS = (DebugTab,)
+    DEBUG_TABS = (LogsTab,)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
