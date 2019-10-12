@@ -57,14 +57,14 @@ class Application(Notebook):
 
         self.config = util.Config('preferences.yml')
 
-        self._load_tabs()
+        self.load_tabs()
 
-    def _load_tabs(self):
-        self._add_tabs(self.TABS)
+    def load_tabs(self):
+        self.add_tabs(self.TABS)
         if self.config.debug:
-            self._add_tabs(self.DEBUG_TABS)
+            self.add_tabs(self.DEBUG_TABS)
 
-    def _add_tabs(self, tabs):
+    def add_tabs(self, tabs):
         for tab in tabs:
             tab.config = self.config
             self.add(tab(), **tab.OPTIONS)
