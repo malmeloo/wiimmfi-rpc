@@ -43,7 +43,7 @@ class Application(Notebook):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.config = util.Config('config.yml')
+        self.config = util.Config('preferences.yml')
 
         self._load_tabs()
 
