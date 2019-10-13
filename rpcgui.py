@@ -7,6 +7,12 @@ import util
 
 logging.basicConfig(filename='test.log',
                     level=logging.INFO)
+handler = util.GUILoggerHandler()
+formatter = logging.Formatter('[%(asctime)s, %(threadName)s, %(levelname)s] %(message)s')
+handler.setFormatter(formatter)
+
+logger = logging.getLogger()
+logger.addHandler(handler)
 
 
 class OverviewTab(Frame):
@@ -42,12 +48,7 @@ class LogsTab(Frame):
         log_window.configure(font='TkFixedFont')
         log_window.pack()
 
-        handler = util.GUILoggerHandler(log_window)
-        formatter = logging.Formatter('[%(asctime)s, %(threadName)s, %(levelname)s] %(message)s')
-        handler.setFormatter(formatter)
-
-        logger = logging.getLogger()
-        logger.addHandler(handler)
+        handler.widget = log_window
 
 
 class Application(Notebook):
