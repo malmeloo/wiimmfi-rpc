@@ -3,6 +3,8 @@ from tkinter import *
 from tkinter import scrolledtext
 from tkinter.ttk import *
 
+import yaml
+
 import util
 
 logging.basicConfig(filename='test.log',
@@ -59,9 +61,19 @@ class Application(Notebook):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.config = util.Config('preferences.yml')
+        try:
+            self.config = util.Config('preferences.yml')
+        except FileNotFoundError:
+            logging.warning('Preference file doesn\'t exist! Downloading latest from server...')
+            # TODO: show dialog with warning + download file
+        except yaml.YAMLError as err:
+            logging.error(f'Failed to load application preferences: {err}')
+
+        logging.info('Debug mode: '
+                     + 'ON' if self.config.debug else 'OFF')
 
         self.load_tabs()
+        logging.info('Populated GUI tabs')
 
     def load_tabs(self):
         self.add_tabs(self.TABS)
@@ -75,6 +87,8 @@ class Application(Notebook):
 
 
 if __name__ == '__main__':
+    logging.info('Starting...')
+
     root = Tk()
     app = Application(root)
     app.pack(side="top", fill="both", expand=True)
