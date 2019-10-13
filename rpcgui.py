@@ -8,7 +8,8 @@ import util
 logging.basicConfig(filename='test.log',
                     level=logging.INFO)
 handler = util.GUILoggerHandler()
-formatter = logging.Formatter('[%(asctime)s, %(threadName)s, %(levelname)s] %(message)s')
+formatter = logging.Formatter('[%(asctime)s] %(threadName)s %(levelname)s: %(message)s',
+                              '%H:%M:%S')
 handler.setFormatter(formatter)
 
 logger = logging.getLogger()
