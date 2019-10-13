@@ -29,7 +29,7 @@ class GUILoggerHandler(logging.Handler):
     def widget(self, widget):
         """We have been assigned a widget, flush the buffer log into it."""
         self._widget = widget
-        self.append_to_widget(self._buffer)
+        self.append_to_widget(self._buffer.strip())
 
         self._buffer = None
 
