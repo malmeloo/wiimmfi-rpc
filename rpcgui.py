@@ -1,9 +1,10 @@
 import logging
-from tkinter import *
-from tkinter import scrolledtext
-from tkinter.ttk import *
+import sys
 
 import yaml
+from PyQt5.QtWidgets import QApplication, QMainWindow, \
+    QWidget, QTabWidget, QPlainTextEdit, \
+    QVBoxLayout
 
 import util
 
@@ -18,46 +19,76 @@ logger = logging.getLogger()
 logger.addHandler(handler)
 
 
-class OverviewTab(Frame):
+class OverviewTab(QWidget):
     OPTIONS = {
-        'text': 'Overview'
+        'name': 'Overview'
     }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
 
-class SettingsTab(Frame):
+class SettingsTab(QWidget):
     OPTIONS = {
-        'text': 'Settings'
+        'name': 'Settings'
     }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
 
-class LogsTab(Frame):
+class LogsTab(QWidget):
     OPTIONS = {
-        'text': 'Logs'
+        'name': 'Logs'
     }
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self):
+        super().__init__()
 
-        self.build()
+        self.layout = QVBoxLayout()
 
-    def build(self):
-        log_window = scrolledtext.ScrolledText(self, state='disabled')
-        log_window.configure(font='TkFixedFont')
-        log_window.pack()
+        self.log_widget = QPlainTextEdit(self)
+        self.log_widget.setReadOnly(True)
+        self.log_widget.resize(400, 400)
+        handler.widget = self.log_widget
 
-        handler.widget = log_window
+        self.layout.addWidget(self.log_widget)
+        self.setLayout(self.layout)
 
 
-class Application(Notebook):
-    TABS = (OverviewTab, SettingsTab)
-    DEBUG_TABS = (LogsTab,)
+class TableWidget(QWidget):
+    TABS = (
+        OverviewTab,
+        SettingsTab,
+        LogsTab
+    )
 
+    def __init__(self, parent):
+        super().__init__(parent)
+
+        self.parent = parent
+        self.layout = QVBoxLayout(self)
+
+        # Initialize tab screen
+        self.tabs = QTabWidget()
+        self.add_tabs(self.tabs)
+        self.tabs.resize(400, 400)
+
+        # Add tabs to widget
+        self.layout.addWidget(self.tabs)
+        self.setLayout(self.layout)
+
+        logging.info('Initialized window tabs')
+
+    def add_tabs(self, tab_widget):
+        for tab in self.TABS:
+            name = tab.OPTIONS.pop('name')
+
+            tab_obj = tab()
+            tab_widget.addTab(tab_obj, name)
+
+
+class Application(QMainWindow):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -72,28 +103,24 @@ class Application(Notebook):
         logging.info('Debug mode: '
                      + 'ON' if self.config.debug else 'OFF')
 
-        self.load_tabs()
-        logging.info('Populated GUI tabs')
+        self.title = f'Wiimmfi-RPC v{self.config.version}'
+        self.left = 0
+        self.top = 0
+        self.width = 400
+        self.height = 400
+        self.setWindowTitle(self.title)
+        self.setGeometry(self.left, self.top, self.width, self.height)
 
-    def load_tabs(self):
-        self.add_tabs(self.TABS)
-        if self.config.debug:
-            self.add_tabs(self.DEBUG_TABS)
+        self.table_widget = TableWidget(self)
+        self.setCentralWidget(self.table_widget)
 
-    def add_tabs(self, tabs):
-        for tab in tabs:
-            tab.config = self.config
-            self.add(tab(), **tab.OPTIONS)
+        self.show()
 
 
 if __name__ == '__main__':
     logging.info('Starting...')
 
-    root = Tk()
-    app = Application(root)
-    app.pack(side="top", fill="both", expand=True)
-
-    root.wm_geometry("400x400")
-    root.title(f'Wiimmfi-RPC v{app.config.version}')
-
-    root.mainloop()
+    app = QApplication(sys.argv)
+    ex = Application()
+    logging.fatal('No instructions given.')
+    sys.exit(app.exec_())
