@@ -21,7 +21,8 @@ logger.addHandler(handler)
 
 class OverviewTab(QWidget):
     OPTIONS = {
-        'name': 'Overview'
+        'name': 'Overview',
+        'debug': False
     }
 
     def __init__(self, *args, **kwargs):
@@ -30,7 +31,8 @@ class OverviewTab(QWidget):
 
 class SettingsTab(QWidget):
     OPTIONS = {
-        'name': 'Settings'
+        'name': 'Settings',
+        'debug': False
     }
 
     def __init__(self, *args, **kwargs):
@@ -39,7 +41,8 @@ class SettingsTab(QWidget):
 
 class LogsTab(QWidget):
     OPTIONS = {
-        'name': 'Logs'
+        'name': 'Logs',
+        'debug': True
     }
 
     def __init__(self):
@@ -67,6 +70,7 @@ class TableWidget(QWidget):
         super().__init__(parent)
 
         self.parent = parent
+        self.config = self.parent.config
         self.layout = QVBoxLayout(self)
 
         # Initialize tab screen
@@ -83,6 +87,11 @@ class TableWidget(QWidget):
     def add_tabs(self, tab_widget):
         for tab in self.TABS:
             name = tab.OPTIONS.pop('name')
+            debug = tab.OPTIONS.pop('debug')
+
+            if debug and not self.config.debug:
+                # debug mode must be enabled for debug tabs
+                continue
 
             tab_obj = tab()
             tab_widget.addTab(tab_obj, name)
