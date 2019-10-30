@@ -105,16 +105,7 @@ class Application(QMainWindow):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        try:
-            self.config = util.Config('preferences.yml')
-        except FileNotFoundError:
-            logging.warning('Preference file doesn\'t exist! Downloading latest from server...')
-            # TODO: show dialog with warning + download file
-        except yaml.YAMLError as err:
-            logging.error(f'Failed to load application preferences: {err}')
-
-        logging.info('Debug mode: '
-                     + 'ON' if self.config.debug else 'OFF')
+        self.config = self.load_config('preferences.yml')
 
         self.setWindowTitle(f'Wiimmfi-RPC v{self.config.version}')
         self.setGeometry(0, 0, W_HEIGHT, W_WIDTH)
@@ -123,6 +114,24 @@ class Application(QMainWindow):
         self.setCentralWidget(self.table_widget)
 
         self.show()
+
+    def load_config(self, fn):
+        #config = None
+
+        try:
+            config = util.Config(fn)
+        except FileNotFoundError:
+            logging.warning(f'File {fn} doesn\'t exist! Downloading latest from server...')
+            # TODO: show dialog with warning + download file
+            sys.exit()
+        except yaml.YAMLError as err:
+            logging.warning(f'Error in config file {fn}: {err}')
+            sys.exit()
+
+        logging.info('Debug mode: '
+                     + 'ON' if config.debug else 'OFF')
+
+        return config
 
 
 if __name__ == '__main__':
