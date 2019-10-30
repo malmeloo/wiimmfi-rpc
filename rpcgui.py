@@ -116,8 +116,6 @@ class Application(QMainWindow):
         self.show()
 
     def load_config(self, fn):
-        #config = None
-
         try:
             config = util.Config(fn)
         except FileNotFoundError:
