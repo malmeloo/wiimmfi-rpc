@@ -8,6 +8,10 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, \
 
 import util
 
+# TODO: use advanced configuration file
+W_WIDTH = 400
+W_HEIGHT = 400
+
 logging.basicConfig(filename='test.log',
                     level=logging.INFO)
 handler = util.GUILoggerHandler()
@@ -112,13 +116,8 @@ class Application(QMainWindow):
         logging.info('Debug mode: '
                      + 'ON' if self.config.debug else 'OFF')
 
-        self.title = f'Wiimmfi-RPC v{self.config.version}'
-        self.left = 0
-        self.top = 0
-        self.width = 400
-        self.height = 400
-        self.setWindowTitle(self.title)
-        self.setGeometry(self.left, self.top, self.width, self.height)
+        self.setWindowTitle(f'Wiimmfi-RPC v{self.config.version}')
+        self.setGeometry(0, 0, W_HEIGHT, W_WIDTH)
 
         self.table_widget = TableWidget(self)
         self.setCentralWidget(self.table_widget)
