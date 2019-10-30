@@ -3,7 +3,7 @@ import sys
 
 import yaml
 from PyQt5.QtWidgets import QApplication, QMainWindow, \
-    QWidget, QTabWidget, QPlainTextEdit, \
+    QWidget, QTabWidget, QPlainTextEdit, QStatusBar, QProgressBar, QLabel, \
     QVBoxLayout
 
 import util
@@ -110,8 +110,21 @@ class Application(QMainWindow):
         self.setWindowTitle(f'Wiimmfi-RPC v{self.config.version}')
         self.setGeometry(0, 0, W_HEIGHT, W_WIDTH)
 
+        # Initialize the main tabs
         self.table_widget = TableWidget(self)
         self.setCentralWidget(self.table_widget)
+
+        # Set up the status bar + its widgets
+        # TODO: implement thread manager that informs and manages this bad boy
+        self.statusBar = QStatusBar()
+        self.setStatusBar(self.statusBar)
+
+        self.progress_bar = QProgressBar()
+        self.progress_label = QLabel()
+        self.progress_label.setText('0/0')
+
+        self.statusBar.addWidget(self.progress_bar)
+        self.statusBar.addWidget(self.progress_label)
 
         self.show()
 
