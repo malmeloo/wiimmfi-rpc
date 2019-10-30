@@ -56,7 +56,7 @@ class LogsTab(QWidget):
 
         self.log_widget = QPlainTextEdit(self)
         self.log_widget.setReadOnly(True)
-        self.log_widget.resize(400, 400)
+        self.log_widget.resize(W_WIDTH, W_HEIGHT)
         handler.widget = self.log_widget
 
         self.layout.addWidget(self.log_widget)
@@ -80,7 +80,7 @@ class TableWidget(QWidget):
         # Initialize tab screen
         self.tabs = QTabWidget()
         self.add_tabs(self.tabs)
-        self.tabs.resize(400, 400)
+        self.tabs.resize(W_WIDTH, W_HEIGHT)
 
         # Add tabs to widget
         self.layout.addWidget(self.tabs)
