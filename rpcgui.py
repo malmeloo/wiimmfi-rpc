@@ -2,9 +2,7 @@ import logging
 import sys
 
 import yaml
-from PyQt5.QtWidgets import QApplication, QMainWindow, \
-    QWidget, QTabWidget, QPlainTextEdit, QStatusBar, QProgressBar, QLabel, \
-    QVBoxLayout
+from PyQt5 import QtWidgets as Qw
 
 import util
 
@@ -23,7 +21,7 @@ logger = logging.getLogger()
 logger.addHandler(handler)
 
 
-class OverviewTab(QWidget):
+class OverviewTab(Qw.QWidget):
     OPTIONS = {
         'name': 'Overview',
         'debug': False
@@ -33,7 +31,7 @@ class OverviewTab(QWidget):
         super().__init__()
 
 
-class SettingsTab(QWidget):
+class SettingsTab(Qw.QWidget):
     OPTIONS = {
         'name': 'Settings',
         'debug': False
@@ -43,7 +41,7 @@ class SettingsTab(QWidget):
         super().__init__()
 
 
-class LogsTab(QWidget):
+class LogsTab(Qw.QWidget):
     OPTIONS = {
         'name': 'Logs',
         'debug': True
@@ -52,9 +50,9 @@ class LogsTab(QWidget):
     def __init__(self):
         super().__init__()
 
-        self.layout = QVBoxLayout()
+        self.layout = Qw.QVBoxLayout()
 
-        self.log_widget = QPlainTextEdit(self)
+        self.log_widget = Qw.QPlainTextEdit(self)
         self.log_widget.setReadOnly(True)
         self.log_widget.resize(W_WIDTH, W_HEIGHT)
         handler.widget = self.log_widget
@@ -63,7 +61,7 @@ class LogsTab(QWidget):
         self.setLayout(self.layout)
 
 
-class TableWidget(QWidget):
+class TableWidget(Qw.QWidget):
     TABS = (
         OverviewTab,
         SettingsTab,
@@ -75,10 +73,10 @@ class TableWidget(QWidget):
 
         self.parent = parent
         self.config = self.parent.config
-        self.layout = QVBoxLayout(self)
+        self.layout = Qw.QVBoxLayout(self)
 
         # Initialize tab screen
-        self.tabs = QTabWidget()
+        self.tabs = Qw.QTabWidget()
         self.add_tabs(self.tabs)
         self.tabs.resize(W_WIDTH, W_HEIGHT)
 
@@ -101,7 +99,7 @@ class TableWidget(QWidget):
             tab_widget.addTab(tab_obj, name)
 
 
-class Application(QMainWindow):
+class Application(Qw.QMainWindow):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -116,11 +114,11 @@ class Application(QMainWindow):
 
         # Set up the status bar + its widgets
         # TODO: implement thread manager that informs and manages this bad boy
-        self.statusBar = QStatusBar()
+        self.statusBar = Qw.QStatusBar()
         self.setStatusBar(self.statusBar)
 
-        self.progress_bar = QProgressBar()
-        self.progress_label = QLabel()
+        self.progress_bar = Qw.QProgressBar()
+        self.progress_label = Qw.QLabel()
         self.progress_label.setText('0/0')
 
         self.statusBar.addWidget(self.progress_bar)
@@ -148,6 +146,6 @@ class Application(QMainWindow):
 if __name__ == '__main__':
     logging.info('Starting...')
 
-    app = QApplication(sys.argv)
+    app = Qw.QApplication(sys.argv)
     ex = Application()
     sys.exit(app.exec_())
