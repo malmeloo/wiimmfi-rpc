@@ -4,14 +4,14 @@ import sys
 import yaml
 from PyQt5 import QtWidgets as Qw
 
+import tabs
 import util
 
 # TODO: use advanced configuration file
 W_WIDTH = 400
 W_HEIGHT = 400
 
-logging.basicConfig(filename='test.log',
-                    level=logging.INFO)
+logging.basicConfig(level=logging.INFO)
 handler = util.GUILoggerHandler()
 formatter = logging.Formatter('[%(asctime)s] %(threadName)s %(levelname)s: %(message)s',
                               '%H:%M:%S')
@@ -21,51 +21,11 @@ logger = logging.getLogger()
 logger.addHandler(handler)
 
 
-class OverviewTab(Qw.QWidget):
-    OPTIONS = {
-        'name': 'Overview',
-        'debug': False
-    }
-
-    def __init__(self):
-        super().__init__()
-
-
-class SettingsTab(Qw.QWidget):
-    OPTIONS = {
-        'name': 'Settings',
-        'debug': False
-    }
-
-    def __init__(self):
-        super().__init__()
-
-
-class LogsTab(Qw.QWidget):
-    OPTIONS = {
-        'name': 'Logs',
-        'debug': True
-    }
-
-    def __init__(self):
-        super().__init__()
-
-        self.layout = Qw.QVBoxLayout()
-
-        self.log_widget = Qw.QPlainTextEdit(self)
-        self.log_widget.setReadOnly(True)
-        self.log_widget.resize(W_WIDTH, W_HEIGHT)
-        handler.widget = self.log_widget
-
-        self.layout.addWidget(self.log_widget)
-        self.setLayout(self.layout)
-
-
 class TableWidget(Qw.QWidget):
     TABS = (
-        OverviewTab,
-        SettingsTab,
-        LogsTab
+        tabs.OverviewTab,
+        tabs.SettingsTab,
+        tabs.LogsTab
     )
 
     def __init__(self, parent):
@@ -95,7 +55,13 @@ class TableWidget(Qw.QWidget):
                 # debug mode must be enabled for debug tabs
                 continue
 
-            tab_obj = tab()
+            params = {
+                'width': W_WIDTH,
+                'height': W_HEIGHT,
+                'log_handler': handler
+            }
+
+            tab_obj = tab(**params)
             tab_widget.addTab(tab_obj, name)
 
 
