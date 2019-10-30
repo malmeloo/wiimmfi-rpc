@@ -131,5 +131,4 @@ if __name__ == '__main__':
 
     app = QApplication(sys.argv)
     ex = Application()
-    logging.fatal('No instructions given.')
     sys.exit(app.exec_())
