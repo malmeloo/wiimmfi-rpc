@@ -2,7 +2,7 @@ import logging
 
 
 class GUILoggerHandler(logging.Handler):
-    """Allows logging to a tkinter Text widget"""
+    """Allows logging to a PyQt5 PlainTextEdit widget."""
 
     def __init__(self, widget=None):
         super().__init__()
