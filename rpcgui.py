@@ -11,6 +11,7 @@ import util
 W_WIDTH = 400
 W_HEIGHT = 400
 
+# set up logging and add our custom GUI handler
 logging.basicConfig(level=logging.INFO)
 handler = util.GUILoggerHandler()
 formatter = logging.Formatter('[%(asctime)s] %(threadName)s %(levelname)s: %(message)s',
@@ -61,6 +62,7 @@ class TableWidget(Qw.QWidget):
                 'log_handler': handler
             }
 
+            # initialize widget and add it to our tabs
             tab_obj = tab(**params)
             tab_widget.addTab(tab_obj, name)
 
@@ -80,15 +82,19 @@ class Application(Qw.QMainWindow):
 
         # Set up the status bar + its widgets
         # TODO: implement thread manager that informs and manages this bad boy
-        self.statusBar = Qw.QStatusBar()
-        self.setStatusBar(self.statusBar)
+        self.status_bar = Qw.QStatusBar()
+        self.setStatusBar(self.status_bar)
 
+        self.thread_counter = Qw.QLabel()
+        self.thread_counter.setText('0/0')
         self.progress_bar = Qw.QProgressBar()
-        self.progress_label = Qw.QLabel()
-        self.progress_label.setText('0/0')
+        self.progress_bar.setMaximum(100)
+        self.thread_status = Qw.QLabel()
+        self.thread_status.setText('No operations.')
 
-        self.statusBar.addWidget(self.progress_bar)
-        self.statusBar.addWidget(self.progress_label)
+        self.status_bar.addWidget(self.thread_counter)
+        self.status_bar.addWidget(self.progress_bar)
+        self.status_bar.addWidget(self.thread_status)
 
         self.show()
 
