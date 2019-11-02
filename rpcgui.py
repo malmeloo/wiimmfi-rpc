@@ -57,6 +57,7 @@ class TableWidget(Qw.QWidget):
                 continue
 
             params = {
+                'config': self.config,
                 'width': W_WIDTH,
                 'height': W_HEIGHT,
                 'log_handler': handler

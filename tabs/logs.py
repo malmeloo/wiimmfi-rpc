@@ -10,6 +10,7 @@ class LogsTab(Qw.QWidget):
     def __init__(self, **params):
         super().__init__()
 
+        self.config = params.get('config')
         self.width = params.get('width')
         self.height = params.get('height')
         self.handler = params.get('log_handler')
