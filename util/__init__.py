@@ -7,5 +7,6 @@ __all__ = (
     'Config',
     'GUILoggerHandler',
     'Thread',
-    'ThreadManager'
+    'ThreadManager',
+    'full_check'
 )
