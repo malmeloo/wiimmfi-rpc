@@ -25,6 +25,7 @@ logger.addHandler(handler)
 class TableWidget(Qw.QWidget):
     TABS = (
         tabs.OverviewTab,
+        tabs.FriendcodesTab,
         tabs.SettingsTab,
         tabs.LogsTab
     )
