@@ -1,3 +1,4 @@
+from .checks import *
 from .config import *
 from .logging import *
 from .threading import *
