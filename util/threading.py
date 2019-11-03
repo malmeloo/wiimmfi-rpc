@@ -43,10 +43,11 @@ class Thread(Qc.QThread):
     Class attrs:
     - friendly_progress: str
         What the thread is doing. Example: "Checking for updates..."
+        This can be overridden using Thread.emit_message().
     - permanent: bool
         Permanent threads are infinitely running threads that should be kept alive at all times.
         These threads will run regardless of whether another thread is running or not.
-        Warning: no support for status messages or progress updates!
+        Note: progress bar updates are disabled.
     """
     friendly_progress = ""
     permanent = False
@@ -83,6 +84,9 @@ class Thread(Qc.QThread):
         self.signals.error.emit(msg)
 
     def emit_progress(self, progress: int):
+        if self.permanent:
+            # No support for progress bar updates.
+            return
         self.signals.progress.emit(progress)
 
     def emit_message(self, msg: str):
