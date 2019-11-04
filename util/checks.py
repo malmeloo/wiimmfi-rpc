@@ -31,8 +31,12 @@ def full_check():
     (data_dir / 'cache').mkdir()
 
     for file, operation in file_operations.items():
+        path = data_dir / file
+        if path.exists():
+            continue
+
         if operation == 'create':
-            create_json(data_dir / file)
+            create_json(path)
         elif operation == 'download':
             # TODO: download missing files.
             pass
