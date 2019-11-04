@@ -1,31 +1,22 @@
-import os
+from pathlib import Path
 
-# TODO: actually use this and defeat the laziness
-script_dir = os.path.dirname(os.path.realpath(__file__))
+script_dir = Path(__path__).parent
+data_dir = script_dir / 'data'
 
-DIRS = (
-    'data'
-)
-
-
-class FileRestoreException(Exception):
-    def __init__(self, *args):
-        super().__init__(*args)
+file_operations = {
+    'friend_codes.json': 'create',
+    'preferences.json': 'download',
+    'versioninfo.json': 'download'
+}
 
 
-def restore_dirs():
-    for directory in DIRS:
-        if not os.path.isdir(directory):
-            os.mkdir(directory)
-
-
-def create_empty_json(fn):
+def create_json(path):
     """
-    :param fn: Filename of the file to create.
+    Creates a new, empty JSON file.
+    :param path: filename
     :return: None
     """
-
-    with open(fn, 'w+') as f:
+    with open(path, 'w+') as f:
         f.write('{}')
 
 
@@ -34,8 +25,14 @@ def full_check():
     Checks for missing or corrupt files and directories, and restores them where necessary.
     :return: bool
     """
-    try:
-        restore_dirs()
-    except Exception as e:
-        # TODO: open up dialog box somehow
-        pass
+
+    # create directories if they don't exist yet
+    data_dir.mkdir()
+    (data_dir / 'cache').mkdir()
+
+    for file, operation in file_operations.items():
+        if operation == 'create':
+            create_json(data_dir / file)
+        elif operation == 'download':
+            # TODO: download missing files.
+            pass

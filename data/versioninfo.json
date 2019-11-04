@@ -1,0 +1,9 @@
+{
+  "version": "0.1.1-alpha",
+  "release": "04-11-2019",
+  "git": {
+    "username": "DismissedGuy",
+    "repo": "wiimmfi-rpc",
+    "branch": "gui-rewrite"
+  }
+}

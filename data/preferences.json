@@ -1,0 +1,10 @@
+{
+  "debug": true,
+  "config": {
+    "updates": {
+      "auto_download": true,
+      "auto_install": false,
+      "releases_only": true
+    }
+  }
+}
