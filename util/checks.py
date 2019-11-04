@@ -1,6 +1,7 @@
+import sys
 from pathlib import Path
 
-script_dir = Path(__path__).parent
+script_dir = Path(sys.argv[0]).parent
 data_dir = script_dir / 'data'
 
 file_operations = {
@@ -33,6 +34,7 @@ def full_check():
     for file, operation in file_operations.items():
         path = data_dir / file
         if path.exists():
+            print(f'{path} exists already')
             continue
 
         if operation == 'create':

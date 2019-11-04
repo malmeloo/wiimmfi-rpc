@@ -98,6 +98,8 @@ class Application(Qw.QMainWindow):
         self.status_bar.addWidget(self.progress_bar)
         self.status_bar.addWidget(self.thread_status)
 
+        util.full_check()
+
         self.show()
 
     def load_config(self, fn):
