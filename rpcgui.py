@@ -1,7 +1,7 @@
 import logging
 import sys
+from pathlib import Path
 
-import yaml
 from PyQt5 import QtWidgets as Qw
 
 import tabs
@@ -20,6 +20,8 @@ handler.setFormatter(formatter)
 
 logger = logging.getLogger()
 logger.addHandler(handler)
+
+data_dir = Path(sys.argv[0]).parent / 'data'
 
 
 class TableWidget(Qw.QWidget):
@@ -53,7 +55,7 @@ class TableWidget(Qw.QWidget):
             name = tab.OPTIONS.pop('name')
             debug = tab.OPTIONS.pop('debug')
 
-            if debug and not self.config.debug:
+            if debug and not self.config.preferences.get('debug'):
                 # debug mode must be enabled for debug tabs
                 continue
 
@@ -73,9 +75,10 @@ class Application(Qw.QMainWindow):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.config = self.load_config('preferences.yml')
+        self.config = self.load_config()
+        version = self.config.version_info.get('version')
 
-        self.setWindowTitle(f'Wiimmfi-RPC v{self.config.version}')
+        self.setWindowTitle(f'Wiimmfi-RPC v{version}')
         self.setGeometry(0, 0, W_HEIGHT, W_WIDTH)
 
         # Initialize the main tabs
@@ -105,19 +108,14 @@ class Application(Qw.QMainWindow):
 
         self.show()
 
-    def load_config(self, fn):
-        try:
-            config = util.Config(fn)
-        except FileNotFoundError:
-            logging.warning(f'File {fn} doesn\'t exist! Downloading latest from server...')
-            # TODO: show dialog with warning + download file
-            sys.exit()
-        except yaml.YAMLError as err:
-            logging.warning(f'Error in config file {fn}: {err}')
-            sys.exit()
+    def load_config(self):
+        print(data_dir / 'friend_codes.json')
+        config = util.Config(friend_codes=data_dir / 'friend_codes.json',
+                             preferences=data_dir / 'preferences.json',
+                             version_info=data_dir / 'version_info.json')
 
         logging.info('Debug mode: '
-                     + 'ON' if config.debug else 'OFF')
+                     + 'ON' if config.preferences.get('debug') else 'OFF')
 
         return config
 

@@ -11,7 +11,7 @@ download_base_url = 'https://api.github.com/repos/DismissedGuy/wiimmfi-rpc/conte
 file_operations = {
     'friend_codes.json': 'create',
     'preferences.json': 'download',
-    'versioninfo.json': 'download'
+    'version_info.json': 'download'
 }
 
 
