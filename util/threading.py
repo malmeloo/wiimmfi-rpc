@@ -20,12 +20,16 @@ class ThreadSignals(Qc.QObject):
     - Update thread status
     log: tuple
     - (level: int, msg: str)
+    data: object
+    - Send any result back. This is not handled by the ThreadManager,
+      but should instead be connected to manually.
     """
     finished = Qc.pyqtSignal()
     error = Qc.pyqtSignal(str)
     progress = Qc.pyqtSignal(int)
     message = Qc.pyqtSignal(str)
     log = Qc.pyqtSignal(tuple)
+    data = Qc.pyqtSignal(object)
 
 
 class Thread(Qc.QThread):
@@ -68,7 +72,6 @@ class Thread(Qc.QThread):
         else:
             self.signals.finished.emit()
 
-    @Qc.pyqtSlot()
     def execute(self, *args, **kwargs):
         """
         The actual code to run in a thread.
@@ -91,6 +94,9 @@ class Thread(Qc.QThread):
 
     def emit_message(self, msg: str):
         self.signals.message.emit(msg)
+
+    def emit_data(self, data):
+        self.signals.data.emit(data)
 
     def log(self, *payload):
         self.signals.log.emit(payload)
@@ -138,7 +144,11 @@ class ThreadManager:
         """Checks if we can start a new thread and manages the queue."""
         if not self._thread_queue:
             # No threads in our queue.
-            return False
+            self.thread_status.setText('No operations.')
+            return
+        if self._thread_queue[0].isRunning():
+            # A thread is already running.
+            return
 
         new_thread = self._thread_queue[0]
 

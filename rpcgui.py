@@ -98,7 +98,10 @@ class Application(Qw.QMainWindow):
         self.status_bar.addWidget(self.progress_bar)
         self.status_bar.addWidget(self.thread_status)
 
-        util.full_check()
+        self.thread_manager = util.ThreadManager(thread_counter=self.thread_counter,
+                                                 progress_bar=self.progress_bar,
+                                                 thread_status=self.thread_status)
+        util.full_check(self.thread_manager)
 
         self.show()
 

@@ -1,6 +1,7 @@
 from .checks import *
 from .config import *
 from .logging import *
+from .network import *
 from .threading import *
 
 __all__ = (
@@ -8,5 +9,6 @@ __all__ = (
     'GUILoggerHandler',
     'Thread',
     'ThreadManager',
-    'full_check'
+    'full_check',
+    'GithubDownloadThread'
 )
