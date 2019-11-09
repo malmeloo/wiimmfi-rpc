@@ -116,7 +116,7 @@ class ThreadManager:
         self.progress_bar = kwargs.get('progress_bar')
         self.thread_status = kwargs.get('thread_status')
 
-        self._thread_queue = []
+        self.thread_queue = []
         self._permanent_threads = []
 
     def add_thread(self, thread: Thread):
@@ -124,19 +124,10 @@ class ThreadManager:
             self._permanent_threads.append(thread)
             self.run_thread(thread)
         else:
-            self._thread_queue.append(thread)
+            self.thread_queue.append(thread)
 
-        self.start_new_thread()
-
-    def wait(self):
-        """
-        Waits for all threads to finish (except permanent ones)
-        :return:
-        """
-        for thread in self._thread_queue:
-            thread.wait()
-
-        return
+        if len(self.thread_queue) == 1:
+            self.start_new_thread()
 
     def run_thread(self, thread: Thread):
         thread.signals.finished.connect(self._on_thread_finish)
@@ -152,21 +143,21 @@ class ThreadManager:
 
     def start_new_thread(self):
         """Checks if we can start a new thread and manages the queue."""
-        if not self._thread_queue:
+        if not self.thread_queue:
             # No threads in our queue.
             self.thread_status.setText('No operations.')
             return
-        if self._thread_queue[0].isRunning():
+        if self.thread_queue[0].isRunning():
             # A thread is already running.
             return
 
-        new_thread = self._thread_queue[0]
+        new_thread = self.thread_queue[0]
 
         self.run_thread(new_thread)
 
     def _on_thread_finish(self):
         """A thread finished."""
-        thread = self._thread_queue.pop(0)
+        thread = self.thread_queue.pop(0)
 
         thread.quit()
         thread.wait()
@@ -180,7 +171,7 @@ class ThreadManager:
         # TODO: popup with error message
         print(msg)
 
-        thread = self._thread_queue.pop(0)
+        thread = self.thread_queue.pop(0)
 
         thread.quit()
         thread.wait()

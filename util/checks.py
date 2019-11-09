@@ -55,7 +55,4 @@ def full_check(thread_manager):
             download_thread = util.GithubDownloadThread('GET', url + '?ref=gui-rewrite')
             thread_manager.add_thread(download_thread)
 
-    # wait for our last thread
-    thread_manager.wait()
-
     return modified

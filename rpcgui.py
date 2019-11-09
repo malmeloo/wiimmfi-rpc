@@ -1,5 +1,6 @@
 import logging
 import sys
+import time
 from pathlib import Path
 
 from PyQt5 import QtWidgets as Qw
@@ -98,6 +99,12 @@ class Application(Qw.QMainWindow):
                                                  thread_status=self.thread_status)
         self.do_reload = util.full_check(self.thread_manager)
         if self.do_reload:
+            while self.thread_manager.thread_queue:
+                # Ugly, but we need to block until all threads have finished here.
+                # Thread.wait() returns too early so we wait for all threads to
+                # get kicked out of the queue.
+                app.processEvents()
+                time.sleep(0.1)
             logging.info('Successfully restored config files')
 
         self.config = self.load_config()

@@ -42,4 +42,4 @@ class GithubDownloadThread(Thread):
         with open(data_dir / file, 'w+') as f:
             f.write(content.decode())
 
-        self.log(logging.INFO, f'Successfully fetched file: {file}')
+        self.log(logging.INFO, f'Fetched {file}')
