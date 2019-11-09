@@ -11,8 +11,14 @@ class JSONConfig:
     def __str__(self):
         return json.dumps(self._config)
 
+    def flush(self):
+        with open(self.path, 'w') as file:
+            json.dump(self._config, file)
+
     def set(self, key, value):
         self._config[key] = value
+
+        self.flush()
 
     def get(self, key):
         return self._config.get(key)
