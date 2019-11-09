@@ -166,7 +166,7 @@ class ThreadManager:
         self.progress_bar.reset()
         self.start_new_thread()
 
-    Qc.pyqtSlot()
+    @Qc.pyqtSlot()
     def _on_thread_error(self, msg):
         """A thread reported an error."""
 
@@ -181,16 +181,16 @@ class ThreadManager:
         self.progress_bar.reset()
         self.start_new_thread()
 
-    Qc.pyqtSlot()
+    @Qc.pyqtSlot()
     def _on_thread_progress(self, progress):
         """A thread wants to update its progress bar."""
         self.progress_bar.setValue(progress)
 
-    Qc.pyqtSlot()
+    @Qc.pyqtSlot()
     def _on_thread_message(self, msg):
         """A thread wants to set its status message."""
         self.thread_status.setText(msg)
 
-    Qc.pyqtSlot()
+    @Qc.pyqtSlot()
     def _on_thread_log(self, payload: tuple):
         logging.log(*payload)
