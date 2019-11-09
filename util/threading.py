@@ -128,6 +128,16 @@ class ThreadManager:
 
         self.start_new_thread()
 
+    def wait(self):
+        """
+        Waits for all threads to finish (except permanent ones)
+        :return:
+        """
+        for thread in self._thread_queue:
+            thread.wait()
+
+        return
+
     def run_thread(self, thread: Thread):
         thread.signals.finished.connect(self._on_thread_finish)
         thread.signals.error.connect(self._on_thread_error)

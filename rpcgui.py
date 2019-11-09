@@ -75,15 +75,7 @@ class Application(Qw.QMainWindow):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.config = self.load_config()
-        version = self.config.version_info.get('version')
-
-        self.setWindowTitle(f'Wiimmfi-RPC v{version}')
         self.setGeometry(0, 0, W_HEIGHT, W_WIDTH)
-
-        # Initialize the main tabs
-        self.table_widget = TableWidget(self)
-        self.setCentralWidget(self.table_widget)
 
         # Set up the status bar + its widgets
         # TODO: implement thread manager that informs and manages this bad boy
@@ -104,12 +96,22 @@ class Application(Qw.QMainWindow):
         self.thread_manager = util.ThreadManager(thread_counter=self.thread_counter,
                                                  progress_bar=self.progress_bar,
                                                  thread_status=self.thread_status)
-        util.full_check(self.thread_manager)
+        self.do_reload = util.full_check(self.thread_manager)
+        if self.do_reload:
+            logging.info('Successfully restored config files')
+
+        self.config = self.load_config()
+        logging.info('Loaded config files')
+        version = self.config.version_info.get('version')
+
+        # Init the title and tabs.
+        self.setWindowTitle(f'Wiimmfi-RPC v{version}')
+        self.table_widget = TableWidget(self)
+        self.setCentralWidget(self.table_widget)
 
         self.show()
 
     def load_config(self):
-        print(data_dir / 'friend_codes.json')
         config = util.Config(friend_codes=data_dir / 'friend_codes.json',
                              preferences=data_dir / 'preferences.json',
                              version_info=data_dir / 'version_info.json')

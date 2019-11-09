@@ -26,7 +26,6 @@ def create_json(path):
 
 
 def write_file(path, content):
-    print(path)
     with open(path, 'w+') as f:
         f.write(content)
 
@@ -34,8 +33,9 @@ def write_file(path, content):
 def full_check(thread_manager):
     """
     Checks for missing or corrupt files and directories, and restores them where necessary.
-    :return: bool
+    :return: bool - Whether any changes have been made
     """
+    modified = False
 
     # create directories if they don't exist yet
     data_dir.mkdir(exist_ok=True)
@@ -46,11 +46,17 @@ def full_check(thread_manager):
         if path.exists():
             continue
 
+        modified = True
         if operation == 'create':
             create_json(path)
         elif operation == 'download':
             url = download_base_url + file
-            print(f'downloading {file}')
+
             download_thread = util.GithubDownloadThread('GET', url + '?ref=gui-rewrite')
-            download_thread.signals.data.connect(lambda data: write_file(data_dir / data['file'], data['content']))
+            # download_thread.signals.data.connect(lambda data: write_file(data_dir / data['file'], data['content']))
             thread_manager.add_thread(download_thread)
+
+    # wait for our last thread
+    thread_manager.wait()
+
+    return modified
