@@ -53,7 +53,6 @@ def full_check(thread_manager):
             url = download_base_url + file
 
             download_thread = util.GithubDownloadThread('GET', url + '?ref=gui-rewrite')
-            # download_thread.signals.data.connect(lambda data: write_file(data_dir / data['file'], data['content']))
             thread_manager.add_thread(download_thread)
 
     # wait for our last thread

@@ -15,7 +15,7 @@ class JSONConfig:
         self._config[key] = value
 
     def get(self, key):
-        return self._config[key]
+        return self._config.get(key)
 
 
 class Config:
