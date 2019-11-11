@@ -24,7 +24,17 @@ class JSONConfig:
         self.flush()
 
     def get(self, key):
-        return self._config.get(key)
+        return self._config[key]
+
+    def add(self, key):
+        self._config.append(key)
+
+        self.flush()
+
+    def remove(self, index):
+        self._config.remove(index)
+
+        self.flush()
 
 
 class Config:
