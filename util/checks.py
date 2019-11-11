@@ -22,7 +22,7 @@ def create_json(path):
     :return: None
     """
     with open(path, 'w+') as f:
-        f.write('{}')
+        f.write('[]')
 
 
 def write_file(path, content):
