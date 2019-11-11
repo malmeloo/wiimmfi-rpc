@@ -1,10 +1,21 @@
+import logging
+
 from PyQt5 import QtWidgets as Qw
+
+logging.getLogger(__name__)
 
 
 class FriendcodesTab(Qw.QWidget):
     OPTIONS = {
         'name': 'Friend Codes',
         'debug': False
+    }
+
+    CATEGORIES = {
+        'Wii': Qw.QTreeWidgetItem(['Wii', '-', '-', '-']),
+        'WiiWare': Qw.QTreeWidgetItem(['WiiWare', '-', '-', '-']),
+        'DS': Qw.QTreeWidgetItem(['DS', '-', '-', '-']),
+        'DSiWare': Qw.QTreeWidgetItem(['DSiWare', '-', '-', '-'])
     }
 
     def __init__(self, **params):
@@ -14,7 +25,8 @@ class FriendcodesTab(Qw.QWidget):
         self.width = params.get('width')
         self.height = params.get('height')
 
-        self.create_tree()
+        self.tree = self.create_tree()
+        self.populate_tree()
 
         self.layout = Qw.QVBoxLayout()
         self.layout.addWidget(self.tree)
@@ -22,14 +34,28 @@ class FriendcodesTab(Qw.QWidget):
         self.setLayout(self.layout)
 
     def create_tree(self):
-        self.tree = Qw.QTreeWidget()
-        self.tree.setColumnCount(3)
-        self.tree.setHeaderLabels(['Console', 'Game', 'Friend Code'])
+        tree = Qw.QTreeWidget()
+        tree.setColumnCount(4)
+        tree.setHeaderLabels(['Console', 'Game', 'Friend Code', 'Priority'])
 
-        self.wii_entry = Qw.QTreeWidgetItem(['Wii', '-', '-'])
-        self.wiiware_entry = Qw.QTreeWidgetItem(['WiiWare', '-', '-'])
-        self.ds_entry = Qw.QTreeWidgetItem(['DS', '-', '-'])
-        self.dsiware_entry = Qw.QTreeWidgetItem(['DSiWare', '-', '-'])
+        tree.addTopLevelItems(self.CATEGORIES.values())
 
-        self.tree.addTopLevelItems([self.wii_entry, self.wiiware_entry,
-                                    self.ds_entry, self.dsiware_entry])
+        return tree
+
+    def populate_tree(self):
+        codes = self.config.friend_codes
+
+        for entry in codes.__dict__():
+            console = entry.get('console')
+            game_id = entry.get('game_id')
+            friend_code = entry.get('friend_code')
+            priority = entry.get('priority')
+
+            category = self.CATEGORIES.get(console)
+
+            if not (console or game_id or friend_code or priority or category):
+                logging.warning(f'Detected invalid friend code entry: {game_id}')
+                continue
+
+            item = Qw.QTreeWidgetItem(['', game_id, friend_code, priority])
+            category.addChild(item)

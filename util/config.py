@@ -11,6 +11,9 @@ class JSONConfig:
     def __str__(self):
         return json.dumps(self._config)
 
+    def __dict__(self):
+        return self._config
+
     def flush(self):
         with open(self.path, 'w') as file:
             json.dump(self._config, file)
