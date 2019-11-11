@@ -25,13 +25,33 @@ class FriendcodesTab(Qw.QWidget):
         self.width = params.get('width')
         self.height = params.get('height')
 
+        self.button_layout = self.create_buttons()
         self.tree = self.create_tree()
         self.populate_tree()
 
         self.layout = Qw.QVBoxLayout()
+        self.layout.addLayout(self.button_layout)
         self.layout.addWidget(self.tree)
 
         self.setLayout(self.layout)
+
+    def create_buttons(self):
+        button_layout = Qw.QHBoxLayout()
+
+        add_button = Qw.QPushButton('+')
+        add_button.setMaximumSize(32, 32)
+        remove_button = Qw.QPushButton('-')
+        remove_button.setMaximumSize(32, 32)
+        edit_button = Qw.QPushButton('\U0001F589')  # pencil
+        edit_button.setMaximumSize(32, 32)
+        edit_button.font().setPointSize(5)
+
+        button_layout.addWidget(add_button)
+        button_layout.addWidget(remove_button)
+        button_layout.addWidget(edit_button)
+        button_layout.addStretch()
+
+        return button_layout
 
     def create_tree(self):
         tree = Qw.QTreeWidget()
