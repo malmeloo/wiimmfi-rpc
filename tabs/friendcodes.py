@@ -130,7 +130,7 @@ class FriendcodesTab(Qw.QWidget):
     def create_buttons(self):
         add_button = Qw.QPushButton('+')
         add_button.setMaximumSize(32, 32)
-        add_button.clicked.connect(self.launch_popup)
+        add_button.clicked.connect(lambda: self.launch_popup(modify=False))
 
         remove_button = Qw.QPushButton('-')
         remove_button.setMaximumSize(32, 32)
@@ -138,6 +138,7 @@ class FriendcodesTab(Qw.QWidget):
         edit_button = Qw.QPushButton('\U0001F589')  # pencil
         edit_button.setMaximumSize(32, 32)
         edit_button.font().setPointSize(5)
+        edit_button.clicked.connect(lambda: self.launch_popup(modify=True))
 
         button_layout = Qw.QHBoxLayout()
         button_layout.addWidget(add_button)
@@ -174,7 +175,7 @@ class FriendcodesTab(Qw.QWidget):
             item = Qw.QTreeWidgetItem([console, game_id, friend_code, priority])
             category.addChild(item)
 
-    def launch_popup(self):
+    def launch_popup(self, modify):
         item = self.tree.currentItem()
         if not item:
             self.popup = EditPopup(self.edit_code, replace_item=None)
@@ -192,7 +193,9 @@ class FriendcodesTab(Qw.QWidget):
             'priority': priority
         }
 
-        self.popup = EditPopup(self.edit_code, replace_item=item, **values)
+        replace_item = item if modify else None
+
+        self.popup = EditPopup(self.edit_code, replace_item=replace_item, **values)
 
     def edit_code(self, delete_item=None, **payload):
         console = payload.get('console')
