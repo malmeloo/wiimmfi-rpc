@@ -1,4 +1,3 @@
-from PyQt5 import QtCore as Qc
 from PyQt5 import QtWidgets as Qw
 
 
@@ -59,7 +58,6 @@ class SettingsTab(Qw.QWidget):
         layout.addRow(self.clear_codes)
         self.danger_group.setLayout(layout)
 
-    @Qc.pyqtSlot()
     def modify_config(self, setting, value):
         preferences = self.config.preferences
 
