@@ -17,7 +17,8 @@ class EditPopup(Qw.QWidget):
         self.form = self.create_form()
         self.buttons = self.create_buttons()
 
-        self.load_values(values)
+        if values:
+            self.load_values(values)
 
         self.layout = Qw.QVBoxLayout()
         self.layout.addLayout(self.form)
@@ -176,7 +177,7 @@ class FriendcodesTab(Qw.QWidget):
     def launch_popup(self):
         item = self.tree.currentItem()
         if not item:
-            self.popup = EditPopup(self.edit_code, replace=None)
+            self.popup = EditPopup(self.edit_code, replace_item=None)
             return
 
         console = item.text(0)
@@ -191,7 +192,7 @@ class FriendcodesTab(Qw.QWidget):
             'priority': priority
         }
 
-        self.popup = EditPopup(self.edit_code, replace=item, **values)
+        self.popup = EditPopup(self.edit_code, replace_item=item, **values)
 
     def edit_code(self, **payload):
         console = payload.get('console')
