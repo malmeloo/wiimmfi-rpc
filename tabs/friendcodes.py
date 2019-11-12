@@ -134,6 +134,7 @@ class FriendcodesTab(Qw.QWidget):
 
         remove_button = Qw.QPushButton('-')
         remove_button.setMaximumSize(32, 32)
+        remove_button.clicked.connect(self.remove_code)
 
         edit_button = Qw.QPushButton('\U0001F589')  # pencil
         edit_button.setMaximumSize(32, 32)
@@ -229,3 +230,25 @@ class FriendcodesTab(Qw.QWidget):
         else:
             item = Qw.QTreeWidgetItem([console, game_id, friend_code, priority])
             category.addChild(item)
+
+    def remove_code(self):
+        item = self.tree.currentItem()
+        if not item:
+            return
+
+        console = item.text(0)
+        game_id = item.text(1)
+        friend_code = item.text(2)
+        priority = item.text(3)
+
+        category = self.CATEGORIES.get(console)
+
+        config_item = {
+            'console': console,
+            'game_id': game_id,
+            'friend_code': friend_code,
+            'priority': priority
+        }
+
+        category.removeChild(item)
+        self.config.friend_codes.remove(config_item)
