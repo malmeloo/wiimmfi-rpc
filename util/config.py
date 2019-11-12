@@ -31,8 +31,8 @@ class JSONConfig:
 
         self.flush()
 
-    def remove(self, index):
-        self._config.remove(index)
+    def remove(self, item):
+        self._config.remove(item)
 
         self.flush()
 

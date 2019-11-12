@@ -71,6 +71,8 @@ class EditPopup(Qw.QWidget):
         game_id = values.get('game_id')
         friend_code = values.get('friend_code')
         priority = values.get('priority')
+        if priority == '':
+            priority = 0
 
         index = self.console.findText(console)
         self.console.setCurrentIndex(index)
@@ -91,9 +93,7 @@ class EditPopup(Qw.QWidget):
             'priority': priority
         }
 
-        if self.replace_item is not None:
-            self.replace_item.delete()
-        self.callback(**payload)
+        self.callback(delete_item=self.replace_item, **payload)
         self.close()
 
 
@@ -104,10 +104,10 @@ class FriendcodesTab(Qw.QWidget):
     }
 
     CATEGORIES = {
-        'Wii': Qw.QTreeWidgetItem(['Wii', '-', '-', '-']),
-        'WiiWare': Qw.QTreeWidgetItem(['WiiWare', '-', '-', '-']),
-        'DS': Qw.QTreeWidgetItem(['DS', '-', '-', '-']),
-        'DSiWare': Qw.QTreeWidgetItem(['DSiWare', '-', '-', '-'])
+        'Wii': Qw.QTreeWidgetItem(['Wii', '', '', '']),
+        'WiiWare': Qw.QTreeWidgetItem(['WiiWare', '', '', '']),
+        'DS': Qw.QTreeWidgetItem(['DS', '', '', '']),
+        'DSiWare': Qw.QTreeWidgetItem(['DSiWare', '', '', ''])
     }
 
     def __init__(self, **params):
@@ -194,7 +194,7 @@ class FriendcodesTab(Qw.QWidget):
 
         self.popup = EditPopup(self.edit_code, replace_item=item, **values)
 
-    def edit_code(self, **payload):
+    def edit_code(self, delete_item=None, **payload):
         console = payload.get('console')
         game_id = payload.get('game_id')
         friend_code = payload.get('friend_code')
@@ -202,7 +202,27 @@ class FriendcodesTab(Qw.QWidget):
 
         category = self.CATEGORIES.get(console)
 
-        item = Qw.QTreeWidgetItem([console, game_id, friend_code, priority])
-        category.addChild(item)
-
         self.config.friend_codes.add(payload)
+
+        if delete_item is not None:
+            old_console = delete_item.text(0)
+            old_game_id = delete_item.text(1)
+            old_friend_code = delete_item.text(2)
+            old_priority = delete_item.text(3)
+
+            delete_item.setText(0, console)
+            delete_item.setText(1, game_id)
+            delete_item.setText(2, friend_code)
+            delete_item.setText(3, priority)
+
+            old_config_item = {
+                'console': old_console,
+                'game_id': old_game_id,
+                'friend_code': old_friend_code,
+                'priority': old_priority
+            }
+
+            self.config.friend_codes.remove(old_config_item)
+        else:
+            item = Qw.QTreeWidgetItem([console, game_id, friend_code, priority])
+            category.addChild(item)
