@@ -8,33 +8,38 @@ class JSONConfig:
         with open(path, 'r') as file:
             self._config = json.load(file)
 
-    def __str__(self):
-        return json.dumps(self._config)
-
-    def __dict__(self):
-        return self._config
-
     def flush(self):
-        with open(self.path, 'w') as file:
-            json.dump(self._config, file)
+        with open(self.path, 'w+') as file:
+            json.dump(self._config, file, indent=2)
 
-    def set(self, key, value):
+    def remove(self, item):
+        self._config.remove(item)
+
+        self.flush()
+
+    def append(self, item):
+        self._config.append(item)
+
+        self.flush()
+
+    def __getitem__(self, item):
+        return self._config[item]
+
+    def __setitem__(self, key, value):
         self._config[key] = value
 
         self.flush()
 
-    def get(self, key):
-        return self._config[key]
-
-    def add(self, key):
-        self._config.append(key)
+    def __delitem__(self, key):
+        del self._config[key]
 
         self.flush()
 
-    def remove(self, index):
-        self._config.remove(index)
+    def __next__(self):
+        return next(iter(self._config))
 
-        self.flush()
+    def __iter__(self):
+        return iter(self._config)
 
 
 class Config:

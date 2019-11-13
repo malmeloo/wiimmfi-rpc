@@ -161,7 +161,7 @@ class FriendcodesTab(Qw.QWidget):
     def populate_tree(self):
         codes = self.config.friend_codes
 
-        for entry in codes.__dict__():
+        for entry in codes:
             console = entry.get('console')
             game_id = entry.get('game_id')
             friend_code = entry.get('friend_code')
@@ -206,7 +206,7 @@ class FriendcodesTab(Qw.QWidget):
 
         category = self.CATEGORIES.get(console)
 
-        self.config.friend_codes.add(payload)
+        self.config.friend_codes.append(payload)
 
         if delete_item is not None:
             old_console = delete_item.text(0)

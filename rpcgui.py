@@ -56,7 +56,7 @@ class TableWidget(Qw.QWidget):
             name = tab.OPTIONS.pop('name')
             debug = tab.OPTIONS.pop('debug')
 
-            if debug and not self.config.preferences.get('debug'):
+            if debug and not self.config.preferences['debug']:
                 # debug mode must be enabled for debug tabs
                 continue
 
@@ -108,7 +108,7 @@ class Application(Qw.QMainWindow):
 
         self.config = self.load_config()
         logging.info('Loaded config files')
-        version = self.config.version_info.get('version')
+        version = self.config.version_info['version']
 
         # Init the title and tabs.
         self.setWindowTitle(f'Wiimmfi-RPC v{version}')
@@ -123,7 +123,7 @@ class Application(Qw.QMainWindow):
                              version_info=data_dir / 'version_info.json')
 
         logging.info('Debug mode: '
-                     + 'ON' if config.preferences.get('debug') else 'OFF')
+                     + 'ON' if config.preferences['debug'] else 'OFF')
 
         return config
 

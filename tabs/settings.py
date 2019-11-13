@@ -6,6 +6,11 @@ class SettingsTab(Qw.QWidget):
         'name': 'Settings',
         'debug': False
     }
+    RELEASES = {
+        'Latest release': 'latest',
+        'Beta': 'beta',
+        'Alpha': 'alpha'
+    }
 
     def __init__(self, **params):
         super().__init__()
@@ -34,7 +39,7 @@ class SettingsTab(Qw.QWidget):
         self.auto_install.clicked.connect(lambda checked: self.modify_config('auto_install', checked))
         release_type_label = Qw.QLabel('Update to:')
         self.release_type = Qw.QComboBox()
-        self.release_type.addItems(['Latest release', 'Beta', 'Alpha'])
+        self.release_type.addItems(self.RELEASES.keys())
         self.release_type.currentTextChanged.connect(lambda text: self.modify_config('release', text))
 
         layout = Qw.QFormLayout()
@@ -49,6 +54,7 @@ class SettingsTab(Qw.QWidget):
 
         debug_label = Qw.QLabel('Enable debug mode:')
         self.debug = Qw.QCheckBox()
+        self.debug.clicked.connect(lambda checked: self.modify_config('debug', checked))
         self.clear_config = Qw.QPushButton('Clear config files')
         self.clear_codes = Qw.QPushButton('Clear friend codes')
 
@@ -61,13 +67,11 @@ class SettingsTab(Qw.QWidget):
     def modify_config(self, setting, value):
         preferences = self.config.preferences
 
-        # TODO: revamp the config system. This is just a bloody fuckin mess jesus christ
-
-        if setting == 'auto_download':
-            preferences.get('config')['updates']['auto_download'] = value
+        if setting == 'debug':
+            preferences['debug'] = value
+        elif setting == 'auto_download':
+            preferences['config']['updates']['auto_download'] = value
         elif setting == 'auto_install':
-            preferences.get('config')['updates']['auto_install'] = value
+            preferences['config']['updates']['auto_install'] = value
         elif setting == 'release':
-            preferences.get('config')['updates']['release_type'] = value
-
-        preferences.flush()
+            preferences['config']['updates']['release_type'] = self.RELEASES.get(value)
