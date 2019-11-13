@@ -26,6 +26,8 @@ class SettingsTab(Qw.QWidget):
         self.layout.addWidget(self.update_group)
         self.layout.addWidget(self.danger_group)
 
+        self.load_settings()
+
         self.setLayout(self.layout)
 
     def create_update_groupbox(self):
@@ -63,6 +65,19 @@ class SettingsTab(Qw.QWidget):
         layout.addRow(self.clear_config)
         layout.addRow(self.clear_codes)
         self.danger_group.setLayout(layout)
+
+    def load_settings(self):
+        debug = self.config.preferences['debug']
+        auto_download = self.config.preferences['config']['updates']['auto_download']
+        auto_install = self.config.preferences['config']['updates']['auto_install']
+        release_type = self.config.preferences['config']['updates']['release_type']
+
+        self.debug.setChecked(debug)
+        self.auto_download.setChecked(auto_download)
+        self.auto_install.setChecked(auto_install)
+
+        release_index = list(self.RELEASES.values()).index(release_type)
+        self.release_type.setCurrentIndex(release_index)
 
     def modify_config(self, setting, value):
         preferences = self.config.preferences
