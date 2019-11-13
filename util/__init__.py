@@ -1,6 +1,7 @@
 from .checks import *
 from .config import *
 from .logging import *
+from .msgboxes import *
 from .network import *
 from .threading import *
 
@@ -10,5 +11,6 @@ __all__ = (
     'Thread',
     'ThreadManager',
     'full_check',
-    'GithubDownloadThread'
+    'GithubDownloadThread',
+    'MsgBoxes'
 )

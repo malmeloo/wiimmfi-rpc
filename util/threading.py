@@ -3,6 +3,8 @@ import traceback
 
 from PyQt5 import QtCore as Qc
 
+import util
+
 logging.getLogger('__main__')
 
 
@@ -52,12 +54,16 @@ class Thread(Qc.QThread):
         Permanent threads are infinitely running threads that should be kept alive at all times.
         These threads will run regardless of whether another thread is running or not.
         Note: progress bar updates are disabled.
+    - name: str
+        Name of the thread. Can be overriden with the `name` kwarg.
     """
     friendly_progress = ""
     permanent = False
+    name = 'GenericThread'
 
     def __init__(self, *args, **kwargs):
         super().__init__()
+        self.setObjectName(kwargs.get('name') or self.name)
 
         self.args = args
         self.kwargs = kwargs
@@ -168,13 +174,13 @@ class ThreadManager:
     def _on_thread_error(self, msg):
         """A thread reported an error."""
 
-        # TODO: popup with error message
-        print(msg)
-
         thread = self.thread_queue.pop(0)
 
         thread.quit()
         thread.wait()
+
+        #TODO: create log message and add path
+        util.MsgBoxes.error(msg, thread.name, '<path>')
 
         self.progress_bar.reset()
         self.start_new_thread()

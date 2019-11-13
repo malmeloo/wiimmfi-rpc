@@ -16,6 +16,7 @@ github_headers = {
 class GithubDownloadThread(Thread):
     friendly_progress = "Downloading file..."
     permanent = False
+    name = 'GithubDownloadThread'
 
     def __init__(self, method, url, *args, **kwargs):
         super().__init__(*args, **kwargs)

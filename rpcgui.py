@@ -79,7 +79,6 @@ class Application(Qw.QMainWindow):
         self.setGeometry(0, 0, W_HEIGHT, W_WIDTH)
 
         # Set up the status bar + its widgets
-        # TODO: implement thread manager that informs and manages this bad boy
         self.status_bar = Qw.QStatusBar()
         self.setStatusBar(self.status_bar)
 
