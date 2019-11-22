@@ -124,6 +124,8 @@ class ThreadManager:
 
         self.thread_queue = []
         self._permanent_threads = []
+        self._highest_thread_count = 0
+        self._current_thread_number = 0
 
     def add_thread(self, thread: Thread):
         if thread.permanent:
@@ -131,6 +133,7 @@ class ThreadManager:
             self.run_thread(thread)
         else:
             self.thread_queue.append(thread)
+            self._highest_thread_count += 1
 
         if len(self.thread_queue) == 1:
             self.start_new_thread()
@@ -161,6 +164,23 @@ class ThreadManager:
 
         self.run_thread(new_thread)
 
+        self._current_thread_number += 1
+        self.update_thread_counter()
+
+    def update_thread_counter(self):
+        threads = len(self.thread_queue)
+        permanent_threads = len(self._permanent_threads)
+
+        if threads == 0:
+            self._highest_thread_count = 0
+            self._current_thread_number = 0
+        elif self._highest_thread_count < threads:
+            self._highest_thread_count = threads
+
+        text = f'{self._current_thread_number}/{self._highest_thread_count} [p:{permanent_threads}]'
+        print(text)
+        self.thread_counter.setText(text)
+
     def _on_thread_finish(self):
         """A thread finished."""
         thread = self.thread_queue.pop(0)
@@ -169,6 +189,8 @@ class ThreadManager:
         thread.wait()
 
         self.progress_bar.reset()
+        self.update_thread_counter()
+
         self.start_new_thread()
 
     def _on_thread_error(self, msg):

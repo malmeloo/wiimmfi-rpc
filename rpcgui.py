@@ -83,7 +83,7 @@ class Application(Qw.QMainWindow):
         self.setStatusBar(self.status_bar)
 
         self.thread_counter = Qw.QLabel()
-        self.thread_counter.setText('0/0')
+        self.thread_counter.setText('0/0 [p:0]')
         self.progress_bar = Qw.QProgressBar()
         self.progress_bar.setMaximum(100)
         self.thread_status = Qw.QLabel()
