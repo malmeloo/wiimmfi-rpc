@@ -178,7 +178,6 @@ class ThreadManager:
             self._highest_thread_count = threads
 
         text = f'{self._current_thread_number}/{self._highest_thread_count} [p:{permanent_threads}]'
-        print(text)
         self.thread_counter.setText(text)
 
     def _on_thread_finish(self):
