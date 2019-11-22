@@ -40,6 +40,7 @@ def full_check(thread_manager):
     # create directories if they don't exist yet
     data_dir.mkdir(exist_ok=True)
     (data_dir / 'cache').mkdir(exist_ok=True)
+    (script_dir / 'logs').mkdir(exist_ok=True)
 
     for file, operation in file_operations.items():
         path = data_dir / file

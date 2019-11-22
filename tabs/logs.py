@@ -13,7 +13,7 @@ class LogsTab(Qw.QWidget):
         self.config = params.get('config')
         self.width = params.get('width')
         self.height = params.get('height')
-        self.handler = params.get('log_handler')
+        self.handler = params.get('gui_handler')
 
         self.layout = Qw.QVBoxLayout()
 

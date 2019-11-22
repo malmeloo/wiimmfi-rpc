@@ -13,14 +13,21 @@ W_WIDTH = 400
 W_HEIGHT = 400
 
 # set up logging and add our custom GUI handler
-logging.basicConfig(level=logging.INFO)
-handler = util.GUILoggerHandler()
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger()
 formatter = logging.Formatter('[%(asctime)s] %(threadName)s %(levelname)s: %(message)s',
                               '%H:%M:%S')
-handler.setFormatter(formatter)
 
-logger = logging.getLogger()
-logger.addHandler(handler)
+gui_handler = util.GUILoggerHandler()
+gui_handler.setLevel(logging.INFO)
+gui_handler.setFormatter(formatter)
+
+file_handler = util.FileLoggerHandler()
+file_handler.setLevel(logging.DEBUG)
+file_handler.setFormatter(formatter)
+
+logger.addHandler(gui_handler)
+logger.addHandler(file_handler)
 
 data_dir = Path(sys.argv[0]).parent / 'data'
 
@@ -64,7 +71,7 @@ class TableWidget(Qw.QWidget):
                 'config': self.config,
                 'width': W_WIDTH,
                 'height': W_HEIGHT,
-                'log_handler': handler
+                'gui_handler': gui_handler
             }
 
             # initialize widget and add it to our tabs

@@ -8,6 +8,7 @@ from .threading import *
 __all__ = (
     'Config',
     'GUILoggerHandler',
+    'FileLoggerHandler',
     'Thread',
     'ThreadManager',
     'full_check',

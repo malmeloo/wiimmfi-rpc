@@ -1,5 +1,7 @@
 import logging
-
+import sys
+from pathlib import Path
+from datetime import datetime
 
 class GUILoggerHandler(logging.Handler):
     """Allows logging to a PyQt5 PlainTextEdit widget."""
@@ -34,3 +36,32 @@ class GUILoggerHandler(logging.Handler):
             return
 
         self.append(msg)
+
+
+class FileLoggerHandler(logging.Handler):
+    """Keeps track of all logs and stores them in a file. Features error log generation."""
+    def __init__(self):
+        super().__init__()
+
+        self._fn = self._get_filename()
+        self._buffer = ''
+
+    def _get_filename(self):
+        log_dir = (Path(sys.argv[0]).parent / 'logs')
+        time = datetime.now()
+
+        time_text = time.strftime('%Y%m%d')
+        ext = 0
+        file = (log_dir / f'{time_text}.log')
+        while file.exists():
+            file = (log_dir / f'{time_text}-{ext}.log')
+            ext += 1
+
+        return file
+
+    def emit(self, record):
+        msg = self.format(record)
+
+        self._buffer += msg + '\n'
+        with open(self._fn, 'w+') as file:
+            file.write(self._buffer)
