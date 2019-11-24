@@ -90,3 +90,6 @@ class SettingsTab(Qw.QWidget):
             preferences['config']['updates']['auto_install'] = value
         elif setting == 'release':
             preferences['config']['updates']['release_type'] = self.RELEASES.get(value)
+
+        # manual flushing due to get/setitem recursion
+        preferences.flush()

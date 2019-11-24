@@ -40,7 +40,7 @@ def on_error(exc_type, exc_value, exc_traceback):
     tb = traceback.format_tb(exc_traceback)
 
     log_path = file_handler.create_error_log(tb) or None
-    util.MsgBoxes.error(tb, path=log_path)
+    util.MsgBoxes.error('\n'.join(tb), path=log_path)
 
     sys.__excepthook__(exc_type, exc_value, exc_traceback)
 
