@@ -118,7 +118,11 @@ class FriendcodesTab(Qw.QWidget):
         self.height = params.get('height')
 
         self.button_layout = self.create_buttons()
+
         self.tree = self.create_tree()
+        self.tree.setColumnWidth(0, 90)
+        self.tree.setColumnWidth(1, 60)
+        self.tree.setColumnWidth(2, 140)
         self.populate_tree()
 
         self.layout = Qw.QVBoxLayout()
