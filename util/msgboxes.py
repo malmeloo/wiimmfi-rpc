@@ -1,11 +1,16 @@
+import threading
+
 from PyQt5 import QtWidgets as Qw
 
 
 class MsgBoxes:
     @staticmethod
-    def error(msg, thread_name, path):
-        fmt_msg = f'A fatal error has occurred in thread "{thread_name}" which caused it to terminate. ' \
-                  f'Logs have been created at {path}.\n\n' + msg
+    def error(msg, path=None, thread_name=None):
+        if not thread_name:
+            thread_name = threading.current_thread().name
+        fmt_msg = f'A fatal error has occurred in thread "{thread_name}" which caused it to terminate. '
+        if path:
+            fmt_msg += f'Logs have been created at {path}.\n\n{msg}'
 
         box = Qw.QMessageBox()
         box.setIcon(Qw.QMessageBox.Critical)

@@ -2,6 +2,7 @@ import logging
 import sys
 import time
 from pathlib import Path
+import traceback
 
 from PyQt5 import QtWidgets as Qw
 
@@ -29,7 +30,21 @@ file_handler.setFormatter(formatter)
 logger.addHandler(gui_handler)
 logger.addHandler(file_handler)
 
-data_dir = Path(sys.argv[0]).parent / 'data'
+script_dir = Path(sys.argv[0]).parent
+data_dir = script_dir / 'data'
+# in case we crash prematurely, let's construct the bare minimum dir structure
+(script_dir / 'logs' / 'errors').mkdir(parents=True, exist_ok=True)
+
+
+def on_error(exc_type, exc_value, exc_traceback):
+    tb = traceback.format_tb(exc_traceback)
+
+    log_path = file_handler.create_error_log(tb) or None
+    util.MsgBoxes.error(tb, path=log_path)
+
+    sys.__excepthook__(exc_type, exc_value, exc_traceback)
+
+sys.excepthook = on_error
 
 
 class TableWidget(Qw.QWidget):
@@ -123,6 +138,9 @@ class Application(Qw.QMainWindow):
         self.setCentralWidget(self.table_widget)
 
         self.show()
+
+    def crash(self):
+        file_handler.create_crash_log()
 
     def load_config(self):
         config = util.Config(friend_codes=data_dir / 'friend_codes.json',

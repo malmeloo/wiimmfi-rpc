@@ -2,6 +2,8 @@ import logging
 import sys
 from pathlib import Path
 from datetime import datetime
+import os
+
 
 class GUILoggerHandler(logging.Handler):
     """Allows logging to a PyQt5 PlainTextEdit widget."""
@@ -58,6 +60,33 @@ class FileLoggerHandler(logging.Handler):
             ext += 1
 
         return file
+
+    def _get_dir_structure(self, path):
+        files = []
+
+        for f in path.iterdir():
+            if f.name.startswith('.') or f.name.startswith('_') or f.name == 'venv':
+                continue  # skip unimportant files
+
+            if f.is_dir():
+                files += self._get_dir_structure(f)
+            else:
+                files.append(os.path.relpath(f.absolute(), Path(sys.argv[0]).parent.absolute()))
+
+        return files
+
+    def create_error_log(self, traceback):
+        script_dir = Path(sys.argv[0]).parent
+        error_log_path = (script_dir / 'logs' / 'errors' / self._fn.name)
+        date = datetime.now().strftime('%c')
+
+        with open(error_log_path, 'w+') as file:
+            file.write(f'------------ [EXCEPTION RAPPORT AT {date}] ------------\n')
+            file.write(''.join(traceback) + '\n')
+            file.write('----- [DIRECTORY STRUCTURE]\n')
+            file.write('\n'.join(self._get_dir_structure(script_dir)))
+
+        return error_log_path
 
     def emit(self, record):
         msg = self.format(record)
