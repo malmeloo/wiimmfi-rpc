@@ -91,6 +91,7 @@ class WiimmfiCheckThread(Thread):
 
             if online is None:
                 self.remove_presence()
+                self.last_player = None
             elif online != self.last_player:
                 self.last_player = online
                 self.set_presence(online)
