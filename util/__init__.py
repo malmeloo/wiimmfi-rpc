@@ -4,6 +4,7 @@ from .logging import *
 from .msgboxes import *
 from .network import *
 from .threading import *
+from .wiimmfi import *
 
 __all__ = (
     'Config',
@@ -13,5 +14,6 @@ __all__ = (
     'ThreadManager',
     'full_check',
     'GithubDownloadThread',
-    'MsgBoxes'
+    'MsgBoxes',
+    'WiimmfiCheckThread'
 )
