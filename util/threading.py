@@ -182,10 +182,14 @@ class ThreadManager:
 
     def _on_thread_finish(self):
         """A thread finished."""
-        thread = self.thread_queue.pop(0)
+        try:
+            thread = self.thread_queue.pop(0)
 
-        thread.quit()
-        thread.wait()
+            thread.quit()
+            thread.wait()
+        except IndexError:
+            # permanent thread
+            pass
 
         self.progress_bar.reset()
         self.update_thread_counter()
@@ -195,13 +199,17 @@ class ThreadManager:
     def _on_thread_error(self, msg):
         """A thread reported an error."""
 
-        thread = self.thread_queue.pop(0)
+        try:
+            thread = self.thread_queue.pop(0)
 
-        thread.quit()
-        thread.wait()
+            thread.quit()
+            thread.wait()
+        except IndexError:
+            # permanent thread
+            thread = None
 
         #TODO: create log message and add path
-        util.MsgBoxes.error(msg, thread.name, '<path>')
+        util.MsgBoxes.error(msg, '<path>', thread.name if thread else None)
 
         self.progress_bar.reset()
         self.start_new_thread()
