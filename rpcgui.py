@@ -140,6 +140,8 @@ class Application(Qw.QMainWindow):
         self.table_widget = TableWidget(self)
         self.setCentralWidget(self.table_widget)
 
+        logging.info('---- Finished booting ----')
+
         self.show()
 
     def crash(self):

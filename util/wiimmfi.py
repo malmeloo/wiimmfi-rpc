@@ -82,6 +82,8 @@ class WiimmfiCheckThread(Thread):
                     continue
 
                 player = online_players.get_player(friend_code)
+                if player is None:
+                    continue
                 player.priority = priority
 
                 if online is None or online.priority >= player.priority:
@@ -93,7 +95,7 @@ class WiimmfiCheckThread(Thread):
                 self.last_player = online
                 self.set_presence(online)
 
-            time.sleep(30)
+            time.sleep(10)
 
     def get_online_players(self, game_id):
         resp = requests.get(game_info_base_url + game_id)
@@ -125,12 +127,13 @@ class WiimmfiCheckThread(Thread):
                                    player_2=data[11])
             players.add_player(player)
 
-        self.log(logging.INFO, f'Found {len(players)} players.')
-
         return players
 
     def set_presence(self, player):
-        pass
+        self.log(logging.INFO, f'Now playing: {player.game_name}')
 
     def remove_presence(self):
-        pass
+        if self.last_player is None:
+            pass
+        else:
+            self.log(logging.INFO, f'Stopped playing: {self.last_player.game_name}')
