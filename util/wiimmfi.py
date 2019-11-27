@@ -92,7 +92,8 @@ class WiimmfiCheckThread(Thread):
     def execute(self):
         while True:
             if not self.run:
-                time.sleep(0.1)
+                time.sleep(1)
+                self.remove_presence()
                 continue
 
             online = None
