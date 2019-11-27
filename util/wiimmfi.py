@@ -35,10 +35,9 @@ class WiimmfiPlayer:
         options['state'] = self.player_1
         if self.player_2:
             options['state'] += f' | {self.player_2}'
-        options['details'] = '--'
         options['start'] = self.start
 
-        options['pid'] = os.getpid()
+        options['details'] = 'Playing a game'  # TODO: make this dynamic
         options['large_image'] = self.game_id.lower()
         options['large_text'] = self.game_name
         options['small_image'] = 'wiimmfi'
