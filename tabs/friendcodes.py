@@ -237,7 +237,8 @@ class FriendcodesTab(Qw.QWidget):
 
     def remove_code(self):
         item = self.tree.currentItem()
-        if not item:
+        if not item or not item.parent():
+            # nothing selected or trying to delete top level item
             return
 
         console = item.text(0)
