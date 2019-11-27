@@ -132,7 +132,7 @@ class Application(Qw.QMainWindow):
         logging.info('Loaded config files')
         version = self.config.version_info['version']
 
-        self.wiimmfi_thread = util.WiimmfiCheckThread(self.config.friend_codes)
+        self.wiimmfi_thread = util.WiimmfiCheckThread(self.config)
         self.thread_manager.add_thread(self.wiimmfi_thread)
 
         # Init the title and tabs.

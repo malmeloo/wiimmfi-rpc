@@ -1,3 +1,4 @@
 PyQt5==5.13.1
 requests==2.22.0
 beautifulsoup4==4.8.1
+pypresence==3.3.2

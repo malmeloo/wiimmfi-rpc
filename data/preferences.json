@@ -1,5 +1,9 @@
 {
   "debug": true,
+  "rpc": {
+    "oauth_id": "444906848437665803",
+    "timeout": 15
+  },
   "config": {
     "updates": {
       "auto_download": true,

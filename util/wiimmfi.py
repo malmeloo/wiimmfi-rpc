@@ -1,7 +1,10 @@
 import logging
+import os
 import time
 from dataclasses import dataclass
+from datetime import datetime
 
+import pypresence
 import requests
 from bs4 import BeautifulSoup
 
@@ -18,13 +21,30 @@ class WiimmfiPlayer:
     host: int
     status: int
     player_1: str
-    player_2: str
+    player_2: str = ''
+    start: int = 0
     priority: int = 1
 
     def __eq__(self, other):
         if isinstance(other, WiimmfiPlayer):
             return self.friend_code == other.friend_code
         return False
+
+    def presence_options(self):
+        options = dict()
+        options['state'] = self.player_1
+        if self.player_2:
+            options['state'] += f' | {self.player_2}'
+        options['details'] = '--'
+        options['start'] = self.start
+
+        options['pid'] = os.getpid()
+        options['large_image'] = self.game_id.lower()
+        options['large_text'] = self.game_name
+        options['small_image'] = 'wiimmfi'
+        options['small_text'] = 'Wiimmfi'
+
+        return options
 
 
 class WiimmfiPlayerList:
@@ -60,12 +80,15 @@ class WiimmfiCheckThread(Thread):
     permanent = True
     name = 'WiimmfiCheckThread'
 
-    def __init__(self, friend_codes):
+    def __init__(self, config):
         super().__init__()
 
-        self.friend_codes = friend_codes
+        self.config = config
         self.last_player = None
         self.run = True
+
+        self.presence = pypresence.Presence(self.config.preferences['rpc']['oauth_id'])
+        self.presence.connect()
 
     def execute(self):
         while True:
@@ -74,7 +97,7 @@ class WiimmfiCheckThread(Thread):
                 continue
 
             online = None
-            for code_entry in self.friend_codes:
+            for code_entry in self.config.friend_codes:
                 console, game_id, friend_code, priority = code_entry.values()
 
                 online_players = self.get_online_players(game_id)
@@ -96,7 +119,7 @@ class WiimmfiCheckThread(Thread):
                 self.last_player = online
                 self.set_presence(online)
 
-            time.sleep(10)
+            time.sleep(self.config.preferences['rpc']['timeout'])
 
     def get_online_players(self, game_id):
         resp = requests.get(game_info_base_url + game_id)
@@ -125,15 +148,20 @@ class WiimmfiCheckThread(Thread):
                                    host=data[3],
                                    status=data[7],
                                    player_1=data[10],
-                                   player_2=data[11])
+                                   player_2=data[11],
+                                   start=int(datetime.now().timestamp()))
             players.add_player(player)
 
         return players
 
     def set_presence(self, player):
+        self.presence.update(**player.presence_options())
+
         self.log(logging.INFO, f'Now playing: {player.game_name}')
 
     def remove_presence(self):
+        self.presence.clear()
+
         if self.last_player is None:
             pass
         else:
