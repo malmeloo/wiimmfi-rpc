@@ -142,6 +142,10 @@ class WiimmfiCheckThread(Thread):
         for row in rows[2:]:
             data = [col.text for col in row.find_all('td')]
 
+            if data[11] == '\u2014':
+                # "em dash" means no player 2
+                data[11] = ''
+
             player = WiimmfiPlayer(game_name=game_name,
                                    game_id=data[0],
                                    friend_code=data[2],
