@@ -35,7 +35,7 @@ class EditPopup(Qw.QWidget):
 
         gameid_label = Qw.QLabel('Game ID:')
         self.game_id = Qw.QLineEdit()
-        self.game_id.setMaxLength(6)
+        self.game_id.setMaxLength(4)
 
         friendcode_label = Qw.QLabel('Friend code:')
         self.friend_code = Qw.QLineEdit()
@@ -82,7 +82,7 @@ class EditPopup(Qw.QWidget):
 
     def apply_settings(self):
         console = self.console.currentText()
-        game_id = self.game_id.text()
+        game_id = self.game_id.text().upper()
         friend_code = self.friend_code.text()
         priority = str(self.priority.value())
 
