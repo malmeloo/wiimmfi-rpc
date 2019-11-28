@@ -1,5 +1,4 @@
 import logging
-import os
 import time
 from dataclasses import dataclass
 from datetime import datetime
@@ -22,6 +21,7 @@ class WiimmfiPlayer:
     status: int
     player_1: str
     player_2: str = ''
+
     start: int = 0
     priority: int = 1
 
