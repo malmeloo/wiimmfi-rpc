@@ -38,7 +38,8 @@ class WiimmfiPlayer:
 
     def set_mkw_info(self):
         if self.game_id != 'RMCJ':
-            raise Exception('Game is not mkw!')
+            self.is_mkw = False
+            return
 
         resp = requests.get(mkw_room_info_base_url.format(pid=self.pid))
         resp.raise_for_status()
@@ -47,6 +48,7 @@ class WiimmfiPlayer:
         race_start = data[1].get('race_start')
         if not race_start:
             # race hasn't started yet or room is offline
+            self.is_mkw = False
             return
         self.start = race_start
         self.n_members = data[1]['n_members']
@@ -148,10 +150,13 @@ class WiimmfiCheckThread(Thread):
             elif online != self.last_player:
                 self.last_player = online
 
+                self.log(logging.INFO, f'Now playing: {online.game_name}')
+
             if self.last_player and self.last_player.game_id == 'RMCJ':
                 self.last_player.set_mkw_info()
 
-            self.set_presence(online)
+            if self.last_player:
+                self.set_presence(self.last_player)
 
             time.sleep(self.config.preferences['rpc']['timeout'])
 
@@ -194,8 +199,6 @@ class WiimmfiCheckThread(Thread):
 
     def set_presence(self, player):
         self.presence.update(**player.presence_options())
-
-        self.log(logging.INFO, f'Now playing: {player.game_name}')
 
     def remove_presence(self):
         self.presence.clear()
