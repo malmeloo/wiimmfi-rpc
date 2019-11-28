@@ -184,7 +184,6 @@ class WiimmfiCheckThread(Thread):
                                    game_id=data[0],
                                    pid=data[1],
                                    friend_code=data[2],
-                                   host=data[3],
                                    status=data[7],
                                    player_1=data[10],
                                    player_2=data[11],
