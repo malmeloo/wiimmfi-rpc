@@ -9,35 +9,65 @@ from bs4 import BeautifulSoup
 
 from .threading import Thread
 
-game_info_base_url = 'https://wiimmfi.de/game/'
+game_info_base_url = 'https://wiimmfi.de/game/{game_id}'
+mkw_room_info_base_url = 'https://wiimmfi.de/mkw/room/p{pid}/?m=json'
 
 
 @dataclass
 class WiimmfiPlayer:
     game_id: str
     game_name: str
+    pid: int
     friend_code: str
-    host: int
     status: int
     player_1: str
     player_2: str = ''
-
-    start: int = 0
     priority: int = 1
+
+    # Don't set these yourself.
+    start: int = 0
+    is_mkw: bool = False
+    n_members: int = 0
+    n_players: int = 12
+    track_name: str = ''
 
     def __eq__(self, other):
         if isinstance(other, WiimmfiPlayer):
             return self.friend_code == other.friend_code
         return False
 
+    def set_mkw_info(self):
+        if self.game_id != 'RMCJ':
+            raise Exception('Game is not mkw!')
+
+        resp = requests.get(mkw_room_info_base_url.format(pid=self.pid))
+        resp.raise_for_status()
+        data = resp.json()
+
+        race_start = data[1].get('race_start')
+        if not race_start:
+            # race hasn't started yet or room is offline
+            return
+        self.start = race_start
+        self.n_members = data[1]['n_members']
+        self.n_players = data[1]['n_players']
+        self.track_name = data[1]['track'][1]
+
+        self.is_mkw = True
+
     def presence_options(self):
         options = dict()
-        options['state'] = self.player_1
-        if self.player_2:
-            options['state'] += f' | {self.player_2}'
-        options['start'] = self.start
+
+        if self.is_mkw:
+            options['state'] = self.track_name
+            options['party_size'] = [self.n_members, self.n_players]
+        else:
+            options['state'] = self.player_1
+            if self.player_2:
+                options['state'] += f' | {self.player_2}'
 
         options['details'] = 'Playing a game'  # TODO: make this dynamic
+        options['start'] = self.start
         options['large_image'] = self.game_id.lower()
         options['large_text'] = self.game_name
         options['small_image'] = 'wiimmfi'
@@ -117,12 +147,16 @@ class WiimmfiCheckThread(Thread):
                 self.last_player = None
             elif online != self.last_player:
                 self.last_player = online
-                self.set_presence(online)
+
+            if self.last_player and self.last_player.game_id == 'RMCJ':
+                self.last_player.set_mkw_info()
+
+            self.set_presence(online)
 
             time.sleep(self.config.preferences['rpc']['timeout'])
 
     def get_online_players(self, game_id):
-        resp = requests.get(game_info_base_url + game_id)
+        resp = requests.get(game_info_base_url.format(game_id=game_id))
         resp.raise_for_status()
 
         soup = BeautifulSoup(resp.text, 'html.parser')
@@ -148,6 +182,7 @@ class WiimmfiCheckThread(Thread):
 
             player = WiimmfiPlayer(game_name=game_name,
                                    game_id=data[0],
+                                   pid=data[1],
                                    friend_code=data[2],
                                    host=data[3],
                                    status=data[7],
