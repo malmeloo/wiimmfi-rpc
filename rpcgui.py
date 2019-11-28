@@ -1,8 +1,8 @@
 import logging
 import sys
 import time
-from pathlib import Path
 import traceback
+from pathlib import Path
 
 from PyQt5 import QtWidgets as Qw
 
@@ -90,7 +90,7 @@ class TableWidget(Qw.QWidget):
             }
 
             # initialize widget and add it to our tabs
-            tab_obj = tab(**params)
+            tab_obj = tab(self, **params)
             tab_widget.addTab(tab_obj, name)
 
 

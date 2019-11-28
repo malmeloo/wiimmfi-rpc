@@ -7,8 +7,10 @@ class LogsTab(Qw.QWidget):
         'debug': True
     }
 
-    def __init__(self, **params):
+    def __init__(self, parent, **params):
         super().__init__()
+
+        self.parent = parent
 
         self.config = params.get('config')
         self.width = params.get('width')
