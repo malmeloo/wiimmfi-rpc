@@ -1,6 +1,8 @@
 import logging
+import sys
 import time
 from datetime import datetime
+from pathlib import Path
 
 import pypresence
 import requests
@@ -10,6 +12,10 @@ from .threading import Thread
 
 game_info_base_url = 'https://wiimmfi.de/game/{game_id}'
 mkw_room_info_base_url = 'https://wiimmfi.de/mkw/room/p{pid}/?m=json'
+asset_list_base_url = 'https://discordapp.com/api/v6/oauth2/applications/{app_id}/assets'
+asset_base_url = 'https://cdn.discordapp.com/app-assets/{app_id}/{asset_id}.png'
+
+cache_path = Path(sys.argv[0]).parent / 'data' / 'cache'
 
 
 class WiimmfiPlayer:
@@ -115,11 +121,14 @@ class WiimmfiCheckThread(Thread):
         self.config = config
         self.last_player = None
         self.run = True
+        self.assets = None
 
         self.presence = pypresence.Presence(self.config.preferences['rpc']['oauth_id'])
         self.presence.connect()
 
     def execute(self):
+        self.assets = self.get_asset_list()
+
         while True:
             if not self.run:
                 time.sleep(1)
@@ -147,6 +156,7 @@ class WiimmfiCheckThread(Thread):
                 self.last_player = None
             elif online != self.last_player:
                 self.last_player = online
+                self.save_game_art(self.last_player.game_id)
 
                 self.log(logging.INFO, f'Now playing: {online.game_name}')
 
@@ -194,6 +204,38 @@ class WiimmfiCheckThread(Thread):
             players.add_player(player)
 
         return players
+
+    def get_asset_list(self):
+        assets_url = asset_list_base_url.format(app_id=self.config.preferences['rpc']['oauth_id'])
+
+        resp = requests.get(assets_url)
+        resp.raise_for_status()
+
+        return resp.json()
+
+    def save_game_art(self, game_id):
+        img_path = (cache_path / f'{game_id}.png')
+        if img_path.exists():
+            return
+
+        asset_id = None
+        for asset in self.assets:
+            if asset.get('name') == game_id.lower():
+                asset_id = asset.get('id')
+                break
+
+        if asset_id is None:
+            self.log(logging.INFO, f'Could not find game art for game: {game_id}')
+
+        asset_url = asset_base_url.format(app_id=self.config.preferences['rpc']['oauth_id'], asset_id=asset_id)
+
+        resp = requests.get(asset_url)
+        resp.raise_for_status()
+
+        with open(img_path, 'wb+') as file:
+            file.write(resp.content)
+
+        self.log(logging.INFO, f'Downloaded art for game: {game_id}')
 
     def set_presence(self, player):
         self.presence.update(**player.presence_options())
