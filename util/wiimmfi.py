@@ -1,6 +1,5 @@
 import logging
 import time
-from dataclasses import dataclass
 from datetime import datetime
 
 import pypresence
@@ -13,23 +12,22 @@ game_info_base_url = 'https://wiimmfi.de/game/{game_id}'
 mkw_room_info_base_url = 'https://wiimmfi.de/mkw/room/p{pid}/?m=json'
 
 
-@dataclass
 class WiimmfiPlayer:
-    game_id: str
-    game_name: str
-    pid: int
-    friend_code: str
-    status: int
-    player_1: str
-    player_2: str = ''
-    priority: int = 1
+    def __init__(self, **kwargs):
+        self.game_id: str = kwargs.get('game_id')
+        self.game_name: str = kwargs.get('game_name')
+        self.pid: int = kwargs.get('pid')
+        self.friend_code: str = kwargs.get('friend_code')
+        self.status: int = kwargs.get('status')
+        self.player_1: str = kwargs.get('player_1')
+        self.player_2: str = kwargs.get('player_2')
+        self.priority: int = kwargs.get('priority', 1)
 
-    # Don't set these yourself.
-    start: int = 0
-    is_mkw: bool = False
-    n_members: int = 0
-    n_players: int = 12
-    track_name: str = ''
+        self.start: int = 0
+        self.is_mkw: bool = False
+        self.n_members: int = 0
+        self.n_players: int = 12
+        self.track_name: str = ''
 
     def __eq__(self, other):
         if isinstance(other, WiimmfiPlayer):
