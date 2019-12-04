@@ -90,7 +90,7 @@ class TableWidget(Qw.QWidget):
             }
 
             # initialize widget and add it to our tabs
-            tab_obj = tab(self, **params)
+            tab_obj = tab(self.parent, **params)
             tab_widget.addTab(tab_obj, name)
 
 

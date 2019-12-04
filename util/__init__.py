@@ -15,5 +15,6 @@ __all__ = (
     'full_check',
     'GithubDownloadThread',
     'MsgBoxes',
-    'WiimmfiCheckThread'
+    'WiimmfiCheckThread',
+    'WiimmfiOverviewThread'
 )

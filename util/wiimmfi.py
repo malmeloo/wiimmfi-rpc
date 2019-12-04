@@ -6,6 +6,7 @@ from pathlib import Path
 
 import pypresence
 import requests
+from PyQt5 import QtCore as Qc
 from bs4 import BeautifulSoup
 
 from .threading import Thread
@@ -28,8 +29,8 @@ class WiimmfiPlayer:
         self.player_1: str = kwargs.get('player_1')
         self.player_2: str = kwargs.get('player_2')
         self.priority: int = kwargs.get('priority', 1)
+        self.start: int = kwargs.get('start')
 
-        self.start: int = 0
         self.is_mkw: bool = False
         self.n_members: int = 0
         self.n_players: int = 12
@@ -68,9 +69,11 @@ class WiimmfiPlayer:
             options['state'] = self.track_name
             options['party_size'] = [self.n_members, self.n_players]
         else:
-            options['state'] = self.player_1
-            if self.player_2:
-                options['state'] += f' | {self.player_2}'
+            options['state'] = 'No player name'
+            if self.player_1:
+                options['state'] = self.player_1
+                if self.player_2:
+                    options['state'] += f' | {self.player_2}'
 
         options['details'] = 'Playing a game'  # TODO: make this dynamic
         options['start'] = self.start
@@ -111,7 +114,7 @@ class WiimmfiPlayerList:
 
 
 class WiimmfiCheckThread(Thread):
-    friendly_progress = ""
+    friendly_progress = ''
     permanent = True
     name = 'WiimmfiCheckThread'
 
@@ -160,10 +163,9 @@ class WiimmfiCheckThread(Thread):
 
                 self.log(logging.INFO, f'Now playing: {online.game_name}')
 
-            if self.last_player and self.last_player.game_id == 'RMCJ':
-                self.last_player.set_mkw_info()
-
             if self.last_player:
+                if self.last_player.game_id == 'RMCJ':
+                    self.last_player.set_mkw_info()
                 self.set_presence(self.last_player)
 
             time.sleep(self.config.preferences['rpc']['timeout'])
@@ -226,6 +228,7 @@ class WiimmfiCheckThread(Thread):
 
         if asset_id is None:
             self.log(logging.INFO, f'Could not find game art for game: {game_id}')
+            return
 
         asset_url = asset_base_url.format(app_id=self.config.preferences['rpc']['oauth_id'], asset_id=asset_id)
 
@@ -247,3 +250,32 @@ class WiimmfiCheckThread(Thread):
             pass
         else:
             self.log(logging.INFO, f'Stopped playing: {self.last_player.game_name}')
+
+
+class WiimmfiOverviewThread(Thread):
+    friendly_progress = ''
+    permanent = True
+    name = 'WiimmfiCheckThread'
+
+    update_signal = Qc.pyqtSignal(WiimmfiPlayer)
+    clear_signal = Qc.pyqtSignal()
+
+    def __init__(self, wiimmfi_thread, update_callback, clear_callback):
+        super().__init__()
+
+        self.wiimmfi_thread = wiimmfi_thread
+        self.update_callback = update_callback
+        self.clear_callback = clear_callback
+
+        self.update_signal.connect(self.update_callback)
+        self.clear_signal.connect(self.clear_callback)
+
+    def execute(self):
+        while True:
+            player = self.wiimmfi_thread.last_player
+            if player is not None:
+                self.update_signal.emit(player)
+            else:
+                self.clear_signal.emit()
+
+            time.sleep(1)
