@@ -105,10 +105,12 @@ class OverviewTab(Qw.QWidget):
     def set_overview(self, player):
         text = '''
         <html>
-          <b>Wiimmfi\n</b>
-          {details}\n
-          {state} {party}\n
-          {time}
+          <b>Wiimmfi</b>
+            <p>
+              {details} <br/>
+              {state} {party} <br/>
+              {time}
+            </p>
         </html>
         '''
 
