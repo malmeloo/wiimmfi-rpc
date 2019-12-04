@@ -118,8 +118,11 @@ class OverviewTab(Qw.QWidget):
         details = pres_options.get('details')
         state = pres_options.get('state')
         time = pres_options.get('start')
+        party = ''
+        if player.is_mkw:
+            party = f'({player.n_members} of {player.n_players})'
 
-        fmt_text = text.format(details=details, state=state, time=time, party='')
+        fmt_text = text.format(details=details, state=state, time=time, party=party)
         self.presence_overview.setText(fmt_text)
 
     def set_properties(self, player):
