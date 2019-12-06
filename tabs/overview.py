@@ -92,8 +92,8 @@ class OverviewTab(Qw.QWidget):
 
     def set_image(self, game_id, game_name):
         img_path = cache_dir / f'{game_id}.png'
-        if not img_path.exists:
-            img_path = cache_dir / 'notfound.png'
+        if not img_path.exists():
+            img_path = cache_dir / 'no_image.png'
 
         path = str(img_path.resolve())
         pixmap = Qg.QPixmap(path)

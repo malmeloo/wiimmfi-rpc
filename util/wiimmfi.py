@@ -36,6 +36,8 @@ class WiimmfiPlayer:
         self.n_players: int = 12
         self.track_name: str = ''
 
+        self.has_game_art = True
+
     def __eq__(self, other):
         if isinstance(other, WiimmfiPlayer):
             return self.friend_code == other.friend_code
@@ -77,7 +79,10 @@ class WiimmfiPlayer:
 
         options['details'] = config.statuses[self.status]
         options['start'] = self.start
-        options['large_image'] = self.game_id.lower()
+        if self.has_game_art:
+            options['large_image'] = self.game_id.lower()
+        else:
+            options['large_image'] = 'no_image'
         options['large_text'] = self.game_name
         options['small_image'] = 'wiimmfi'
         options['small_text'] = 'Wiimmfi'
@@ -131,6 +136,9 @@ class WiimmfiCheckThread(Thread):
 
     def execute(self):
         self.assets = self.get_asset_list()
+
+        # download misc images
+        self.save_game_art('no_image')
 
         while True:
             if not self.run:
@@ -203,6 +211,9 @@ class WiimmfiCheckThread(Thread):
                                    player_1=data[10],
                                    player_2=data[11],
                                    start=int(datetime.now().timestamp()))
+            if player.game_id.lower() not in [a.get('name').lower() for a in self.assets]:
+                player.has_game_art = False
+
             players.add_player(player)
 
         return players
