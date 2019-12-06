@@ -1,12 +1,19 @@
 import json
+import logging
+
+logging.getLogger(__name__)
 
 
 class JSONConfig:
     def __init__(self, path):
         self.path = path
 
-        with open(path, 'r') as file:
-            self._config = json.load(file)
+        self.complete = True
+        try:
+            with open(path, 'r') as file:
+                self._config = json.load(file)
+        except FileNotFoundError:
+            self.complete = False
 
     def flush(self):
         with open(self.path, 'w+') as file:
