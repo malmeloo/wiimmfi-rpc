@@ -118,6 +118,7 @@ class ThreadManager:
     only one dynamic (non-permanent) thread can run at a time.
     """
     def __init__(self, **kwargs):
+        self.file_handler = kwargs.get('file_handler')
         self.thread_counter = kwargs.get('thread_counter')
         self.progress_bar = kwargs.get('progress_bar')
         self.thread_status = kwargs.get('thread_status')
@@ -198,7 +199,6 @@ class ThreadManager:
 
     def _on_thread_error(self, msg):
         """A thread reported an error."""
-
         try:
             thread = self.thread_queue.pop(0)
 
@@ -208,8 +208,8 @@ class ThreadManager:
             # permanent thread
             thread = None
 
-        #TODO: create log message and add path
-        util.MsgBoxes.error(msg, '<path>', thread.name if thread else None)
+        path = self.file_handler.create_error_log()
+        util.MsgBoxes.error(msg, path=path)
 
         self.progress_bar.reset()
         self.start_new_thread()

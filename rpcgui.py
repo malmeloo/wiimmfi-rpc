@@ -35,7 +35,7 @@ data_dir = script_dir / 'data'
 def on_error(exc_type, exc_value, exc_traceback):
     tb = traceback.format_tb(exc_traceback)
 
-    log_path = file_handler.create_error_log(tb) or None
+    log_path = file_handler.create_error_log(tb)
     util.MsgBoxes.error('\n'.join(tb), path=log_path)
 
     sys.__excepthook__(exc_type, exc_value, exc_traceback)
@@ -109,7 +109,8 @@ class Application(Qw.QMainWindow):
         self.status_bar.addWidget(self.progress_bar)
         self.status_bar.addWidget(self.thread_status)
 
-        self.thread_manager = util.ThreadManager(thread_counter=self.thread_counter,
+        self.thread_manager = util.ThreadManager(file_handler=file_handler,
+                                                 thread_counter=self.thread_counter,
                                                  progress_bar=self.progress_bar,
                                                  thread_status=self.thread_status)
         self.do_reload = util.full_check(self.thread_manager)
@@ -137,9 +138,6 @@ class Application(Qw.QMainWindow):
         logging.info('---- Finished booting ----')
 
         self.show()
-
-    def crash(self):
-        file_handler.create_crash_log()
 
     def load_config(self):
         config = util.Config(friend_codes=data_dir / 'friend_codes.json',
