@@ -206,9 +206,9 @@ class ThreadManager:
             thread.wait()
         except IndexError:
             # permanent thread
-            thread = None
+            pass
 
-        path = self.file_handler.create_error_log()
+        path = self.file_handler.create_error_log(msg)
         util.MsgBoxes.error(msg, path=path)
 
         self.progress_bar.reset()

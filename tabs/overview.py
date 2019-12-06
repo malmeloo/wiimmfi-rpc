@@ -112,7 +112,7 @@ class OverviewTab(Qw.QWidget):
         </html>
         '''
 
-        pres_options = player.presence_options()
+        pres_options = player.presence_options(self.config)
         details = pres_options.get('details')
         state = pres_options.get('state')
         time = pres_options.get('start')

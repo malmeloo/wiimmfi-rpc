@@ -20,9 +20,7 @@ cache_path = Path(sys.argv[0]).parent / 'data' / 'cache'
 
 
 class WiimmfiPlayer:
-    def __init__(self, config, **kwargs):
-        self._config = config
-
+    def __init__(self, **kwargs):
         self.game_id: str = kwargs.get('game_id')
         self.game_name: str = kwargs.get('game_name')
         self.pid: int = kwargs.get('pid')
@@ -64,7 +62,7 @@ class WiimmfiPlayer:
 
         self.is_mkw = True
 
-    def presence_options(self):
+    def presence_options(self, config):
         options = dict()
 
         if self.is_mkw:
@@ -77,7 +75,7 @@ class WiimmfiPlayer:
                 if self.player_2:
                     options['state'] += f' | {self.player_2}'
 
-        options['details'] = self._config.statuses[self.status]
+        options['details'] = config.statuses[self.status]
         options['start'] = self.start
         options['large_image'] = self.game_id.lower()
         options['large_text'] = self.game_name
@@ -243,7 +241,7 @@ class WiimmfiCheckThread(Thread):
         self.log(logging.INFO, f'Downloaded art for game: {game_id}')
 
     def set_presence(self, player):
-        self.presence.update(**player.presence_options())
+        self.presence.update(**player.presence_options(self.config))
 
     def remove_presence(self):
         self.presence.clear()
