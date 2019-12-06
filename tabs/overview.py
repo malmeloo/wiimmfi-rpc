@@ -21,8 +21,6 @@ class OverviewTab(Qw.QWidget):
         self.parent = parent
 
         self.config = params.get('config')
-        self.width = params.get('width')
-        self.height = params.get('height')
 
         self.overview_group = self.create_overview_group()
         self.mkw_group = self.create_mkw_group()

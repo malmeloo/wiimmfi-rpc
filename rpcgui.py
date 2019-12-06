@@ -9,10 +9,6 @@ from PyQt5 import QtWidgets as Qw
 import tabs
 import util
 
-# TODO: use advanced configuration file
-W_WIDTH = 400
-W_HEIGHT = 400
-
 # set up logging and add our custom GUI handler
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger()
@@ -65,7 +61,7 @@ class TableWidget(Qw.QWidget):
         # Initialize tab screen
         self.tabs = Qw.QTabWidget()
         self.add_tabs(self.tabs)
-        self.tabs.resize(W_WIDTH, W_HEIGHT)
+        self.tabs.resize(400, 400)
 
         # Add tabs to widget
         self.layout.addWidget(self.tabs)
@@ -84,8 +80,6 @@ class TableWidget(Qw.QWidget):
 
             params = {
                 'config': self.config,
-                'width': W_WIDTH,
-                'height': W_HEIGHT,
                 'gui_handler': gui_handler
             }
 
@@ -98,7 +92,7 @@ class Application(Qw.QMainWindow):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.setGeometry(0, 0, W_HEIGHT, W_WIDTH)
+        self.setGeometry(0, 0, 400, 400)
 
         # Set up the status bar + its widgets
         self.status_bar = Qw.QStatusBar()

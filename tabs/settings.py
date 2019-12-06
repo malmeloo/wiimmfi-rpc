@@ -18,8 +18,6 @@ class SettingsTab(Qw.QWidget):
         self.parent = parent
 
         self.config = params.get('config')
-        self.width = params.get('width')
-        self.height = params.get('height')
 
         self.create_update_groupbox()
         self.create_danger_groupbox()

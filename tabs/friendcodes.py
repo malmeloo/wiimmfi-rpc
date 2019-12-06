@@ -116,8 +116,6 @@ class FriendcodesTab(Qw.QWidget):
         self.parent = parent
 
         self.config = params.get('config')
-        self.width = params.get('width')
-        self.height = params.get('height')
 
         self.button_layout = self.create_buttons()
 
