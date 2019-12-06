@@ -11,7 +11,8 @@ download_base_url = 'https://api.github.com/repos/{username}/{repo}/contents/dat
 file_operations = {
     'friend_codes.json': 'create',
     'preferences.json': 'download',
-    'version_info.json': 'download'
+    'version_info.json': 'download',
+    'statuses.json': 'download'
 }
 
 
