@@ -142,7 +142,8 @@ class Application(Qw.QMainWindow):
     def load_config(self):
         config = util.Config(friend_codes=data_dir / 'friend_codes.json',
                              preferences=data_dir / 'preferences.json',
-                             version_info=data_dir / 'version_info.json')
+                             version_info=data_dir / 'version_info.json',
+                             statuses=data_dir / 'statuses.json')
 
         logging.info('Debug mode: '
                      + 'ON' if config.preferences['debug'] else 'OFF')

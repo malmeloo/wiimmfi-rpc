@@ -20,12 +20,14 @@ cache_path = Path(sys.argv[0]).parent / 'data' / 'cache'
 
 
 class WiimmfiPlayer:
-    def __init__(self, **kwargs):
+    def __init__(self, config, **kwargs):
+        self._config = config
+
         self.game_id: str = kwargs.get('game_id')
         self.game_name: str = kwargs.get('game_name')
         self.pid: int = kwargs.get('pid')
         self.friend_code: str = kwargs.get('friend_code')
-        self.status: int = kwargs.get('status')
+        self.status: str = kwargs.get('status')
         self.player_1: str = kwargs.get('player_1')
         self.player_2: str = kwargs.get('player_2')
         self.priority: int = kwargs.get('priority', 1)
@@ -75,7 +77,7 @@ class WiimmfiPlayer:
                 if self.player_2:
                     options['state'] += f' | {self.player_2}'
 
-        options['details'] = 'Playing a game'  # TODO: make this dynamic
+        options['details'] = self._config.statuses[self.status]
         options['start'] = self.start
         options['large_image'] = self.game_id.lower()
         options['large_text'] = self.game_name

@@ -45,7 +45,8 @@ def full_check(thread_manager):
 
     temp_config = util.Config(friend_codes=data_dir / 'friend_codes.json',
                               preferences=data_dir / 'preferences.json',
-                              version_info=data_dir / 'version_info.json')
+                              version_info=data_dir / 'version_info.json',
+                              statuses=data_dir / 'statuses.json')
 
     for file, operation in file_operations.items():
         path = data_dir / file

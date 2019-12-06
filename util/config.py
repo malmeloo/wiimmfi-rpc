@@ -54,3 +54,4 @@ class Config:
         self.friend_codes = JSONConfig(files.get('friend_codes'))
         self.preferences = JSONConfig(files.get('preferences'))
         self.version_info = JSONConfig(files.get('version_info'))
+        self.statuses = JSONConfig(files.get('statuses'))
