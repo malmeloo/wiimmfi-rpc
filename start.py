@@ -79,7 +79,10 @@ class wiimmfi_rpc():
         logging.info('Rich Presence initialized, listening for changes...')
 
     def get_online_data(self, game):
-        html = requests.get('https://wiimmfi.de/game/' + game).text
+        headers = {
+            'User-Agent': 'wiimmfi-rpc by DismissedGuy#2118 - github.com/DismissedGuy/wiimmfi-rpc'
+        }
+        html = requests.get('https://wiimmfi.de/game/' + game, headers=headers).text
         soup = BeautifulSoup(html, 'html.parser')
 
         table = soup.find(id='online')
@@ -97,7 +100,10 @@ class wiimmfi_rpc():
         return data
 
     def get_mkwii_data(self, online_data):
-        room_data = requests.get(f'https://wiimmfi.de/mkw/room/p{online_data[1]}/?m=json').json()
+        headers = {
+            'User-Agent': 'wiimmfi-rpc by DismissedGuy#2118 - github.com/DismissedGuy/wiimmfi-rpc'
+        }
+        room_data = requests.get(f'https://wiimmfi.de/stats/mkw/room/p{online_data[1]}/?m=json', headers=headers).json()
         if room_data[1]['type'] == 'end':
             return
 
