@@ -1,0 +1,21 @@
+version: 1.0.{build}
+
+image:
+- Visual Studio 2019
+- macOS
+- Ubuntu
+platform:
+- x86
+- x64
+
+environment:
+  matrix:
+  - TOXENV: py36
+  - TOXENV: py37
+  - TOXENV: py38
+
+install:
+  - pip install tox
+  - pip install -r requirements.txt
+
+build: off
