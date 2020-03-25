@@ -1,30 +1,25 @@
 version: 1.0.{build}
 
-image:
-- Visual Studio 2019
-- Ubuntu
-
-platform:
-- x86
-- x64
-
 environment:
   matrix:
-  - PYTHON_WIN: "C:\\Python36"
-    PYTHON_LIN: "python36"
-    TOXENV: py36
-  - PYTHON_WIN: "C:\\Python37"
-    PYTHON_LIN: "python37"
-    TOXENV: py37
-  - PYTHON_WIN: "C:\\Python38"
-    PYTHON_LIN: "python38"
-    TOXENV: py38
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      PLATFORM: x64
+      PYTHON: "C:\\Python36-x64\\python.exe"
+      TOXENV: py36
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      PLATFORM: x86
+      PYTHON: "C:\\Python36\\python.exe"
+      TOXENV: py36
+    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
+      PLATFORM: x64
+      PYTHON: "python3"
+      TOXENV: py36
 
 install:
-  - cmd: "%PYTHON_WIN%-%PLATFORM%\\python.exe -m pip install tox"
-  - cmd: "PYTHON_WIN%-%PLATFORM%\\python.exe -m pip install -r requirements.txt"
+  - cmd: "%PYTHON% -m pip install tox"
+  - cmd: "PYTHON% -m pip install -r requirements.txt"
   
-  - sh: "$PYTHON_LIN -m pip install tox"
-  - sh: "$PYTHON_LIN -m pip install -r requirements.txt"
+  - sh: "$PYTHON -m pip install tox"
+  - sh: "$PYTHON -m pip install -r requirements.txt"
 
 build: off
