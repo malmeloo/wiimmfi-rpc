@@ -21,10 +21,10 @@ environment:
     TOXENV: py38
 
 install:
-  - cmd: %PYTHON_WIN%-%PLATFORM%\\python.exe -m pip install tox
-  - cmd: %PYTHON_WIN%-%PLATFORM%\\python.exe -m pip install -r requirements.txt
+  - cmd: "%PYTHON_WIN%-%PLATFORM%\\python.exe -m pip install tox"
+  - cmd: "PYTHON_WIN%-%PLATFORM%\\python.exe -m pip install -r requirements.txt"
   
-  - sh: $PYTHON_LIN -m pip install tox
-  - sh: $PYTHON_LIN -m pip install -r requirements.txt
+  - sh: "$PYTHON_LIN -m pip install tox"
+  - sh: "$PYTHON_LIN -m pip install -r requirements.txt"
 
 build: off
