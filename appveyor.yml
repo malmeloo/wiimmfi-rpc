@@ -2,20 +2,29 @@ version: 1.0.{build}
 
 image:
 - Visual Studio 2019
-- macOS
 - Ubuntu
+
 platform:
 - x86
 - x64
 
 environment:
   matrix:
-  - TOXENV: py36
-  - TOXENV: py37
-  - TOXENV: py38
+  - PYTHON_WIN: "C:\\Python36"
+    PYTHON_LIN: "python36"
+    TOXENV: py36
+  - PYTHON_WIN: "C:\\Python37"
+    PYTHON_LIN: "python37"
+    TOXENV: py37
+  - PYTHON_WIN: "C:\\Python38"
+    PYTHON_LIN: "python38"
+    TOXENV: py38
 
 install:
-  - pip install tox
-  - pip install -r requirements.txt
+  - cmd: %PYTHON_WIN%-%PLATFORM%\\python.exe -m pip install tox
+  - cmd: %PYTHON_WIN%-%PLATFORM%\\python.exe -m pip install -r requirements.txt
+  
+  - sh: $PYTHON_LIN -m pip install tox
+  - sh: $PYTHON_LIN -m pip install -r requirements.txt
 
 build: off
