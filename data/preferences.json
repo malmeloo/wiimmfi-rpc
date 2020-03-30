@@ -8,7 +8,7 @@
     "updates": {
       "auto_download": true,
       "auto_install": false,
-      "release_type": "alpha"
+      "release_type": "latest"
     }
   }
 }
