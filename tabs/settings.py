@@ -1,4 +1,12 @@
+import logging
+import sys
+from pathlib import Path
+
 from PyQt5 import QtWidgets as Qw
+
+script_dir = Path(sys.argv[0]).parent
+
+logging.getLogger(__name__)
 
 
 class SettingsTab(Qw.QWidget):
@@ -57,9 +65,12 @@ class SettingsTab(Qw.QWidget):
         debug_label = Qw.QLabel('Enable debug mode:')
         self.debug = Qw.QCheckBox()
         self.debug.clicked.connect(lambda checked: self.modify_config('debug', checked))
-        self.clear_config = Qw.QPushButton('Clear config files')
+
         self.clear_codes = Qw.QPushButton('Clear friend codes')
+        self.clear_codes.connect(lambda: self.clear('cache'))
+
         self.clear_cache = Qw.QPushButton('Clear logs/cache')
+        self.clear_cache.connect(lambda: self.clear('cache'))
 
         layout = Qw.QFormLayout()
         layout.addRow(debug_label, self.debug)
@@ -95,3 +106,9 @@ class SettingsTab(Qw.QWidget):
 
         # manual flushing due to get/setitem recursion
         preferences.flush()
+
+    def clear(self, to_clear):
+        if to_clear == 'codes':  # clear friend codes
+            logging.info('Clear friend codes')
+        elif to_clear == 'cache':  # clear cache and logs
+            logging.info('Clear cache')
