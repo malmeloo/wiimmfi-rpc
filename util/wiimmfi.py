@@ -12,7 +12,7 @@ from bs4 import BeautifulSoup
 from .threading import Thread
 
 game_info_base_url = 'https://wiimmfi.de/game/{game_id}'
-mkw_room_info_base_url = 'https://wiimmfi.de/mkw/room/p{pid}/?m=json'
+mkw_room_info_base_url = 'https://wiimmfi.de/stats/mkw/room/p{pid}/?m=json'
 asset_list_base_url = 'https://discordapp.com/api/v6/oauth2/applications/{app_id}/assets'
 asset_base_url = 'https://cdn.discordapp.com/app-assets/{app_id}/{asset_id}.png'
 
@@ -48,7 +48,10 @@ class WiimmfiPlayer:
             self.is_mkw = False
             return
 
-        resp = requests.get(mkw_room_info_base_url.format(pid=self.pid))
+        headers = {
+            'User-Agent': 'wiimmfi-rpc by DismissedGuy#2118 - github.com/DismissedGuy/wiimmfi-rpc'
+        }
+        resp = requests.get(mkw_room_info_base_url.format(pid=self.pid), headers=headers)
         resp.raise_for_status()
         data = resp.json()
 
@@ -179,7 +182,10 @@ class WiimmfiCheckThread(Thread):
             time.sleep(self.config.preferences['rpc']['timeout'])
 
     def get_online_players(self, game_id):
-        resp = requests.get(game_info_base_url.format(game_id=game_id))
+        headers = {
+            'User-Agent': 'wiimmfi-rpc by DismissedGuy#2118 - github.com/DismissedGuy/wiimmfi-rpc'
+        }
+        resp = requests.get(game_info_base_url.format(game_id=game_id), headers=headers)
         resp.raise_for_status()
 
         soup = BeautifulSoup(resp.text, 'html.parser')
