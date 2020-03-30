@@ -130,6 +130,9 @@ class Application(Qw.QMainWindow):
         self.wiimmfi_thread = util.WiimmfiCheckThread(self.config)
         self.thread_manager.add_thread(self.wiimmfi_thread)
 
+        self.game_list_thread = util.WiimmfiGameListThread()
+        self.thread_manager.add_thread(self.game_list_thread)
+
         # Init the title and tabs.
         self.setWindowTitle(f'Wiimmfi-RPC v{version}')
         self.table_widget = TableWidget(self)
