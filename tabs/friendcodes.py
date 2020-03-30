@@ -17,7 +17,7 @@ class EditPopup(Qw.QWidget):
         self.callback = callback
         self.replace_item = replace_item
 
-        self.game_ids = None
+        self.games = []
         self.prepare_game_data()
 
         self.setWindowTitle('Modify friend code')
@@ -41,9 +41,17 @@ class EditPopup(Qw.QWidget):
         try:
             with (cache_path / 'wiimmfi_games.json').open('r') as file:
                 data = json.load(file)
-                self.game_ids = [g.get('id') for g in data.get('games')]
+                games = sorted(data.get('games'), key=lambda i: i.get('name'))
+                for game in games:
+                    game_id = game.get('id')
+                    name = game.get('name')
+                    self.games.append(f'{game_id} - {name}')
         except FileNotFoundError:
             return
+
+    def on_complete(self, text):
+        game_id, _ = text.split(' - ')
+        Qc.QTimer.singleShot(10, lambda: self.game_id.setText(game_id))
 
     def create_form(self):
         console_label = Qw.QLabel('Console:')
@@ -52,10 +60,11 @@ class EditPopup(Qw.QWidget):
 
         gameid_label = Qw.QLabel('Game ID:')
         self.game_id = Qw.QLineEdit()
-        self.game_id.setMaxLength(4)
-        if self.game_ids is not None:
-            completer = Qw.QCompleter(self.game_ids)
+        if self.games:
+            completer = Qw.QCompleter(self.games)
+            completer.setCaseSensitivity(Qc.Qt.CaseInsensitive)
             completer.setFilterMode(Qc.Qt.MatchContains)
+            completer.activated.connect(self.on_complete)
             self.game_id.setCompleter(completer)
 
         friendcode_label = Qw.QLabel('Friend code:')
