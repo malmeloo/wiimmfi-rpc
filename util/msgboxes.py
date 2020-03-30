@@ -26,5 +26,5 @@ class MsgBoxes:
         box.setWindowTitle('Information')
         box.exec_()
 
-        if callback:
+        if callback is not None:
             callback()

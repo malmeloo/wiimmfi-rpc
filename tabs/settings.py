@@ -4,6 +4,8 @@ from pathlib import Path
 
 from PyQt5 import QtWidgets as Qw
 
+from util.msgboxes import MsgBoxes
+
 script_dir = Path(sys.argv[0]).parent
 
 logging.getLogger(__name__)
@@ -96,6 +98,7 @@ class SettingsTab(Qw.QWidget):
 
         if setting == 'debug':
             preferences['debug'] = value
+            MsgBoxes.info('You will need to restart the program for the changes to take effect.')
         elif setting == 'auto_download':
             preferences['config']['updates']['auto_download'] = value
         elif setting == 'auto_install':
@@ -108,6 +111,31 @@ class SettingsTab(Qw.QWidget):
 
     def clear(self, to_clear):
         if to_clear == 'codes':  # clear friend codes
-            logging.info('Clear friend codes')
+            file = script_dir / 'data' / 'friend_codes.json'
+            try:
+                file.unlink()
+            except FileNotFoundError:
+                MsgBoxes.info('Could not find friend codes file!')
+                return
+
+            message = 'Friend codes cleared.'
         elif to_clear == 'cache':  # clear cache and logs
-            logging.info('Clear cache')
+            for file in (script_dir / 'logs').iterdir():
+                if file.suffix == '.log':
+                    file.unlink()
+
+            for file in (script_dir / 'logs' / 'errors').iterdir():
+                if file.suffix == '.log':
+                    file.unlink()
+
+            for file in (script_dir / 'data' / 'cache').iterdir():
+                if file.suffix == '.png':
+                    file.unlink()
+
+            message = 'Cache and logs cleared.'
+        else:
+            return
+
+        logging.info(message)
+        MsgBoxes.info(f'{message} The program will now exit.',
+                      callback=sys.exit)
