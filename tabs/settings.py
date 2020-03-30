@@ -84,7 +84,7 @@ class SettingsTab(Qw.QWidget):
         debug = bool(self.config.preferences['debug'])
         auto_download = bool(self.config.preferences['config']['updates']['auto_download'])
         auto_install = bool(self.config.preferences['config']['updates']['auto_install'])
-        release_type = bool(self.config.preferences['config']['updates']['release_type'])
+        release_type = self.config.preferences['config']['updates']['release_type']
 
         self.debug.setChecked(debug)
         self.auto_download.setChecked(auto_download)
