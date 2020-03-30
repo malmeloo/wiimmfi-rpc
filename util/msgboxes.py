@@ -19,12 +19,23 @@ class MsgBoxes:
         box.exec_()
 
     @staticmethod
-    def info(msg, callback=None):
+    def info(msg):
         box = Qw.QMessageBox()
         box.setIcon(Qw.QMessageBox.Information)
         box.setText(msg)
         box.setWindowTitle('Information')
         box.exec_()
 
-        if callback is not None:
-            callback()
+    @staticmethod
+    def promptyesno(msg):
+        box = Qw.QMessageBox()
+        box.setIcon(Qw.QMessageBox.Question)
+        box.setText(msg)
+        box.setWindowTitle('Question')
+        box.setStandardButtons(Qw.QMessageBox.Ok | Qw.QMessageBox.Cancel)
+        box.buttonClicked.connect(lambda b: btn_pressed(b))
+
+        button = box.exec_()
+        if button == Qw.QMessageBox.Ok:
+            return True
+        return False

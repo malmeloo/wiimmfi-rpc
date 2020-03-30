@@ -140,5 +140,5 @@ class SettingsTab(Qw.QWidget):
             return
 
         logging.info(message)
-        MsgBoxes.info(f'{message} The program will now exit.',
-                      callback=sys.exit)
+        MsgBoxes.info(f'{message} The program will now exit.')
+        sys.exit()
