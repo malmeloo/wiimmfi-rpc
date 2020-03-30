@@ -67,14 +67,13 @@ class SettingsTab(Qw.QWidget):
         self.debug.clicked.connect(lambda checked: self.modify_config('debug', checked))
 
         self.clear_codes = Qw.QPushButton('Clear friend codes')
-        self.clear_codes.connect(lambda: self.clear('cache'))
+        self.clear_codes.clicked.connect(lambda: self.clear('codes'))
 
         self.clear_cache = Qw.QPushButton('Clear logs/cache')
-        self.clear_cache.connect(lambda: self.clear('cache'))
+        self.clear_cache.clicked.connect(lambda: self.clear('cache'))
 
         layout = Qw.QFormLayout()
         layout.addRow(debug_label, self.debug)
-        layout.addRow(self.clear_config)
         layout.addRow(self.clear_codes)
         layout.addRow(self.clear_cache)
         self.danger_group.setLayout(layout)

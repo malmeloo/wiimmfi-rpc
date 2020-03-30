@@ -19,9 +19,12 @@ class MsgBoxes:
         box.exec_()
 
     @staticmethod
-    def info(msg):
+    def info(msg, callback=None):
         box = Qw.QMessageBox()
         box.setIcon(Qw.QMessageBox.Information)
         box.setText(msg)
         box.setWindowTitle('Information')
         box.exec_()
+
+        if callback:
+            callback()
