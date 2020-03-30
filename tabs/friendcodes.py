@@ -182,6 +182,8 @@ class FriendcodesTab(Qw.QWidget):
 
     def launch_popup(self, modify):
         item = self.tree.currentItem()
+        if modify and item in self.CATEGORIES.values():  # tries to edit category
+            return
         if not item:
             self.popup = EditPopup(self.edit_code, replace_item=None)
             return
