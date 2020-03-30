@@ -59,11 +59,13 @@ class SettingsTab(Qw.QWidget):
         self.debug.clicked.connect(lambda checked: self.modify_config('debug', checked))
         self.clear_config = Qw.QPushButton('Clear config files')
         self.clear_codes = Qw.QPushButton('Clear friend codes')
+        self.clear_cache = Qw.QPushButton('Clear logs/cache')
 
         layout = Qw.QFormLayout()
         layout.addRow(debug_label, self.debug)
         layout.addRow(self.clear_config)
         layout.addRow(self.clear_codes)
+        layout.addRow(self.clear_cache)
         self.danger_group.setLayout(layout)
 
     def load_settings(self):
