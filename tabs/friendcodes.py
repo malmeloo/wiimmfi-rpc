@@ -1,8 +1,14 @@
+import json
 import logging
+import sys
+from pathlib import Path
 
+from PyQt5 import QtCore as Qc
 from PyQt5 import QtWidgets as Qw
 
 logging.getLogger(__name__)
+
+cache_path = Path(sys.argv[0]).parent / 'data' / 'cache'
 
 
 class EditPopup(Qw.QWidget):
@@ -10,6 +16,9 @@ class EditPopup(Qw.QWidget):
         super().__init__()
         self.callback = callback
         self.replace_item = replace_item
+
+        self.game_ids = None
+        self.prepare_game_data()
 
         self.setWindowTitle('Modify friend code')
         self.setGeometry(0, 0, 300, 200)
@@ -28,6 +37,14 @@ class EditPopup(Qw.QWidget):
 
         self.show()
 
+    def prepare_game_data(self):
+        try:
+            with (cache_path / 'wiimmfi_games.json').open('r') as file:
+                data = json.load(file)
+                self.game_ids = [g.get('id') for g in data.get('games')]
+        except FileNotFoundError:
+            return
+
     def create_form(self):
         console_label = Qw.QLabel('Console:')
         self.console = Qw.QComboBox()
@@ -36,6 +53,10 @@ class EditPopup(Qw.QWidget):
         gameid_label = Qw.QLabel('Game ID:')
         self.game_id = Qw.QLineEdit()
         self.game_id.setMaxLength(4)
+        if self.game_ids is not None:
+            completer = Qw.QCompleter(self.game_ids)
+            completer.setFilterMode(Qc.Qt.MatchContains)
+            self.game_id.setCompleter(completer)
 
         friendcode_label = Qw.QLabel('Friend code:')
         self.friend_code = Qw.QLineEdit()
