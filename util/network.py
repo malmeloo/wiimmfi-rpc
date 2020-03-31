@@ -35,7 +35,7 @@ class GithubDownloadThread(Thread):
         try:
             resp.raise_for_status()
         except requests.RequestException:
-            logging.critical('Failed to restore config files!')
+            self.log(logging.CRITICAL, 'Failed to restore config files!')
 
         data = resp.json()
         content = base64.b64decode(data['content'])
