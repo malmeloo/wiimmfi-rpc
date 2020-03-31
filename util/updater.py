@@ -110,7 +110,7 @@ class UpdateCheckThread(Thread):
 
         self.log(logging.INFO, f'Newest version: {new_version}')
 
-        if new_version < self.current_version:
+        if new_version > self.current_version:
             self.update_signals.update_available.emit(new_version)
 
     def check_latest_live_version(self):
