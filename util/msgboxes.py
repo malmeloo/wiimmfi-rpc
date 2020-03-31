@@ -33,7 +33,6 @@ class MsgBoxes:
         box.setText(msg)
         box.setWindowTitle('Question')
         box.setStandardButtons(Qw.QMessageBox.Ok | Qw.QMessageBox.Cancel)
-        box.buttonClicked.connect(lambda b: btn_pressed(b))
 
         button = box.exec_()
         if button == Qw.QMessageBox.Ok:
