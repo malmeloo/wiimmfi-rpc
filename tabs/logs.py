@@ -23,4 +23,3 @@ class LogsTab(Qw.QWidget):
 
         self.layout.addWidget(self.log_widget)
         self.setLayout(self.layout)
-

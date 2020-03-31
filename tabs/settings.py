@@ -4,6 +4,7 @@ from pathlib import Path
 
 from PyQt5 import QtWidgets as Qw
 
+from util import checks
 from util.msgboxes import MsgBoxes
 
 script_dir = Path(sys.argv[0]).parent
@@ -18,8 +19,7 @@ class SettingsTab(Qw.QWidget):
     }
     RELEASES = {
         'Latest release': 'latest',
-        'Beta': 'beta',
-        'Alpha': 'alpha'
+        'Experimental': 'experimental'
     }
 
     def __init__(self, parent, **params):
@@ -46,12 +46,18 @@ class SettingsTab(Qw.QWidget):
         auto_download_label = Qw.QLabel('Enable auto download:')
         self.auto_download = Qw.QCheckBox()
         self.auto_download.clicked.connect(lambda checked: self.modify_config('auto_download', checked))
+
         auto_install_label = Qw.QLabel('Enable auto install:')
         self.auto_install = Qw.QCheckBox()
         self.auto_install.clicked.connect(lambda checked: self.modify_config('auto_install', checked))
+
         release_type_label = Qw.QLabel('Update to:')
         self.release_type = Qw.QComboBox()
         self.release_type.addItems(self.RELEASES.keys())
+        if checks.is_bundled():  # bundled can only update to latest
+            for option in range(1, len(self.RELEASES.keys())):
+                self.release_type.model().item(option).setEnabled(False)
+
         self.release_type.currentTextChanged.connect(lambda text: self.modify_config('release', text))
 
         layout = Qw.QFormLayout()
