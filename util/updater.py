@@ -49,8 +49,12 @@ class Updater:
         self.thread_manager.add_thread(check_thread)
 
     def apply_update(self, file=None):
-        if not self.auto_install:
+        if not self.auto_install or checks.is_bundled():  # always show notif when we're bundled.
             msg = 'A new update is ready! Install it now?'
+            if checks.is_bundled():
+                msg += '\n\nWARNING: You\'re using the bundled version of this program,' \
+                       'which might cause issues when performing an update. If this update' \
+                       'renders the program unable to boot, please redownload it.'
 
             do_install = MsgBoxes.promptyesno(msg)
             if not do_install:
