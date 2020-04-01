@@ -160,30 +160,49 @@ class UpdateDownloadThread(Thread):
 
     def execute(self):
         if self.release_type == 'latest':
-            ref = 'gui-rewrite'
-        elif self.release_type == 'experimental':
-            ref = 'prerelease'
+            self.download_latest_release()
+        elif self.release_type == 'experimental' and not checks.is_bundled():
+            self.download_latest_experimental()
         else:
             self.log(logging.WARNING, 'Update failed: invalid version type!')
             return
 
-        url = f'https://api.github.com/repos/{self.github_user}/{self.repo}/zipball/{ref}'
-        resp = requests.get(url, stream=True)
+    def download_latest_experimental(self):
+        url = f'https://api.github.com/repos/{self.github_user}/{self.repo}/zipball/wiimmfi-rpc'
+        resp = requests.get(url, headers=github_headers)
 
         try:
             resp.raise_for_status()
         except requests.RequestException:
-            print(resp)
+            logging.critical('Update download failed!')
+
+        buf = io.BytesIO(resp.content)
+
+        self.update_signals.download_finished.emit(buf)
+
+    def download_latest_release(self):
+        url = f'https://api.github.com/repos/{self.github_user}/{self.repo}/releases/latest'
+        resp = requests.get(url)
+
+        try:
+            resp.raise_for_status()
+        except requests.RequestException:
+            logging.critical('Update download failed!')
+
+        data = resp.json()
+        asset = data['assets'][0]  # TODO: automatic platform detection for correct asset
+
+        resp = requests.get(asset['url'], stream=True)
+        try:
+            resp.raise_for_status()
+        except requests.RequestException:
             logging.critical('Update download failed!')
 
         buf = io.BytesIO()
-        file_size = int(resp.headers['Content-Length'])
-        downloaded = 0
+        size = asset['size']
+        dl = 0
         for chunk in resp.iter_content(chunk_size=1024):
-            downloaded += len(chunk)
+            self.emit_progress(dl // size * 100)
             buf.write(chunk)
-
-            progress = downloaded // file_size
-            self.emit_progress(progress)
 
         self.update_signals.download_finished.emit(buf)
