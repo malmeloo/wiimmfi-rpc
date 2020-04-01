@@ -16,6 +16,12 @@ file_operations = {
 }
 
 
+# runtime checks
+def is_bundled():
+    """Check if we're running bundled using PyInstaller"""
+    return hasattr(sys, 'frozen') and hasattr(sys, '_MEIPASS')
+
+
 def create_json(path):
     """
     Creates a new, empty JSON file.

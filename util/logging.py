@@ -1,8 +1,10 @@
 import logging
-import sys
-from pathlib import Path
-from datetime import datetime
 import os
+import sys
+from datetime import datetime
+from pathlib import Path
+
+from util import checks
 
 
 class GUILoggerHandler(logging.Handler):
@@ -83,6 +85,8 @@ class FileLoggerHandler(logging.Handler):
         with open(error_log_path, 'w+') as file:
             file.write(f'------------ [EXCEPTION RAPPORT AT {date}] ------------\n')
             file.write(''.join(traceback) + '\n')
+            file.write('----- [PROGRAM INFO]\n')
+            file.write(f'Bundled: {checks.is_bundled()}' + '\n')
             file.write('----- [DIRECTORY STRUCTURE]\n')
             file.write('\n'.join(self._get_dir_structure(script_dir)))
 

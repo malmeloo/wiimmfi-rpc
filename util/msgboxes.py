@@ -25,3 +25,16 @@ class MsgBoxes:
         box.setText(msg)
         box.setWindowTitle('Information')
         box.exec_()
+
+    @staticmethod
+    def promptyesno(msg):
+        box = Qw.QMessageBox()
+        box.setIcon(Qw.QMessageBox.Question)
+        box.setText(msg)
+        box.setWindowTitle('Question')
+        box.setStandardButtons(Qw.QMessageBox.Ok | Qw.QMessageBox.Cancel)
+
+        button = box.exec_()
+        if button == Qw.QMessageBox.Ok:
+            return True
+        return False

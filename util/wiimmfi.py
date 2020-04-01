@@ -1,7 +1,8 @@
+import json
 import logging
 import sys
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 
 import pypresence
@@ -12,7 +13,8 @@ from bs4 import BeautifulSoup
 from .threading import Thread
 
 game_info_base_url = 'https://wiimmfi.de/game/{game_id}'
-mkw_room_info_base_url = 'https://wiimmfi.de/mkw/room/p{pid}/?m=json'
+mkw_room_info_base_url = 'https://wiimmfi.de/stats/mkw/room/p{pid}/?m=json'
+wiimmfi_game_list_url = 'https://wiimmfi.de/stat?m=25'
 asset_list_base_url = 'https://discordapp.com/api/v6/oauth2/applications/{app_id}/assets'
 asset_base_url = 'https://cdn.discordapp.com/app-assets/{app_id}/{asset_id}.png'
 
@@ -48,7 +50,10 @@ class WiimmfiPlayer:
             self.is_mkw = False
             return
 
-        resp = requests.get(mkw_room_info_base_url.format(pid=self.pid))
+        headers = {
+            'User-Agent': 'wiimmfi-rpc by DismissedGuy#2118 - github.com/DismissedGuy/wiimmfi-rpc'
+        }
+        resp = requests.get(mkw_room_info_base_url.format(pid=self.pid), headers=headers)
         resp.raise_for_status()
         data = resp.json()
 
@@ -179,7 +184,10 @@ class WiimmfiCheckThread(Thread):
             time.sleep(self.config.preferences['rpc']['timeout'])
 
     def get_online_players(self, game_id):
-        resp = requests.get(game_info_base_url.format(game_id=game_id))
+        headers = {
+            'User-Agent': 'wiimmfi-rpc by DismissedGuy#2118 - github.com/DismissedGuy/wiimmfi-rpc'
+        }
+        resp = requests.get(game_info_base_url.format(game_id=game_id), headers=headers)
         resp.raise_for_status()
 
         soup = BeautifulSoup(resp.text, 'html.parser')
@@ -290,3 +298,56 @@ class WiimmfiOverviewThread(Thread):
                 self.clear_signal.emit()
 
             time.sleep(1)
+
+
+class WiimmfiGameListThread(Thread):
+    friendly_progress = ''
+    permanent = True
+    name = 'WiimmfiGameListThread'
+
+    def execute(self):
+        try:
+            with (cache_path / 'wiimmfi_games.json').open('r') as file:
+                data = json.load(file)
+
+                last_update = datetime.utcfromtimestamp(data.get('updated', 0))
+                now = datetime.utcnow()
+
+                if last_update < now - timedelta(days=7):
+                    return
+        except (json.JSONDecodeError, FileNotFoundError):
+            self.update_file()
+
+    def update_file(self):
+        headers = {
+            'User-Agent': 'wiimmfi-rpc by DismissedGuy#2118 - github.com/DismissedGuy/wiimmfi-rpc'
+        }
+        resp = requests.get(wiimmfi_game_list_url, headers=headers)
+        if resp.status_code != 200:
+            return
+
+        soup = BeautifulSoup(resp.text, 'html.parser')
+
+        table = soup.find(id='game')
+        if table is None:
+            return
+
+        games_list = []
+
+        games = table.find_all('tr')[2:]
+        for game in games:
+            fields = game.find_all('td')
+            games_list.append({
+                'id': fields[0].text,
+                'name': fields[1].text.strip()
+            })
+
+        now = datetime.utcnow()
+        data = {
+            'updated': now.timestamp(),
+            'games': games_list
+        }
+        with (cache_path / 'wiimmfi_games.json').open('w+') as file:
+            json.dump(data, file, indent=2)
+
+        self.log(logging.INFO, 'Downloaded games list')

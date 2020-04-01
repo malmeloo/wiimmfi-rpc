@@ -4,6 +4,7 @@ from .logging import *
 from .msgboxes import *
 from .network import *
 from .threading import *
+from .updater import *
 from .wiimmfi import *
 
 __all__ = (
@@ -16,5 +17,7 @@ __all__ = (
     'GithubDownloadThread',
     'MsgBoxes',
     'WiimmfiCheckThread',
-    'WiimmfiOverviewThread'
+    'WiimmfiOverviewThread',
+    'WiimmfiGameListThread',
+    'Updater'
 )
