@@ -2,18 +2,18 @@ version: 1.0.{build}
 
 environment:
   matrix:
+    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
+      PLATFORM: x64
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       PLATFORM: x64
       PYTHON: "C:\\Python36-x64\\python.exe"
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       PLATFORM: x86
       PYTHON: "C:\\Python36\\python.exe"
-    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
-      PLATFORM: x64
 
 install:
   - cmd: "%PYTHON% -m pip install -U -r requirements.txt"
-  - sh: "pip install -U -r requirements.txt"
+  - sh: "pip3 install -U -r requirements.txt"
 
 build_script:
   - cmd: "%PYTHON% build.py build_appveyor"
