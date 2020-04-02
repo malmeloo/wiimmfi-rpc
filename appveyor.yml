@@ -13,8 +13,6 @@ environment:
 
 install:
   - cmd: "%PYTHON% -m pip install -U -r requirements.txt"
-
-  - sh: "~/venv3.8.2/bin/activate"
   - sh: "python3 -m pip install -U -r requirements.txt"
 
 build_script:

@@ -14,6 +14,9 @@ __        ___ _                      __ _       ____  ____   ____   ____        
 
 """)
 
+if 'PYTHON' not in os.environ:
+    os.environ['PYTHON'] = 'python'
+
 script_dir = Path(sys.argv[0]).parent
 plat = platform.system()
 if plat not in ('Linux', 'Darwin', 'Windows'):
@@ -30,6 +33,7 @@ try:
             print('[!!] No version found in data files!')
             sys.exit()
         print(f'[!] Detected Version: {version}')
+        print(f'[!] Building On {plat}')
 except FileNotFoundError:
     print('[!!] No version found in data files!')
     sys.exit()
@@ -42,8 +46,9 @@ if __name__ == '__main__':
         sys.exit()
 
     print('[!] Installing Packages')
-    os.system('python3 -m pip install -U -r requirements.txt')
-    os.system('python3 -m pip install -U pyinstaller')
+    command = os.environ['PYTHON'] if plat == 'Windows' else 'python3'
+    os.system(f'{command} -m pip install -U -r requirements.txt')
+    os.system(f'{command} -m pip install -U pyinstaller')
     print()
 
     print('[!] Building Script')
