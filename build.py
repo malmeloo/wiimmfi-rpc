@@ -51,8 +51,8 @@ if __name__ == '__main__':
         os.system(f'{command} -m pip install -U -r requirements.txt')
         os.system(f'{command} -m pip install -U pyinstaller')
     elif plat == 'Linux':
-        os.system(f'pip3 install -U -r requirements.txt')
-        os.system(f'pip3 install -U pyinstaller')
+        os.system(f'pip install -U -r requirements.txt')
+        os.system(f'pip install -U pyinstaller')
     print()
 
     print('[!] Building Script')
