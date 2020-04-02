@@ -5,21 +5,18 @@ environment:
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       PLATFORM: x64
       PYTHON: "C:\\Python36-x64\\python.exe"
-      TOXENV: py36
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       PLATFORM: x86
       PYTHON: "C:\\Python36\\python.exe"
-      TOXENV: py36
     - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
       PLATFORM: x64
-      PYTHON: "python3"
-      TOXENV: py36
 
 install:
-  - cmd: "%PYTHON% -m pip install tox"
-  - cmd: "%PYTHON% -m pip install -r requirements.txt"
-  
-  - sh: "$PYTHON -m pip install tox"
-  - sh: "$PYTHON -m pip install -r requirements.txt"
+  - cmd: "%PYTHON% -m pip install -U -r requirements.txt"
 
-build: off
+  - sh: "~/venv3.8.2/bin/activate"
+  - sh: "python3 -m pip install -U -r requirements.txt"
+
+build_script:
+  - cmd: "%PYTHON% build.py build"
+  - sh: "python3 build.py build"
