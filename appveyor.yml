@@ -16,5 +16,5 @@ install:
   - sh: "python3 -m pip install -U -r requirements.txt"
 
 build_script:
-  - cmd: "%PYTHON% build.py build"
-  - sh: "python3 build.py build"
+  - cmd: "%PYTHON% build.py build_appveyor"
+  - sh: "python3 build.py build_appveyor"

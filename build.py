@@ -39,7 +39,7 @@ except FileNotFoundError:
     sys.exit()
 
 if __name__ == '__main__':
-    if len(sys.argv) == 1 or sys.argv[1] != 'build':
+    if len(sys.argv) == 1 or 'build' not in sys.argv[1]:
         print('WARNING: This script will build a bundled PyInstaller file.\n'
               'If you just want to use the program, this isn\'t the right script for you.\n'
               'Buttt... if you\'re convinced it is, use "build" as first argument.')
@@ -64,4 +64,6 @@ if __name__ == '__main__':
             archive.write(file)
     print()
 
+    if sys.argv[1] == 'build_appveyor':
+        os.system(f'appveyor PushArtifact {plat}-{arch}.zip')
     print(f'[!] Finished Building. Output can be found in {plat}-{arch}.zip')
