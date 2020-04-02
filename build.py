@@ -52,7 +52,7 @@ if __name__ == '__main__':
     print()
 
     print('[!] Building Script')
-    os.system(f'pyinstaller -y -w --onefile -n "Wiimmfi-RPC v{version}" --log-level WARN rpcgui.py')
+    os.system(f'{command} -m PyInstaller -y -w --onefile -n "Wiimmfi-RPC v{version}" --log-level WARN rpcgui.py')
     print()
 
     print('[!] Packing Files')
