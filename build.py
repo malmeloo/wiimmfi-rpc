@@ -46,12 +46,17 @@ if __name__ == '__main__':
         sys.exit()
 
     print('[!] Installing Packages')
-    command = os.environ['PYTHON'] if plat == 'Windows' else 'python3'
-    os.system(f'{command} -m pip install -U -r requirements.txt')
-    os.system(f'{command} -m pip install -U pyinstaller')
+    if plat == 'Windows':
+        command = os.environ['PYTHON']
+        os.system(f'{command} -m pip install -U -r requirements.txt')
+        os.system(f'{command} -m pip install -U pyinstaller')
+    elif plat == 'Linux':
+        os.system(f'pip install -U -r requirements.txt')
+        os.system(f'pip install -U pyinstaller')
     print()
 
     print('[!] Building Script')
+    command = os.environ['PYTHON']
     os.system(f'{command} -m PyInstaller -y -w --onefile -n "Wiimmfi-RPC v{version}" --log-level WARN rpcgui.py')
     print()
 
