@@ -8,6 +8,7 @@ Show your Discord friends what you're playing on Wiimmfi!
 ## Features
 * Works for all games on all Wiimmfi-capable consoles (Wii, WiiWare, NDS and DSiWare)
 * Python is not a requirement; download, unzip and go!
+* Cross-platform: works on both Windows and Linux! (Mac OSX under testing)
 * Easy to use friendcode manager
 * Shows game art for popular games
 * Support for 2-player games
