@@ -133,7 +133,7 @@ class UpdateCheckThread(Thread):
 
     def check_latest_live_version(self):
         if self.release_type == 'latest':
-            ref = 'gui-rewrite'
+            ref = 'master'
         elif self.release_type == 'experimental':
             ref = 'prerelease'
         else:
