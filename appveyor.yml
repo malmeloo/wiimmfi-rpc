@@ -3,12 +3,14 @@ stack: python 3.6
 
 environment:
   matrix:
-    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
+    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1604
       PLATFORM: x64
-    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1604
+      PLATFORM: x86
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
       PLATFORM: x64
       PYTHON: "C:\\Python36-x64\\python.exe"
-    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
       PLATFORM: x86
       PYTHON: "C:\\Python36\\python.exe"
 
