@@ -65,11 +65,25 @@ class Updater:
         zip_archive = zipfile.ZipFile(file)
         zip_root = zipfile.Path(zip_archive)
 
-        for p in zip_root.iterdir():
-            if p not in ('friend_codes.json', 'preferences.json'):  # don't overwrite these files
-                zip_archive.extract(p, script_dir)
+        for f in zip_archive.namelist():
+            if f.split()[-1] in ('friend_codes.json', 'preferences.json'):  # don't overwrite these files
+                continue
+
+            with zip_archive.open(f) as new_file:
+                install_path = f
+                if list(zip_root.iterdir())[0].is_dir():  # top-level directory
+                    install_path = '/'.join(f.split('/')[1:])
+
+                try:
+                    with open((script_dir / install_path), 'wb') as old_file:
+                        old_file.write(new_file.read())
+                except IsADirectoryError:
+                    continue
 
         file.close()
+
+        MsgBoxes.info('Successfully installed update. The program will now close.')
+        sys.exit()
 
     def download_update(self):
         download_thread = UpdateDownloadThread(self.config)
