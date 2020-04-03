@@ -2,7 +2,9 @@ import base64
 import io
 import json
 import logging
+import platform
 import sys
+import zipfile
 from pathlib import Path
 
 import requests
@@ -14,7 +16,8 @@ from .threading import Thread
 
 logging.getLogger(__name__)
 
-data_dir = Path(sys.argv[0]).parent / 'data'
+script_dir = Path(sys.argv[0]).parent
+data_dir = script_dir / 'data'
 github_headers = {
     'Accept': 'application/vnd.github.v3+json'
 }
@@ -48,17 +51,23 @@ class Updater:
         check_thread.update_signals.update_available.connect(self.download_available)
         self.thread_manager.add_thread(check_thread)
 
-    def apply_update(self, file=None):
-        if not self.auto_install or checks.is_bundled():  # always show notif when we're bundled.
-            msg = 'A new update is ready! Install it now?'
+    def apply_update(self, file):
+        if not self.auto_install or checks.is_bundled():
+            msg = 'A new update is ready to install. Install now?'
             if checks.is_bundled():
-                msg += '\n\nWARNING: You\'re using the bundled version of this program,' \
-                       'which might cause issues when performing an update. If this update' \
-                       'renders the program unable to boot, please redownload it.'
+                msg += '\n\nWarning: You\'re using the bundled version of this program. ' \
+                       'Updates might cause stability issues.'
 
             do_install = MsgBoxes.promptyesno(msg)
             if not do_install:
                 return
+
+        zip_archive = zipfile.ZipFile(file)
+        zip_root = zipfile.Path(zip_archive)
+
+        for p in zip_root.iterdir():
+            if p not in ('friend_codes.json', 'preferences.json'):  # don't overwrite these files
+                zip_archive.extract(p, script_dir)
 
         file.close()
 
@@ -78,15 +87,6 @@ class Updater:
                 return
 
         self.download_update()
-
-    def install_available(self):
-        msg = 'A new update is ready to be installed. Do you want to install it now?'
-        if checks.is_bundled():
-            msg += '\n\nWARNING: You\'re using the bundled version of this program. Updates might render it unusable.'
-
-        do_install = MsgBoxes.promptyesno(msg)
-        if do_install:
-            self.apply_update()
 
 
 class UpdateCheckThread(Thread):
@@ -190,19 +190,33 @@ class UpdateDownloadThread(Thread):
             logging.critical('Update download failed!')
 
         data = resp.json()
-        asset = data['assets'][0]  # TODO: automatic platform detection for correct asset
 
-        resp = requests.get(asset['url'], stream=True)
+        size = 1
+        zip_url = data.get('zipball_url')
+        if checks.is_bundled():
+            plat = platform.system()
+            arch = platform.architecture()[0]
+            file_name = f'{plat}-{arch}.zip'
+
+            asset = next((a for a in data['assets'] if a['name'] == file_name), None)
+            if asset is None:
+                MsgBoxes.error(f'Could not find update zip: {file_name}')
+                return
+
+            size = asset['size']
+            zip_url = asset['browser_download_url']
+
+        resp = requests.get(zip_url, stream=True)
         try:
             resp.raise_for_status()
         except requests.RequestException:
             logging.critical('Update download failed!')
 
         buf = io.BytesIO()
-        size = asset['size']
         dl = 0
         for chunk in resp.iter_content(chunk_size=1024):
-            self.emit_progress(dl // size * 100)
+            if checks.is_bundled():
+                self.emit_progress(dl // size * 100)
             buf.write(chunk)
 
         self.update_signals.download_finished.emit(buf)
