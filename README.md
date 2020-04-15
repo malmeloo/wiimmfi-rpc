@@ -6,6 +6,9 @@ Show your Discord friends what you're playing on Wiimmfi!
 ![GitHub](https://img.shields.io/github/license/DismissedGuy/wiimmfi-rpc)
 ![Python Version](https://img.shields.io/badge/python-3.6%20%7C%203.7%20%7C%203.8-blue)
 
+![Discord Preview](https://github.com/DismissedGuy/wiimmfi-rpc/raw/master/assets/discord_preview.png)
+![Overview](https://github.com/DismissedGuy/wiimmfi-rpc/raw/master/assets/overview.png)
+
 ## Features
 * Works for all games on all Wiimmfi-capable consoles (Wii, WiiWare, NDS and DSiWare)
 * Python is not a requirement; download, unzip and go!
