@@ -2,9 +2,12 @@
 Show your Discord friends what you're playing on Wiimmfi!
 
 ![AppVeyor](https://img.shields.io/appveyor/build/DismissedGuy/wiimmfi-rpc/gui-rewrite)
+![Release](https://img.shields.io/github/v/release/DismissedGuy/wiimmfi-rpc)
 ![GitHub All Releases](https://img.shields.io/github/downloads/DismissedGuy/wiimmfi-rpc/total)
 ![GitHub](https://img.shields.io/github/license/DismissedGuy/wiimmfi-rpc)
 ![Python Version](https://img.shields.io/badge/python-3.6%20%7C%203.7%20%7C%203.8-blue)
+
+![Discord Preview](https://github.com/DismissedGuy/wiimmfi-rpc/raw/master/assets/discord_preview.png)
 
 ## Features
 * Works for all games on all Wiimmfi-capable consoles (Wii, WiiWare, NDS and DSiWare)
@@ -15,6 +18,9 @@ Show your Discord friends what you're playing on Wiimmfi!
 * Support for 2-player games
 * Shows Mario Kart Wii room info (if possible)
 
-## Planned Features
-* Automatic updater
-* Dynamic timeout interval to save bandwidth (See [issue](https://github.com/DismissedGuy/wiimmfi-rpc/issues/10))
+### Planned Features
+1. Automatic updater
+2. Dynamic timeout interval to save bandwidth (See [issue](https://github.com/DismissedGuy/wiimmfi-rpc/issues/10))
+
+## Screenshots
+See the [assets](assets) directory for screenshots!
