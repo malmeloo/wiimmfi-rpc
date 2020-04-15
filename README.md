@@ -19,5 +19,5 @@ Show your Discord friends what you're playing on Wiimmfi!
 * Shows Mario Kart Wii room info (if possible)
 
 ## Planned Features
-* Automatic updater
-* Dynamic timeout interval to save bandwidth (See [issue](https://github.com/DismissedGuy/wiimmfi-rpc/issues/10))
+1. Automatic updater
+2. Dynamic timeout interval to save bandwidth (See [issue](https://github.com/DismissedGuy/wiimmfi-rpc/issues/10))
