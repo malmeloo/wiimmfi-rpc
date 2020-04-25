@@ -10,6 +10,7 @@ import requests
 from PyQt5 import QtCore as Qc
 from bs4 import BeautifulSoup
 
+from .msgboxes import MsgBoxes
 from .threading import Thread
 
 game_info_base_url = 'https://wiimmfi.de/game/{game_id}'
@@ -136,8 +137,13 @@ class WiimmfiCheckThread(Thread):
         self.run = True
         self.assets = None
 
-        self.presence = pypresence.Presence(self.config.preferences['rpc']['oauth_id'])
-        self.presence.connect()
+        try:
+            self.presence = pypresence.Presence(self.config.preferences['rpc']['oauth_id'])
+            self.presence.connect()
+        except (pypresence.PyPresenceException, ConnectionRefusedError):
+            MsgBoxes.warn('It appears that your Discord client is not accepting requests. \n'
+                          'Please try restarting it and then run this program again.')
+            sys.exit()
 
     def execute(self):
         self.assets = self.get_asset_list()

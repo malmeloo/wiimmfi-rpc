@@ -27,6 +27,14 @@ class MsgBoxes:
         box.exec_()
 
     @staticmethod
+    def warn(msg):
+        box = Qw.QMessageBox()
+        box.setIcon(Qw.QMessageBox.Warning)
+        box.setText(msg)
+        box.setWindowTitle('Warning')
+        box.exec_()
+
+    @staticmethod
     def promptyesno(msg):
         box = Qw.QMessageBox()
         box.setIcon(Qw.QMessageBox.Question)
