@@ -10,7 +10,7 @@ import tabs
 import util
 
 # set up logging and add our custom GUI handler
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger()
 formatter = logging.Formatter('[%(asctime)s] %(threadName)s %(levelname)s: %(message)s',
                               '%H:%M:%S')
