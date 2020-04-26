@@ -2,7 +2,9 @@
   "debug": true,
   "rpc": {
     "oauth_id": "444906848437665803",
-    "timeout": 15
+    "min_timeout": 10,
+    "max_timeout": 30,
+    "timeout_backoff": 5
   },
   "config": {
     "updates": {

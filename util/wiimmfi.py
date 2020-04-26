@@ -133,6 +133,7 @@ class WiimmfiCheckThread(Thread):
         super().__init__()
 
         self.config = config
+        self.timeout_backoff = 0
         self.last_player = None
         self.run = True
         self.assets = None
@@ -150,6 +151,9 @@ class WiimmfiCheckThread(Thread):
 
         # download misc images
         self.save_game_art('no_image')
+
+        # assign some time for the main thread to finish its things
+        time.sleep(1)
 
         while True:
             if not self.run:
@@ -187,7 +191,7 @@ class WiimmfiCheckThread(Thread):
                     self.last_player.set_mkw_info()
                 self.set_presence(self.last_player)
 
-            time.sleep(self.config.preferences['rpc']['timeout'])
+            time.sleep(self.config.preferences['rpc']['min_timeout'] + self.timeout_backoff)
 
     def get_online_players(self, game_id):
         headers = {
@@ -266,13 +270,29 @@ class WiimmfiCheckThread(Thread):
         self.log(logging.INFO, f'Downloaded art for game: {game_id}')
 
     def set_presence(self, player):
+        if self.timeout_backoff != 0:
+            self.timeout_backoff = 0
+
+            min_timeout = self.config.preferences['rpc']['min_timeout']
+            self.log(logging.INFO, f'Reverting timeout back to {min_timeout}')
+
         self.presence.update(**player.presence_options(self.config))
 
     def remove_presence(self):
         self.presence.clear()
 
         if self.last_player is None:
-            pass
+            backoff = self.config.preferences['rpc']['timeout_backoff']
+            min_timeout = self.config.preferences['rpc']['min_timeout']
+
+            current_timeout = min_timeout + self.timeout_backoff
+            if current_timeout >= self.config.preferences['rpc']['max_timeout']:
+                return
+
+            self.timeout_backoff += backoff
+            current_timeout = min_timeout + self.timeout_backoff
+
+            self.log(logging.INFO, f'Backing off timeout by {backoff}. Now set to {current_timeout}')
         else:
             self.log(logging.INFO, f'Stopped playing: {self.last_player.game_name}')
 
