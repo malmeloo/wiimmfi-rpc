@@ -8,6 +8,9 @@ branches:
 configuration:
   - Release
 
+skip_commits:
+  message: /\[nobuild\]/
+
 environment:
   matrix:
     - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1804
