@@ -1,7 +1,6 @@
 import logging
 import sys
 import time
-import traceback
 from pathlib import Path
 
 from PyQt5 import QtWidgets as Qw
@@ -34,7 +33,7 @@ data_dir = script_dir / 'data'
 
 
 def on_error(exc_type, exc_value, exc_traceback):
-    tb = traceback.format_tb(exc_traceback)
+    tb = exc_traceback.format()
 
     log_path = file_handler.create_error_log(tb)
     util.MsgBoxes.error('\n'.join(tb), path=log_path)
