@@ -14,6 +14,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger()
 formatter = logging.Formatter('[%(asctime)s] %(threadName)s %(levelname)s: %(message)s',
                               '%H:%M:%S')
+logging.getLogger('requests').setLevel(logging.WARNING)
 
 gui_handler = util.GUILoggerHandler()
 gui_handler.setLevel(logging.INFO)
