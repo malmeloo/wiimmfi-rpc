@@ -17,10 +17,10 @@ Show your Discord friends what you're playing on Wiimmfi!
 * Shows game art for popular games
 * Support for 2-player games
 * Shows Mario Kart Wii room info (if possible)
+* Adaptive timeout logic allows for accurate presences while keeping bandwidth and server stress low
 
 ### Planned Features
 1. Automatic updater
-2. Dynamic timeout interval to save bandwidth (See [issue](https://github.com/DismissedGuy/wiimmfi-rpc/issues/10))
 
 ## Screenshots
 See the [assets](assets) directory for screenshots!
