@@ -185,7 +185,7 @@ class UpdateDownloadThread(Thread):
             return
 
     def download_latest_experimental(self):
-        url = f'https://api.github.com/repos/{self.github_user}/{self.repo}/zipball/wiimmfi-rpc'
+        url = f'https://api.github.com/repos/{self.github_user}/{self.repo}/zipball/master'
         resp = requests.get(url, headers=github_headers)
 
         try:
