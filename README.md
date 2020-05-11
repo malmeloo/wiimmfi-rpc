@@ -57,6 +57,25 @@ This is for those that are not afraid to get their hands dirty. Although it requ
 ## Game art requests
 In order for this program to show game art in your rich presence, I will have to add it manually. If you notice that the program is not showing an image for a game you'd like to see, please create an [issue](https://github.com/DismissedGuy/wiimmfi-rpc/issues/) and select "Game Art Request". Simply fill out the fields and I'll add it if possible!
 
+## FAQ
+**It's not showing my presence.**
+This can be caused by multiple things. Try making your way through this checklist first, but if you still can't get it to work, please [contact me](#contact). It might be a bug.
+
+[] Make sure that the program is currently running.
+[] Make sure that your Discord client is currently running (the local client, not in your web browser!)
+[] Turn on "Display currently running game as status message" under Settings -> Game Activity in your Discord client.
+[] Make sure that no other program is using the rich presence at this time. If multiple programs are trying to use the rich presence, Discord will pick only one of them based on some (unknown to me) factors.
+[] If you know what to look for, check the logs in the log directory. It might show useful information.
+
+**I can't get it to work.**
+No problem! Contact me using one of [these methods](#contact) and I'll help you out.
+
+**I think I've found a bug.**
+That sucks. It would be nice if you could create an issue so I can look into it. You can also contact me in one of the ways linked to above if that's what you prefer.
+
+**You're not replying to my issue or messages!**
+I must've either missed it or am unavailable at the moment. GitHub notifications are kinda wonky for me sometimes. You could shoot me a Discord DM if I don't reply within a day or so.
+
 ## Contact
 Are you stuck somewhere during the installation process, have you found a bug, do you have a question or are you simply up for a chat? You can contact me anytime using one of these methods:
 
