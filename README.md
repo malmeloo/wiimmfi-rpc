@@ -18,9 +18,10 @@ Show your Discord friends what you're playing on Wiimmfi!
 * Support for 2-player games
 * Shows Mario Kart Wii room info (if possible)
 * Adaptive timeout logic allows for accurate presences while keeping bandwidth and server stress low
+* Built-in updater so you'll always be on the latest version!
 
 ### Planned Features
-1. Automatic updater
+Nothing yet! If you know something you'd like to see, please open an issue or [contact me](#contact) on Discord.
 
 ## Screenshots
 See the [assets](assets) directory for screenshots!
