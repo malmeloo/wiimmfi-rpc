@@ -33,7 +33,7 @@ class Updater:
         self.thread_manager = thread_manager
         self.config = config
 
-        self.auto_download = config.preferences['config']['updates']['auto_download']
+        self.enable_updates = config.preferences['config']['updates']['enable_updates']
         self.auto_install = config.preferences['config']['updates']['auto_install']
         self.release_type = config.preferences['config']['updates']['release_type']
 
@@ -41,6 +41,9 @@ class Updater:
 
     def check_updates(self):
         """Check for and install updates."""
+        if not self.enable_updates:
+            return
+
         update_zip = (data_dir / 'update.zip')
         if update_zip.is_file():  # local update installed
             with update_zip.open('r') as file:
@@ -91,8 +94,8 @@ class Updater:
         self.thread_manager.add_thread(download_thread)
 
     def download_available(self, new_version):
-        if not self.auto_download:
-            msg = 'A new update was found! Do you want to download it?\n\n'
+        if not self.auto_install:
+            msg = 'A new update was found! Do you want to install it?\n\n'
             msg += f'New version:     {new_version}\n'
             msg += f'Current version: {self.current_version}'
 
@@ -182,7 +185,7 @@ class UpdateDownloadThread(Thread):
             return
 
     def download_latest_experimental(self):
-        url = f'https://api.github.com/repos/{self.github_user}/{self.repo}/zipball/wiimmfi-rpc'
+        url = f'https://api.github.com/repos/{self.github_user}/{self.repo}/zipball/prerelease'
         resp = requests.get(url, headers=github_headers)
 
         try:
@@ -230,7 +233,9 @@ class UpdateDownloadThread(Thread):
         dl = 0
         for chunk in resp.iter_content(chunk_size=1024):
             if checks.is_bundled():
-                self.emit_progress(dl // size * 100)
+                self.emit_progress(round(dl / size * 100))
+
+            dl += len(chunk)
             buf.write(chunk)
 
         self.update_signals.download_finished.emit(buf)

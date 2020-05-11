@@ -43,11 +43,11 @@ class SettingsTab(Qw.QWidget):
     def create_update_groupbox(self):
         self.update_group = Qw.QGroupBox('Update Settings')
 
-        auto_download_label = Qw.QLabel('Enable auto download:')
-        self.auto_download = Qw.QCheckBox()
-        self.auto_download.clicked.connect(lambda checked: self.modify_config('auto_download', checked))
+        enable_updates_label = Qw.QLabel('Auto update check:')
+        self.enable_updates = Qw.QCheckBox()
+        self.enable_updates.clicked.connect(lambda checked: self.modify_config('enable_updates', checked))
 
-        auto_install_label = Qw.QLabel('Enable auto install:')
+        auto_install_label = Qw.QLabel('Auto update install:')
         self.auto_install = Qw.QCheckBox()
         self.auto_install.clicked.connect(lambda checked: self.modify_config('auto_install', checked))
 
@@ -60,10 +60,14 @@ class SettingsTab(Qw.QWidget):
 
         self.release_type.currentTextChanged.connect(lambda text: self.modify_config('release', text))
 
+        self.check_updates = Qw.QPushButton('Check for updates now')
+        self.check_updates.clicked.connect(lambda: self.parent.updater.check_updates())
+
         layout = Qw.QFormLayout()
-        layout.addRow(auto_download_label, self.auto_download)
+        layout.addRow(enable_updates_label, self.enable_updates)
         layout.addRow(auto_install_label, self.auto_install)
         layout.addRow(release_type_label, self.release_type)
+        layout.addRow(self.check_updates)
         self.update_group.setLayout(layout)
 
     def create_danger_groupbox(self):
@@ -88,12 +92,12 @@ class SettingsTab(Qw.QWidget):
 
     def load_settings(self):
         debug = bool(self.config.preferences['debug'])
-        auto_download = bool(self.config.preferences['config']['updates']['auto_download'])
+        enable_updates = bool(self.config.preferences['config']['updates']['enable_updates'])
         auto_install = bool(self.config.preferences['config']['updates']['auto_install'])
         release_type = self.config.preferences['config']['updates']['release_type']
 
         self.debug.setChecked(debug)
-        self.auto_download.setChecked(auto_download)
+        self.enable_updates.setChecked(enable_updates)
         self.auto_install.setChecked(auto_install)
 
         try:
@@ -108,8 +112,8 @@ class SettingsTab(Qw.QWidget):
         if setting == 'debug':
             preferences['debug'] = value
             MsgBoxes.info('You will need to restart the program for the changes to take effect.')
-        elif setting == 'auto_download':
-            preferences['config']['updates']['auto_download'] = value
+        elif setting == 'enable_updates':
+            preferences['config']['updates']['enable_updates'] = value
         elif setting == 'auto_install':
             preferences['config']['updates']['auto_install'] = value
         elif setting == 'release':

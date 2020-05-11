@@ -1,7 +1,6 @@
 import logging
 import sys
 import time
-import traceback
 from pathlib import Path
 
 from PyQt5 import QtWidgets as Qw
@@ -10,10 +9,11 @@ import tabs
 import util
 
 # set up logging and add our custom GUI handler
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger()
 formatter = logging.Formatter('[%(asctime)s] %(threadName)s %(levelname)s: %(message)s',
                               '%H:%M:%S')
+logging.getLogger('requests').setLevel(logging.WARNING)
 
 gui_handler = util.GUILoggerHandler()
 gui_handler.setLevel(logging.INFO)
@@ -33,7 +33,7 @@ data_dir = script_dir / 'data'
 
 
 def on_error(exc_type, exc_value, exc_traceback):
-    tb = traceback.format_tb(exc_traceback)
+    tb = exc_traceback.format()
 
     log_path = file_handler.create_error_log(tb)
     util.MsgBoxes.error('\n'.join(tb), path=log_path)
