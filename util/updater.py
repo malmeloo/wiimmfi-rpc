@@ -233,7 +233,9 @@ class UpdateDownloadThread(Thread):
         dl = 0
         for chunk in resp.iter_content(chunk_size=1024):
             if checks.is_bundled():
-                self.emit_progress(dl // size * 100)
+                self.emit_progress(round(dl / size * 100))
+
+            dl += len(chunk)
             buf.write(chunk)
 
         self.update_signals.download_finished.emit(buf)

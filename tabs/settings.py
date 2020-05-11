@@ -43,7 +43,7 @@ class SettingsTab(Qw.QWidget):
     def create_update_groupbox(self):
         self.update_group = Qw.QGroupBox('Update Settings')
 
-        enable_updates_label = Qw.QLabel('Enable updates:')
+        enable_updates_label = Qw.QLabel('Auto update check:')
         self.enable_updates = Qw.QCheckBox()
         self.enable_updates.clicked.connect(lambda checked: self.modify_config('enable_updates', checked))
 
