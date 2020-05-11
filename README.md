@@ -60,6 +60,6 @@ In order for this program to show game art in your rich presence, I will have to
 ## Contact
 Are you stuck somewhere during the installation process, have you found a bug, do you have a question or are you simply up for a chat? You can contact me anytime using one of these methods:
 
+- Discord (preferred): DismissedGuy#2118
 - [GitHub Issues](https://github.com/DismissedGuy/wiimmfi-rpc/issues/)
-- Discord: DismissedGuy#2118
 - Email: dismissed.is.a.guy \[at] gmail \[dot] com
