@@ -62,11 +62,11 @@ In order for this program to show game art in your rich presence, I will have to
 
 This can be caused by multiple things. Try making your way through this checklist first, but if you still can't get it to work, please [contact me](#contact). It might be a bug.
 
-[] Make sure that the program is currently running.
-[] Make sure that your Discord client is currently running (the local client, not in your web browser!)
-[] Turn on "Display currently running game as status message" under Settings -> Game Activity in your Discord client.
-[] Make sure that no other program is using the rich presence at this time. If multiple programs are trying to use the rich presence, Discord will pick only one of them based on some (unknown to me) factors.
-[] If you know what to look for, check the logs in the log directory. It might show useful information.
+- [ ] Make sure that the program is currently running.
+- [ ] Make sure that your Discord client is currently running (the local client, not in your web browser!)
+- [ ] Turn on "Display currently running game as status message" under Settings -> Game Activity in your Discord client.
+- [ ] Make sure that no other program is using the rich presence at this time. If multiple programs are trying to use the rich presence, Discord will pick only one of them based on some (unknown to me) factors.
+- [ ] If you know what to look for, check the logs in the log directory. It might show useful information.
 
 **I can't get it to work.**
 
