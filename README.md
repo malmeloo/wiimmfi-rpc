@@ -59,6 +59,7 @@ In order for this program to show game art in your rich presence, I will have to
 
 ## FAQ
 **It's not showing my presence.**
+
 This can be caused by multiple things. Try making your way through this checklist first, but if you still can't get it to work, please [contact me](#contact). It might be a bug.
 
 [] Make sure that the program is currently running.
@@ -68,12 +69,15 @@ This can be caused by multiple things. Try making your way through this checklis
 [] If you know what to look for, check the logs in the log directory. It might show useful information.
 
 **I can't get it to work.**
+
 No problem! Contact me using one of [these methods](#contact) and I'll help you out.
 
 **I think I've found a bug.**
+
 That sucks. It would be nice if you could create an issue so I can look into it. You can also contact me in one of the ways linked to above if that's what you prefer.
 
 **You're not replying to my issue or messages!**
+
 I must've either missed it or am unavailable at the moment. GitHub notifications are kinda wonky for me sometimes. You could shoot me a Discord DM if I don't reply within a day or so.
 
 ## Contact
