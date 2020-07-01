@@ -47,6 +47,7 @@ class TableWidget(Qw.QWidget):
     TABS = (
         tabs.OverviewTab,
         tabs.FriendcodesTab,
+        tabs.OnlinePlayerTab,
         tabs.SettingsTab,
         tabs.LogsTab
     )

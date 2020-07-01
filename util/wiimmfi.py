@@ -14,6 +14,7 @@ from .msgboxes import MsgBoxes
 from .threading import Thread
 
 game_info_base_url = 'https://wiimmfi.de/game/{game_id}'
+active_game_list_url = 'https://wiimmfi.de/game/'
 mkw_room_info_base_url = 'https://wiimmfi.de/stats/mkw/room/p{pid}/?m=json'
 wiimmfi_game_list_url = 'https://wiimmfi.de/stat?m=25'
 asset_list_base_url = 'https://discordapp.com/api/v6/oauth2/applications/{app_id}/assets'
@@ -122,6 +123,14 @@ class WiimmfiPlayerList:
                 return player
 
         return None
+
+
+class WiimmfiGame:
+    def __init__(self, console: str, game_id: str, game_name: str, online_players: int):
+        self.console = console
+        self.game_id = game_id
+        self.game_name = game_name
+        self.online_players = online_players
 
 
 class WiimmfiCheckThread(Thread):
@@ -235,6 +244,47 @@ class WiimmfiCheckThread(Thread):
             players.add_player(player)
 
         return players
+
+    def get_active_games(self):
+        """Retrieves games with online players"""
+        headers = {
+            'User-Agent': 'wiimmfi-rpc by DismissedGuy#2118 - github.com/DismissedGuy/wiimmfi-rpc'
+        }
+        resp = requests.get(active_game_list_url, headers=headers)
+        resp.raise_for_status()
+
+        soup = BeautifulSoup(resp.text, 'html.parser')
+
+        # The game list HTML seems to be a little malformed, and it's messing with our parser.
+        # Workaround: find all "tr0" and "tr1" classes (alternating game list colors) and concat them.
+        # We also unpack dicts here because "class" is a reserved keyword.
+        games_0 = soup.find_all(**{'class': 'tr0'})
+        games_1 = soup.find_all(**{'class': 'tr1'})
+
+        active_games_data = games_0 + games_1
+        if not active_games_data:
+            self.log(logging.WARNING, 'No active games found.')
+
+            return []
+
+        active_games = []
+        for game in active_games_data:
+            rows = game.fin_all('td')
+
+            console = rows[0].text
+            game_name = rows[1].text
+            game_id = rows[1].a['href'][6:]  # strip url part
+            online_players = int(rows[4].text)
+
+            game = WiimmfiGame(
+                console=console,
+                game_name=game_name,
+                game_id=game_id,
+                online_players=online_players
+            )
+            active_games.append(game)
+
+        return active_games
 
     def get_asset_list(self):
         assets_url = asset_list_base_url.format(app_id=self.config.preferences['rpc']['oauth_id'])
