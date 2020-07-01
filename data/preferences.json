@@ -1,5 +1,5 @@
 {
-  "debug": true,
+  "debug": false,
   "rpc": {
     "oauth_id": "444906848437665803",
     "min_timeout": 10,
