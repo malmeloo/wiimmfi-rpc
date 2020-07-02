@@ -153,7 +153,7 @@ class Application(Qw.QMainWindow):
                              statuses=data_dir / 'statuses.json')
 
         logging.info('Debug mode: '
-                     + 'ON' if config.preferences['debug'] else 'OFF')
+                     + ('ON' if config.preferences['debug'] else 'OFF'))
 
         return config
 
