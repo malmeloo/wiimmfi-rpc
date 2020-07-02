@@ -23,8 +23,52 @@ class OnlinePlayerTab(Qw.QWidget):
         self.layout.addWidget(self.player_tree)
         self.setLayout(self.layout)
 
+    def _add_friendcode(self, widget: Qw.QTreeWidgetItem):
+        print('Add code:')
+        print(widget)
+
     def _refresh_tree(self):
-        print('Refresh')
+        self.refresh_button.setDisabled(True)
+
+        self.player_tree.clear()
+
+        active_games = self.parent.wiimmfi_thread.get_active_games()
+        active_games = sorted(active_games, key=lambda g: g.console)
+
+        for game in active_games:
+            online_players = self.parent.wiimmfi_thread.get_online_players(game.game_id)
+            online_players = sorted(online_players, key=lambda p: p.player_1)
+            print(f'Getting online players for game {game.game_id}')
+            if not online_players:
+                continue
+
+            parent_item = Qw.QTreeWidgetItem([game.console, game.game_name, '', ''])
+            self.player_tree.addTopLevelItem(parent_item)
+
+            for player in online_players:
+                players = [player.player_1]
+                if player.player_2:
+                    players.append(player.player_2)
+                player_names = ' / '.join(players)
+
+                child_item = Qw.QTreeWidgetItem(['', player_names, player.friend_code, ''])
+                parent_item.addChild(child_item)
+
+                add_button = Qw.QPushButton('+')
+                add_button.setMaximumSize(32, 32)
+                add_button.pressed.connect(lambda: self._add_friendcode(child_item))
+                self.player_tree.setItemWidget(child_item, 3, add_button)
+
+            parent_item.setExpanded(True)
+
+        self.player_tree.resizeColumnToContents(0)
+        self.player_tree.resizeColumnToContents(2)
+        self.player_tree.resizeColumnToContents(3)
+
+        self.player_tree.header().setStretchLastSection(False)
+        self.player_tree.header().setSectionResizeMode(1, Qw.QHeaderView.Stretch)
+
+        self.refresh_button.setDisabled(False)
 
     def _search_tree(self, friend_code):
         print(f'Search {friend_code}')

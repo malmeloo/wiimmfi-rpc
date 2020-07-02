@@ -100,12 +100,22 @@ class WiimmfiPlayer:
 class WiimmfiPlayerList:
     def __init__(self, players=None):
         self._players = []
+        self._p_index = 0
 
         if players is not None:
             self.add_players(players)
 
     def __len__(self):
         return len(self._players)
+
+    def __iter__(self):
+        return iter(self._players)
+
+    def __next__(self):
+        index = self._p_index
+        self._p_index += 1
+
+        return index
 
     def add_player(self, player):
         if not isinstance(player, WiimmfiPlayer):
@@ -269,7 +279,7 @@ class WiimmfiCheckThread(Thread):
 
         active_games = []
         for game in active_games_data:
-            rows = game.fin_all('td')
+            rows = game.find_all('td')
 
             console = rows[0].text
             game_name = rows[1].text
