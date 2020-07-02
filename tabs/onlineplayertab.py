@@ -24,13 +24,26 @@ class OnlinePlayerTab(Qw.QWidget):
         self.setLayout(self.layout)
 
     def _add_friendcode(self, widget: Qw.QTreeWidgetItem):
-        print('Add code:')
-        print(widget)
+        console = widget.parent().text(0)
+        game_id = widget.text(0)
+        friend_code = widget.text(2)
+
+        item = {
+            'console': console,
+            'game_id': game_id,
+            'friend_code': friend_code,
+            'priority': '1'
+        }
+        self.config.friend_codes.append(item)
+
+        widget.setDisabled(True)
 
     def _refresh_tree(self):
         self.refresh_button.setDisabled(True)
 
         self.player_tree.clear()
+
+        friend_codes = [code.get('friend_code') for code in self.config.friend_codes]
 
         active_games = self.parent.wiimmfi_thread.get_active_games()
         active_games = sorted(active_games, key=lambda g: g.console)
@@ -51,12 +64,16 @@ class OnlinePlayerTab(Qw.QWidget):
                     players.append(player.player_2)
                 player_names = ' / '.join(players)
 
-                child_item = Qw.QTreeWidgetItem(['', player_names, player.friend_code, ''])
+                child_item = Qw.QTreeWidgetItem([player.game_id, player_names, player.friend_code, ''])
                 parent_item.addChild(child_item)
 
                 add_button = Qw.QPushButton('+')
                 add_button.setMaximumSize(32, 32)
-                add_button.pressed.connect(lambda: self._add_friendcode(child_item))
+                # we copy "child_item" into the lambda's scope as "child"
+                add_button.pressed.connect(lambda child=child_item: self._add_friendcode(child))
+                if player.friend_code in friend_codes:
+                    add_button.setDisabled(True)
+
                 self.player_tree.setItemWidget(child_item, 3, add_button)
 
             parent_item.setExpanded(True)

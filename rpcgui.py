@@ -61,7 +61,6 @@ class TableWidget(Qw.QWidget):
 
         # Initialize tab screen
         self.tabs = Qw.QTabWidget()
-        self.add_tabs(self.tabs)
         self.tabs.resize(400, 400)
 
         # Add tabs to widget
@@ -70,7 +69,7 @@ class TableWidget(Qw.QWidget):
 
         logging.info('Initialized window tabs')
 
-    def add_tabs(self, tab_widget):
+    def add_tabs(self):
         for tab in self.TABS:
             name = tab.OPTIONS.pop('name')
             debug = tab.OPTIONS.pop('debug')
@@ -86,7 +85,7 @@ class TableWidget(Qw.QWidget):
 
             # initialize widget and add it to our tabs
             tab_obj = tab(self.parent, **params)
-            tab_widget.addTab(tab_obj, name)
+            self.tabs.addTab(tab_obj, name)
 
 
 class Application(Qw.QMainWindow):
@@ -140,6 +139,7 @@ class Application(Qw.QMainWindow):
         # Init the title and tabs.
         self.setWindowTitle(f'Wiimmfi-RPC v{version}')
         self.table_widget = TableWidget(self)
+        self.table_widget.add_tabs()
         self.setCentralWidget(self.table_widget)
 
         logging.info('---- Finished booting ----')

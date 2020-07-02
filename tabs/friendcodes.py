@@ -161,6 +161,15 @@ class FriendcodesTab(Qw.QWidget):
 
         self.setLayout(self.layout)
 
+        # Reload the tree when the user switches to this tab.
+        # This way, we can reflect changes made to the friend codes
+        # by other processes or tabs without complicated signalling.
+        self.parent.table_widget.tabs.currentChanged.connect(self._on_tab_changed)
+
+    def _on_tab_changed(self, tab_index):
+        if tab_index == 1:  # our tab
+            self.populate_tree()
+
     def create_buttons(self):
         add_button = Qw.QPushButton('+')
         add_button.setMaximumSize(32, 32)
@@ -193,6 +202,12 @@ class FriendcodesTab(Qw.QWidget):
         return tree
 
     def populate_tree(self):
+        # clear existing codes
+        for item_index in range(self.tree.topLevelItemCount()):
+            item = self.tree.topLevelItem(item_index)
+            for _ in range(item.childCount()):
+                item.removeChild(item.child(0))
+
         codes = self.config.friend_codes
 
         for entry in codes:
