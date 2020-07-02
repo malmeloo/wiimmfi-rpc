@@ -36,7 +36,7 @@ class OnlinePlayerTab(Qw.QWidget):
         }
         self.config.friend_codes.append(item)
 
-        widget.setDisabled(True)
+        self.player_tree.itemWidget(widget, 3).setDisabled(True)
 
     def _refresh_tree(self):
         self.refresh_button.setDisabled(True)

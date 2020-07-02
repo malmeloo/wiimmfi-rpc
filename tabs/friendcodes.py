@@ -136,7 +136,7 @@ class FriendcodesTab(Qw.QWidget):
     CATEGORIES = {
         'Wii': Qw.QTreeWidgetItem(['Wii', '', '', '']),
         'WiiWare': Qw.QTreeWidgetItem(['WiiWare', '', '', '']),
-        'DS': Qw.QTreeWidgetItem(['DS', '', '', '']),
+        'NDS': Qw.QTreeWidgetItem(['DS', '', '', '']),
         'DSiWare': Qw.QTreeWidgetItem(['DSiWare', '', '', ''])
     }
 
@@ -216,7 +216,13 @@ class FriendcodesTab(Qw.QWidget):
             friend_code = entry.get('friend_code')
             priority = entry.get('priority')
 
+            if console == 'DS':  # backwards compat
+                console = 'NDS'
+
             category = self.CATEGORIES.get(console)
+            if not category:
+                logging.warning(f'Invalid console found in friend code entry: {console}')
+                continue
 
             if not (console or game_id or friend_code or priority or category):
                 logging.warning(f'Detected invalid friend code entry: {game_id}')
