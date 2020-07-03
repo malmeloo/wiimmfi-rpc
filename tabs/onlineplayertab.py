@@ -1,4 +1,45 @@
+import time
+
 from PyQt5 import QtWidgets as Qw
+
+from util.threading import Thread
+
+
+class WiimmfiOnlinePlayerFetchThread(Thread):
+    friendly_progress = 'Fetching active games...'
+    permanent = False
+    name = 'OnlinePlayerFetcherThread'
+
+    def __init__(self, wiimmfi_thread, *args, **kwargs):
+        self.wiimmfi_thread = wiimmfi_thread
+
+        super().__init__(*args, **kwargs)
+
+    def execute(self):
+        active_games = self.wiimmfi_thread.get_active_games()
+        active_games = sorted(active_games, key=lambda g: g.console)
+
+        self.emit_progress(20)
+
+        fetched_games = []
+        game_num = 1
+        for game in active_games:
+            self.emit_message(f'Fetching {game.game_id}...')
+            progress = round(game_num / len(active_games) * 80) + 20
+            self.emit_progress(progress)
+
+            online_players = self.wiimmfi_thread.get_online_players(game.game_id)
+            online_players = sorted(online_players, key=lambda p: p.player_1)
+
+            game_data = {
+                'game': game,
+                'players': online_players
+            }
+            fetched_games.append(game_data)
+
+            game_num += 1
+
+        self.emit_data(fetched_games)
 
 
 class OnlinePlayerTab(Qw.QWidget):
@@ -39,21 +80,20 @@ class OnlinePlayerTab(Qw.QWidget):
         self.player_tree.itemWidget(widget, 3).setDisabled(True)
 
     def _refresh_tree(self):
-        self.refresh_button.setDisabled(True)
+        player_fetch_thread = WiimmfiOnlinePlayerFetchThread(self.parent.wiimmfi_thread)
+        player_fetch_thread.signals.data.connect(self._player_fetch_callback)
 
+        self.parent.thread_manager.add_thread(player_fetch_thread)
+
+    def _player_fetch_callback(self, data: list):
         self.player_tree.clear()
 
         friend_codes = [code.get('friend_code') for code in self.config.friend_codes]
 
-        active_games = self.parent.wiimmfi_thread.get_active_games()
-        active_games = sorted(active_games, key=lambda g: g.console)
-
-        for game in active_games:
-            online_players = self.parent.wiimmfi_thread.get_online_players(game.game_id)
-            online_players = sorted(online_players, key=lambda p: p.player_1)
-            print(f'Getting online players for game {game.game_id}')
-            if not online_players:
-                continue
+        last_time = time.time()
+        for player_data in data:
+            game = player_data.get('game')
+            online_players = player_data.get('players')
 
             parent_item = Qw.QTreeWidgetItem([game.console, game.game_name, '', ''])
             self.player_tree.addTopLevelItem(parent_item)
@@ -86,6 +126,8 @@ class OnlinePlayerTab(Qw.QWidget):
         self.player_tree.header().setSectionResizeMode(1, Qw.QHeaderView.Stretch)
 
         self.refresh_button.setDisabled(False)
+
+        print('done')
 
     def _search_tree(self, friend_code):
         print(f'Search {friend_code}')
