@@ -158,7 +158,7 @@ class OnlinePlayerTab(Qw.QWidget):
 
         search_field = Qw.QLineEdit()
         search_field.textChanged.connect(self._search_tree)
-        search_field.setPlaceholderText('Search for a FC...')
+        search_field.setPlaceholderText('Search...')
 
         layout = Qw.QHBoxLayout()
         layout.addWidget(self.refresh_button)
@@ -170,5 +170,9 @@ class OnlinePlayerTab(Qw.QWidget):
     def create_tree(self):
         tree = Qw.QTreeWidget()
         tree.setColumnCount(4)
+
+        tree.setHeaderHidden(True)
+
+        tree.setSelectionMode(Qw.QAbstractItemView.NoSelection)
 
         return tree
