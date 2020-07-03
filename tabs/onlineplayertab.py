@@ -1,5 +1,3 @@
-import time
-
 from PyQt5 import QtWidgets as Qw
 
 from util.threading import Thread
@@ -90,7 +88,6 @@ class OnlinePlayerTab(Qw.QWidget):
 
         friend_codes = [code.get('friend_code') for code in self.config.friend_codes]
 
-        last_time = time.time()
         for player_data in data:
             game = player_data.get('game')
             online_players = player_data.get('players')
@@ -126,8 +123,6 @@ class OnlinePlayerTab(Qw.QWidget):
         self.player_tree.header().setSectionResizeMode(1, Qw.QHeaderView.Stretch)
 
         self.refresh_button.setDisabled(False)
-
-        print('done')
 
     def _search_tree(self, friend_code):
         print(f'Search {friend_code}')
