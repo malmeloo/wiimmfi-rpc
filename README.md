@@ -18,9 +18,48 @@ Show your Discord friends what you're playing on Wiimmfi!
 * Support for 2-player games
 * Shows Mario Kart Wii room info (if possible)
 * Adaptive timeout logic allows for accurate presences while keeping bandwidth and server stress low
+* Built-in updater so you'll always be on the latest version!
 
 ### Planned Features
-1. Automatic updater
+Nothing yet! If you know something you'd like to see, please open an issue or [contact me](#contact) on Discord.
 
 ## Screenshots
 See the [assets](assets) directory for screenshots!
+
+## Installation
+There are two "editions" of this program. Both of these have their pros and cons, so I'll list them below.
+
+### "Packaged" edition
+This is for the people who just want things to work without too much of a hassle. There's no additional programs to download which allows you to get the program up and running in no time!
+
+You can download it over at the [releases](https://github.com/DismissedGuy/wiimmfi-rpc/) page. Simply extract the zip into a directory and run the executable!
+
+#### Pros
+- Extremely easy to set up
+
+#### Cons
+- **Updates might require manual work.** Although the updater seems to be decently robust, it will not remove the old program for you. Make sure to always run the latest executable so you don't run into any errors.
+- You can only update to the latest stable release. This should be fine for the majority of the users.
+- The file size is rather large, so it takes longer for updates to download. The reason for this is that all of the program's dependencies are packed into a single file.
+- For Linux users: You'll have to (re)mark the program as executable after an update.
+
+### "Live" edition
+This is for those that are not afraid to get their hands dirty. Although it requires some knowledge on how to set it up, it does allow you to update to the latest prerelease version, which, although it might be a bit unstable at times, includes the newest and hottest features available.
+
+#### Pros
+- Fully automatic updater, requiring no extra work (unless you've renamed the main file, in which case you will have to remove it)
+- Updates are blazing fast and file sizes are small
+- Updates to the latest prerelease
+
+#### Cons
+- Requires basic knowledge of how to use Python features, such as how to install dependencies using pip.
+
+## Game art requests
+In order for this program to show game art in your rich presence, I will have to add it manually. If you notice that the program is not showing an image for a game you'd like to see, please create an [issue](https://github.com/DismissedGuy/wiimmfi-rpc/issues/) and select "Game Art Request". Simply fill out the fields and I'll add it if possible!
+
+## Contact
+Are you stuck somewhere during the installation process, have you found a bug, do you have a question or are you simply up for a chat? You can contact me anytime using one of these methods:
+
+- [GitHub Issues](https://github.com/DismissedGuy/wiimmfi-rpc/issues/)
+- Discord: DismissedGuy#2118
+- Email: dismissed.is.a.guy \[at] gmail \[dot] com
