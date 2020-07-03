@@ -1,3 +1,5 @@
+import time
+
 from PyQt5 import QtWidgets as Qw
 
 from util.threading import Thread
@@ -36,6 +38,13 @@ class WiimmfiOnlinePlayerFetchThread(Thread):
             fetched_games.append(game_data)
 
             game_num += 1
+
+        self.emit_message('Compiling list...')
+        # Emitting our data can block the main loop for a bit while
+        # the callback is compiling the tree. We choose to sleep for
+        # a little while here to give the main thread some time to
+        # process the message we emitted above and inform the user.
+        time.sleep(0.1)
 
         self.emit_data(fetched_games)
 
@@ -124,8 +133,24 @@ class OnlinePlayerTab(Qw.QWidget):
 
         self.refresh_button.setDisabled(False)
 
-    def _search_tree(self, friend_code):
-        print(f'Search {friend_code}')
+    def _search_tree(self, text):
+        for item_index in range(self.player_tree.topLevelItemCount()):
+            item = self.player_tree.topLevelItem(item_index)
+
+            result_in_category = False
+            for child_index in range(item.childCount()):
+                child = item.child(child_index)
+
+                if text in child.text(1) or text in child.text(2):
+                    child.setHidden(False)
+                    result_in_category = True
+                else:
+                    child.setHidden(True)
+
+            if result_in_category:
+                item.setHidden(False)
+            else:
+                item.setHidden(True)
 
     def create_header(self):
         self.refresh_button = Qw.QPushButton('\u21BB Refresh')
