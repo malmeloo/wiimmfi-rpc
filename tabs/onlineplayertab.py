@@ -1,5 +1,3 @@
-import time
-
 from PyQt5 import QtWidgets as Qw
 
 from util.threading import Thread
@@ -21,7 +19,6 @@ class WiimmfiOnlinePlayerFetchThread(Thread):
 
         self.emit_progress(20)
 
-        fetched_games = []
         game_num = 1
         for game in active_games:
             self.emit_message(f'Fetching {game.game_id}...')
@@ -35,18 +32,9 @@ class WiimmfiOnlinePlayerFetchThread(Thread):
                 'game': game,
                 'players': online_players
             }
-            fetched_games.append(game_data)
+            self.emit_data(game_data)
 
             game_num += 1
-
-        self.emit_message('Compiling list...')
-        # Emitting our data can block the main loop for a bit while
-        # the callback is compiling the tree. We choose to sleep for
-        # a little while here to give the main thread some time to
-        # process the message we emitted above and inform the user.
-        time.sleep(0.1)
-
-        self.emit_data(fetched_games)
 
 
 class OnlinePlayerTab(Qw.QWidget):
@@ -87,50 +75,49 @@ class OnlinePlayerTab(Qw.QWidget):
         self.player_tree.itemWidget(widget, 3).setDisabled(True)
 
     def _refresh_tree(self):
+        self.refresh_button.setDisabled(True)
+        self.player_tree.clear()
+
         player_fetch_thread = WiimmfiOnlinePlayerFetchThread(self.parent.wiimmfi_thread)
         player_fetch_thread.signals.data.connect(self._player_fetch_callback)
+        player_fetch_thread.signals.finished.connect(self._refresh_done_callback)
 
         self.parent.thread_manager.add_thread(player_fetch_thread)
 
-    def _player_fetch_callback(self, data: list):
-        self.player_tree.clear()
-
+    def _player_fetch_callback(self, data: dict):
         friend_codes = [code.get('friend_code') for code in self.config.friend_codes]
 
-        for player_data in data:
-            game = player_data.get('game')
-            online_players = player_data.get('players')
+        game = data.get('game')
+        online_players = data.get('players')
 
-            parent_item = Qw.QTreeWidgetItem([game.console, game.game_name, '', ''])
-            self.player_tree.addTopLevelItem(parent_item)
+        parent_item = Qw.QTreeWidgetItem([game.console, game.game_name, '', ''])
+        self.player_tree.addTopLevelItem(parent_item)
 
-            for player in online_players:
-                players = [player.player_1]
-                if player.player_2:
-                    players.append(player.player_2)
-                player_names = ' / '.join(players)
+        for player in online_players:
+            players = [player.player_1]
+            if player.player_2:
+                players.append(player.player_2)
+            player_names = ' / '.join(players)
 
-                child_item = Qw.QTreeWidgetItem([player.game_id, player_names, player.friend_code, ''])
-                parent_item.addChild(child_item)
+            child_item = Qw.QTreeWidgetItem([player.game_id, player_names, player.friend_code, ''])
+            parent_item.addChild(child_item)
 
-                add_button = Qw.QPushButton('+')
-                add_button.setMaximumSize(32, 32)
-                # we copy "child_item" into the lambda's scope as "child"
-                add_button.pressed.connect(lambda child=child_item: self._add_friendcode(child))
-                if player.friend_code in friend_codes:
-                    add_button.setDisabled(True)
+            add_button = Qw.QPushButton('+')
+            add_button.setMaximumSize(32, 32)
+            # we copy "child_item" into the lambda's scope as "child"
+            add_button.pressed.connect(lambda child=child_item: self._add_friendcode(child))
+            if player.friend_code in friend_codes:
+                add_button.setDisabled(True)
 
-                self.player_tree.setItemWidget(child_item, 3, add_button)
+            self.player_tree.setItemWidget(child_item, 3, add_button)
 
-            parent_item.setExpanded(True)
+        parent_item.setExpanded(True)
 
         self.player_tree.resizeColumnToContents(0)
         self.player_tree.resizeColumnToContents(2)
         self.player_tree.resizeColumnToContents(3)
 
-        self.player_tree.header().setStretchLastSection(False)
-        self.player_tree.header().setSectionResizeMode(1, Qw.QHeaderView.Stretch)
-
+    def _refresh_done_callback(self):
         self.refresh_button.setDisabled(False)
 
     def _search_tree(self, text):
@@ -171,8 +158,10 @@ class OnlinePlayerTab(Qw.QWidget):
         tree = Qw.QTreeWidget()
         tree.setColumnCount(4)
 
-        tree.setHeaderHidden(True)
-
         tree.setSelectionMode(Qw.QAbstractItemView.NoSelection)
+
+        tree.setHeaderHidden(True)
+        tree.header().setStretchLastSection(False)
+        tree.header().setSectionResizeMode(1, Qw.QHeaderView.Stretch)
 
         return tree
