@@ -90,7 +90,9 @@ class OnlinePlayerTab(Qw.QWidget):
         game = data.get('game')
         online_players = data.get('players')
 
-        parent_item = Qw.QTreeWidgetItem([game.console, game.game_name, '', ''])
+        player_count = len(online_players)
+
+        parent_item = Qw.QTreeWidgetItem([game.console, game.game_name, f'{player_count} Players', ''])
         self.player_tree.addTopLevelItem(parent_item)
 
         for player in online_players:
@@ -110,8 +112,6 @@ class OnlinePlayerTab(Qw.QWidget):
                 add_button.setDisabled(True)
 
             self.player_tree.setItemWidget(child_item, 3, add_button)
-
-        parent_item.setExpanded(True)
 
         self.player_tree.resizeColumnToContents(0)
         self.player_tree.resizeColumnToContents(2)
