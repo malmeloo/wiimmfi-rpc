@@ -26,6 +26,8 @@ class WiimmfiOnlinePlayerFetchThread(Thread):
             self.emit_progress(progress)
 
             online_players = self.wiimmfi_thread.get_online_players(game.game_id)
+            if not online_players:  # activity changed during our scan
+                continue
             online_players = sorted(online_players, key=lambda p: p.player_1)
 
             game_data = {
