@@ -15,7 +15,7 @@ class WiimmfiOnlinePlayerFetchThread(Thread):
 
     def execute(self):
         active_games = self.wiimmfi_thread.get_active_games()
-        active_games = sorted(active_games, key=lambda g: g.console)
+        active_games = sorted(active_games, key=lambda g: g.online_players, reverse=True)
 
         self.emit_progress(20)
 
