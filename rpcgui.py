@@ -3,6 +3,7 @@ import sys
 import time
 from pathlib import Path
 
+from PyQt5 import QtGui as Qg
 from PyQt5 import QtWidgets as Qw
 
 import tabs
@@ -40,7 +41,84 @@ def on_error(exc_type, exc_value, exc_traceback):
 
     sys.__excepthook__(exc_type, exc_value, exc_traceback)
 
+
 sys.excepthook = on_error
+
+
+class SystemTrayIcon(Qw.QSystemTrayIcon):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.parent = parent
+
+        self.update()
+
+        self.quit_button = None
+        self.toggle_button = None
+        self.open_button = None
+
+        self.activated.connect(self._open_window)
+
+        self.menu = Qw.QMenu(parent)
+        self.populate_menu(self.menu)
+
+        self.setContextMenu(self.menu)
+
+    def _toggle_enabled(self):
+        curr_enabled = self.parent.wiimmfi_thread.run
+        if curr_enabled:
+            self.parent.wiimmfi_thread.run = False
+            self.toggle_button.setText('Enable game detection')
+        else:
+            self.parent.wiimmfi_thread.run = True
+            self.toggle_button.setText('Disable game detection')
+
+        self.update()
+
+    def _open_window(self, reason=None):
+        if reason and reason == Qw.QSystemTrayIcon.Context:  # right-click
+            return
+
+        self.parent.setHidden(False)
+        self.parent.activateWindow()
+
+    def _quit(self):
+        self.parent.do_close = True
+        self.parent.close()
+
+    def populate_menu(self, menu):
+        version = self.parent.config.version_info['version']
+        header = menu.addAction(f'Wiimmfi-RPC v{version}')
+        header.setDisabled(True)
+
+        menu.addSeparator()
+
+        self.open_button = menu.addAction('Open Wiimmfi-RPC')
+        self.open_button.triggered.connect(self._open_window)
+
+        toggle_text = 'Disable' if self.parent.wiimmfi_thread.run else 'Enable'
+        self.toggle_button = menu.addAction(toggle_text + ' game detection')
+        self.toggle_button.triggered.connect(self._toggle_enabled)
+
+        menu.addSeparator()
+
+        self.quit_button = menu.addAction('Quit Wiimmfi-RPC')
+        self.quit_button.triggered.connect(self._quit)
+
+    def update(self):
+        online_player = self.parent.wiimmfi_thread.last_player
+
+        if not self.parent.wiimmfi_thread.run:
+            icon_path = script_dir / 'icons' / 'disabled.png'
+            self.setToolTip('Game detection has been disabled.')
+        elif online_player:
+            icon_path = script_dir / 'icons' / 'active.png'
+            self.setToolTip(f'Playing {online_player.game_name}.')
+        else:
+            icon_path = script_dir / 'icons' / 'inactive.png'
+            self.setToolTip('Not playing any games.')
+
+        icon = Qg.QIcon(str(icon_path))
+        self.setIcon(icon)
 
 
 class TableWidget(Qw.QWidget):
@@ -91,6 +169,7 @@ class TableWidget(Qw.QWidget):
 class Application(Qw.QMainWindow):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.do_close = False
 
         self.setGeometry(0, 0, 400, 400)
 
@@ -127,7 +206,7 @@ class Application(Qw.QMainWindow):
         logging.info('Loaded config files')
         version = self.config.version_info['version']
 
-        self.wiimmfi_thread = util.WiimmfiCheckThread(self.config)
+        self.wiimmfi_thread = util.WiimmfiCheckThread(self.config, self._status_updated)
         self.thread_manager.add_thread(self.wiimmfi_thread)
 
         self.game_list_thread = util.WiimmfiGameListThread()
@@ -144,7 +223,26 @@ class Application(Qw.QMainWindow):
 
         logging.info('---- Finished booting ----')
 
+        # We do this at the end to make sure it has
+        # access to all the resources it needs.
+        self.sys_tray = SystemTrayIcon(self)
+        self.sys_tray.show()
+
         self.show()
+
+    def _status_updated(self):
+        self.sys_tray.update()
+
+    def closeEvent(self, event: Qg.QCloseEvent):
+        self.setHidden(True)
+        if self.do_close:
+            event.accept()
+        else:
+            event.ignore()
+            self.sys_tray.showMessage('Wiimmfi-RPC',
+                                      'Wiimmfi-RPC has been minimized to tray and will '
+                                      'keep running in the background. To quit the program, '
+                                      'right-click on this icon and select "Quit".')
 
     def load_config(self):
         config = util.Config(friend_codes=data_dir / 'friend_codes.json',

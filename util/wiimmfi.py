@@ -148,10 +148,12 @@ class WiimmfiCheckThread(Thread):
     permanent = True
     name = 'WiimmfiCheckThread'
 
-    def __init__(self, config):
+    def __init__(self, config, status_callback=None):
         super().__init__()
 
         self.config = config
+        self.status_callback = status_callback
+
         self.timeout_backoff = 0
         self.last_player = None
         self.run = True
@@ -178,6 +180,9 @@ class WiimmfiCheckThread(Thread):
             if not self.run:
                 time.sleep(1)
                 self.remove_presence()
+
+                self.status_callback()
+
                 continue
 
             online = None
@@ -199,9 +204,13 @@ class WiimmfiCheckThread(Thread):
             if online is None:
                 self.remove_presence()
                 self.last_player = None
+
+                self.status_callback()
             elif online != self.last_player:
                 self.last_player = online
                 self.save_game_art(self.last_player.game_id)
+
+                self.status_callback()
 
                 self.log(logging.INFO, f'Now playing: {online.game_name}')
 
@@ -209,6 +218,8 @@ class WiimmfiCheckThread(Thread):
                 if self.last_player.game_id == 'RMCJ':
                     self.last_player.set_mkw_info()
                 self.set_presence(self.last_player)
+
+                self.status_callback()
 
             time.sleep(self.config.preferences['rpc']['min_timeout'] + self.timeout_backoff)
 
