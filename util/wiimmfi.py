@@ -179,7 +179,9 @@ class WiimmfiCheckThread(Thread):
         while True:
             if not self.run:
                 time.sleep(1)
-                self.remove_presence()
+                if self.last_player:
+                    self.remove_presence()
+                    self.last_player = None
 
                 self.status_callback()
 
