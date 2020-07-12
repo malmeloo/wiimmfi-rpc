@@ -13,7 +13,7 @@
       "release_type": "latest"
     },
     "tray": {
-      "show_notice": true,
+      "show_notice": false,
       "minimize_on_exit": true
     }
   }

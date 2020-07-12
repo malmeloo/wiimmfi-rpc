@@ -236,6 +236,10 @@ class Application(Qw.QMainWindow):
     def closeEvent(self, event: Qg.QCloseEvent):
         self.setHidden(True)
 
+        # save all config files, in case something was pending
+        self.config.friend_codes.flush()
+        self.config.preferences.flush()
+
         if not self.config.preferences['config']['tray']['minimize_on_exit']:
             event.accept()
             return
