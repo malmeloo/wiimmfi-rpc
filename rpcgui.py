@@ -241,7 +241,9 @@ class Application(Qw.QMainWindow):
             return
 
         if self.do_close:
-            event.accept()
+            ok = util.MsgBoxes.promptyesno('Are you sure you want to quit?')
+            if ok:
+                event.accept()
         else:
             event.ignore()
             if self.config.preferences['config']['tray']['show_notice']:
