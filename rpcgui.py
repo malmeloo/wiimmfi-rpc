@@ -235,14 +235,22 @@ class Application(Qw.QMainWindow):
 
     def closeEvent(self, event: Qg.QCloseEvent):
         self.setHidden(True)
+
+        if not self.config.preferences['config']['tray']['minimize_on_exit']:
+            event.accept()
+            return
+
         if self.do_close:
             event.accept()
         else:
             event.ignore()
-            self.sys_tray.showMessage('Wiimmfi-RPC',
-                                      'Wiimmfi-RPC has been minimized to tray and will '
-                                      'keep running in the background. To quit the program, '
-                                      'right-click on this icon and select "Quit".')
+            if self.config.preferences['config']['tray']['show_notice']:
+                self.config.preferences['config']['tray']['show_notice'] = False
+
+                self.sys_tray.showMessage('Wiimmfi-RPC',
+                                          'Wiimmfi-RPC has been minimized to tray and will '
+                                          'keep running in the background. To quit the program, '
+                                          'right-click on this icon and select "Quit".')
 
     def load_config(self):
         config = util.Config(friend_codes=data_dir / 'friend_codes.json',

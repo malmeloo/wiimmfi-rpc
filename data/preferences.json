@@ -11,6 +11,10 @@
       "enable_updates": true,
       "auto_install": false,
       "release_type": "latest"
+    },
+    "tray": {
+      "show_notice": true,
+      "minimize_on_exit": true
     }
   }
 }
