@@ -275,4 +275,8 @@ if __name__ == '__main__':
 
     app = Qw.QApplication(sys.argv)
     ex = Application()
+
+    if '--start-minimized' in sys.argv:
+        ex.setHidden(True)
+
     sys.exit(app.exec_())
