@@ -27,7 +27,7 @@ class ThreadSignals(Qc.QObject):
       but should instead be connected to manually.
     """
     finished = Qc.pyqtSignal()
-    error = Qc.pyqtSignal(str)
+    error = Qc.pyqtSignal(str, str)
     progress = Qc.pyqtSignal(int)
     message = Qc.pyqtSignal(str)
     log = Qc.pyqtSignal(tuple)
@@ -74,7 +74,7 @@ class Thread(Qc.QThread):
         try:
             self.execute(*self.args, **self.kwargs)
         except:
-            self.signals.error.emit(traceback.format_exc())
+            self.signals.error.emit(self.name, traceback.format_exc())
         else:
             self.signals.finished.emit()
 
@@ -90,7 +90,7 @@ class Thread(Qc.QThread):
         self.signals.finished.emit()
 
     def emit_error(self, msg: str):
-        self.signals.error.emit(msg)
+        self.signals.error.emit(self.name, msg)
 
     def emit_progress(self, progress: int):
         if self.permanent:
@@ -197,7 +197,7 @@ class ThreadManager:
 
         self.start_new_thread()
 
-    def _on_thread_error(self, msg):
+    def _on_thread_error(self, thread_name, msg):
         """A thread reported an error."""
         try:
             thread = self.thread_queue.pop(0)
@@ -209,7 +209,7 @@ class ThreadManager:
             pass
 
         path = self.file_handler.create_error_log(msg)
-        util.MsgBoxes.error(msg, path=path)
+        util.MsgBoxes.error(msg, path=path, thread_name=thread_name)
 
         self.progress_bar.reset()
         self.start_new_thread()
