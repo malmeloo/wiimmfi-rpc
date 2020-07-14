@@ -15,6 +15,9 @@
     "tray": {
       "show_notice": true,
       "minimize_on_exit": true
+    },
+    "sentry": {
+      "user_id": ""
     }
   }
 }

@@ -1,13 +1,20 @@
 import logging
+import random
+import string
 import sys
 import time
 from pathlib import Path
 
+import sentry_sdk
 from PyQt5 import QtGui as Qg
 from PyQt5 import QtWidgets as Qw
 
 import tabs
 import util
+
+# hardcoded to catch early errors, we'll set more metadata later on
+# when our config files are available.
+sentry_sdk.init("https://ded365928d8f415fb86ba8cfc9d2704c@o420213.ingest.sentry.io/5338196")
 
 # set up logging and add our custom GUI handler
 logging.basicConfig(level=logging.INFO)
@@ -206,6 +213,8 @@ class Application(Qw.QMainWindow):
         logging.info('Loaded config files')
         version = self.config.version_info['version']
 
+        self._init_sentry()
+
         self.wiimmfi_thread = util.WiimmfiCheckThread(self.config, self._status_updated)
         self.thread_manager.add_thread(self.wiimmfi_thread)
 
@@ -229,6 +238,28 @@ class Application(Qw.QMainWindow):
         self.sys_tray.show()
 
         self.show()
+
+    def _init_sentry(self):
+        new_registered = False
+        user_id = self.config.preferences['config']['sentry']['user_id']
+        if not user_id:  # generate a random new one, let's hope it's unique...
+            rand_id = ''.join([random.choice(string.ascii_letters
+                                             + string.digits) for n in range(32)])
+            self.config.preferences['config']['sentry']['user_id'] = rand_id
+
+            self.config.preferences.flush()
+            new_registered = True
+
+        with sentry_sdk.configure_scope() as scope:
+            # noinspection PyUnresolvedReferences
+            scope.user = {'id': self.config.preferences['config']['sentry']['user_id']}
+
+            scope.set_tag('version', self.config.version_info['version'])
+            scope.set_tag('thread_name', 'MainThread')
+            scope.set_tag('bundled', util.is_bundled())
+
+        if new_registered:
+            sentry_sdk.capture_message('newClient')
 
     def _status_updated(self):
         self.sys_tray.update()

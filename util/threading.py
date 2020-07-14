@@ -1,6 +1,7 @@
 import logging
 import traceback
 
+import sentry_sdk
 from PyQt5 import QtCore as Qc
 
 import util
@@ -73,8 +74,12 @@ class Thread(Qc.QThread):
     def run(self):
         try:
             self.execute(*self.args, **self.kwargs)
-        except:
+        except Exception as e:
             self.signals.error.emit(self.name, traceback.format_exc())
+
+            with sentry_sdk.push_scope() as scope:
+                scope.set_tag('thread_name', self.name)
+                sentry_sdk.capture_exception(e)
         else:
             self.signals.finished.emit()
 
