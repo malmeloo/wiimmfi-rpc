@@ -67,16 +67,23 @@ class Updater:
                 return
 
         zip_archive = zipfile.ZipFile(file)
-        members = zip_archive.namelist()
-        name_prefix = Path(os.path.commonpath(members))
+        members = zip_archive.infolist()
+        name_prefix = os.path.commonpath([m.filename for m in members]) + '/'
 
-        for f in members:
-            if f.split()[-1] in ('friend_codes.json', 'preferences.json'):  # don't overwrite these files
+        for info in members:
+            install_path = info.filename.replace(name_prefix, '')
+            if not install_path:
                 continue
 
-            install_path = name_prefix.relative_to(Path(f))
-            if install_path.is_file():
-                zip_archive.extract(f, install_path)
+            if install_path[-1] == '/' or install_path[0] == '.':  # directory or hidden file
+                continue
+
+            if install_path.split('/')[-1] in ('friend_codes.json', 'preferences.json'):  # don't overwrite these files
+                continue
+
+            info.filename = install_path
+
+            zip_archive.extract(info, str(script_dir.absolute()))
 
         file.close()
 
