@@ -251,7 +251,7 @@ class Application(Qw.QMainWindow):
             new_registered = True
 
         with sentry_sdk.configure_scope() as scope:
-            # noinspection PyUnresolvedReferences
+            # noinspection PyUnresolvedReferences,PyDunderSlots
             scope.user = {'id': self.config.preferences['config']['sentry']['user_id']}
 
             scope.set_tag('version', self.config.version_info['version'])
