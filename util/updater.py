@@ -2,6 +2,7 @@ import base64
 import io
 import json
 import logging
+import os
 import platform
 import sys
 import zipfile
@@ -66,22 +67,16 @@ class Updater:
                 return
 
         zip_archive = zipfile.ZipFile(file)
-        zip_root = zipfile.Path(zip_archive)
+        members = zip_archive.namelist()
+        name_prefix = Path(os.path.commonpath(members))
 
-        for f in zip_archive.namelist():
+        for f in members:
             if f.split()[-1] in ('friend_codes.json', 'preferences.json'):  # don't overwrite these files
                 continue
 
-            with zip_archive.open(f) as new_file:
-                install_path = f
-                if list(zip_root.iterdir())[0].is_dir():  # top-level directory
-                    install_path = '/'.join(f.split('/')[1:])
-
-                try:
-                    with open((script_dir / install_path), 'wb') as old_file:
-                        old_file.write(new_file.read())
-                except IsADirectoryError:
-                    continue
+            install_path = name_prefix.relative_to(Path(f))
+            if install_path.is_file():
+                zip_archive.extract(f, install_path)
 
         file.close()
 
