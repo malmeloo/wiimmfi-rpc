@@ -155,7 +155,12 @@ class UpdateCheckThread(Thread):
             logging.critical('Failed to check for version!')
 
         data = resp.json()
-        content = base64.b64decode(data['content']).decode()
+        content = data.get('content')
+        message = data.get('message')
+        if not content:
+            print(MsgBoxes.info(f'Error while restoring config files:\n\n{message}'))
+            return
+        content = base64.b64decode(content).decode()
 
         version = json.loads(content).get('version')
 
