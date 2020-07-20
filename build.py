@@ -57,7 +57,7 @@ if __name__ == '__main__':
 
     print('[!] Building Script')
     command = os.environ['PYTHON']
-    os.system(f'{command} -m PyInstaller -y -w --onefile -n "Wiimmfi-RPC v{version}" --log-level WARN rpcgui.py')
+    os.system(f'{command} -m PyInstaller -y -w --onefile -n "Wiimmfi-RPC v{version}" --log-level WARN --additional-hooks-dir=buildhooks/ rpcgui.py')
     print()
 
     print('[!] Packing Files')
