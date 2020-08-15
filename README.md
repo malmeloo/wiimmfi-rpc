@@ -32,7 +32,7 @@ There are two "editions" of this program. Both of these have their pros and cons
 ### "Packaged" edition
 This is for the people who just want things to work without too much of a hassle. There's no additional programs to download which allows you to get the program up and running in no time!
 
-You can download it over at the [releases](https://github.com/DismissedGuy/wiimmfi-rpc/) page. Simply extract the zip into a directory and run the executable!
+You can download it over at the [releases](https://github.com/DismissedGuy/wiimmfi-rpc/releases/) page. Simply extract the zip into a directory and run the executable!
 
 #### Pros
 - Extremely easy to set up
