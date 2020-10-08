@@ -13,8 +13,8 @@ from bs4 import BeautifulSoup
 from .msgboxes import MsgBoxes
 from .threading import Thread
 
-game_info_base_url = 'https://wiimmfi.de/game/{game_id}'
-active_game_list_url = 'https://wiimmfi.de/game/'
+game_info_base_url = 'https://wiimmfi.de/stats/game/{game_id}'
+active_game_list_url = 'https://wiimmfi.de/stats/game/'
 mkw_room_info_base_url = 'https://wiimmfi.de/stats/mkw/room/p{pid}/?m=json'
 wiimmfi_game_list_url = 'https://wiimmfi.de/stat?m=25'
 asset_list_base_url = 'https://discordapp.com/api/v6/oauth2/applications/{app_id}/assets'
@@ -296,7 +296,7 @@ class WiimmfiCheckThread(Thread):
 
             console = rows[0].text
             game_name = rows[1].text
-            game_id = rows[1].a['href'][6:]  # strip url part
+            game_id = rows[1].a['href'].split('/')[-1]  # strip url part
             online_players = int(rows[4].text)
 
             game = WiimmfiGame(
