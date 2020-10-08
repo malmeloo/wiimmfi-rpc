@@ -67,7 +67,7 @@ def full_check(thread_manager):
             # defaults
             username = 'DismissedGuy'
             repo = 'wiimmfi-rpc'
-            branch = 'gui-rewrite'
+            branch = 'master'
 
             if temp_config.version_info.complete:
                 username = temp_config.version_info['git']['username']

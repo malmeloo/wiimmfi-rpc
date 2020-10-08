@@ -2,6 +2,7 @@ import base64
 import io
 import json
 import logging
+import os
 import platform
 import sys
 import zipfile
@@ -66,22 +67,23 @@ class Updater:
                 return
 
         zip_archive = zipfile.ZipFile(file)
-        zip_root = zipfile.Path(zip_archive)
+        members = zip_archive.infolist()
+        name_prefix = os.path.commonpath([m.filename for m in members]) + '/'
 
-        for f in zip_archive.namelist():
-            if f.split()[-1] in ('friend_codes.json', 'preferences.json'):  # don't overwrite these files
+        for info in members:
+            install_path = info.filename.replace(name_prefix, '')
+            if not install_path:
                 continue
 
-            with zip_archive.open(f) as new_file:
-                install_path = f
-                if list(zip_root.iterdir())[0].is_dir():  # top-level directory
-                    install_path = '/'.join(f.split('/')[1:])
+            if install_path[-1] == '/' or install_path[0] == '.':  # directory or hidden file
+                continue
 
-                try:
-                    with open((script_dir / install_path), 'wb') as old_file:
-                        old_file.write(new_file.read())
-                except IsADirectoryError:
-                    continue
+            if install_path.split('/')[-1] in ('friend_codes.json', 'preferences.json'):  # don't overwrite these files
+                continue
+
+            info.filename = install_path
+
+            zip_archive.extract(info, str(script_dir.absolute()))
 
         file.close()
 
@@ -153,7 +155,12 @@ class UpdateCheckThread(Thread):
             logging.critical('Failed to check for version!')
 
         data = resp.json()
-        content = base64.b64decode(data['content']).decode()
+        content = data.get('content')
+        message = data.get('message')
+        if not content:
+            print(MsgBoxes.info(f'Error while restoring config files:\n\n{message}'))
+            return
+        content = base64.b64decode(content).decode()
 
         version = json.loads(content).get('version')
 

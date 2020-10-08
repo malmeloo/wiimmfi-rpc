@@ -136,7 +136,7 @@ class FriendcodesTab(Qw.QWidget):
     CATEGORIES = {
         'Wii': Qw.QTreeWidgetItem(['Wii', '', '', '']),
         'WiiWare': Qw.QTreeWidgetItem(['WiiWare', '', '', '']),
-        'DS': Qw.QTreeWidgetItem(['DS', '', '', '']),
+        'NDS': Qw.QTreeWidgetItem(['DS', '', '', '']),
         'DSiWare': Qw.QTreeWidgetItem(['DSiWare', '', '', ''])
     }
 
@@ -160,6 +160,15 @@ class FriendcodesTab(Qw.QWidget):
         self.layout.addWidget(self.tree)
 
         self.setLayout(self.layout)
+
+        # Reload the tree when the user switches to this tab.
+        # This way, we can reflect changes made to the friend codes
+        # by other processes or tabs without complicated signalling.
+        self.parent.table_widget.tabs.currentChanged.connect(self._on_tab_changed)
+
+    def _on_tab_changed(self, tab_index):
+        if tab_index == 1:  # our tab
+            self.populate_tree()
 
     def create_buttons(self):
         add_button = Qw.QPushButton('+')
@@ -193,6 +202,12 @@ class FriendcodesTab(Qw.QWidget):
         return tree
 
     def populate_tree(self):
+        # clear existing codes
+        for item_index in range(self.tree.topLevelItemCount()):
+            item = self.tree.topLevelItem(item_index)
+            for _ in range(item.childCount()):
+                item.removeChild(item.child(0))
+
         codes = self.config.friend_codes
 
         for entry in codes:
@@ -201,7 +216,13 @@ class FriendcodesTab(Qw.QWidget):
             friend_code = entry.get('friend_code')
             priority = entry.get('priority')
 
+            if console == 'DS':  # backwards compat
+                console = 'NDS'
+
             category = self.CATEGORIES.get(console)
+            if not category:
+                logging.warning(f'Invalid console found in friend code entry: {console}')
+                continue
 
             if not (console or game_id or friend_code or priority or category):
                 logging.warning(f'Detected invalid friend code entry: {game_id}')

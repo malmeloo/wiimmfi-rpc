@@ -1,4 +1,5 @@
-PyQt5==5.14.2
-requests==2.23.0
-beautifulsoup4==4.8.1
-pypresence==3.3.2
+PyQt5==5.15.0
+requests==2.24.0
+beautifulsoup4==4.9.1
+pypresence==4.0.0
+sentry-sdk==0.16.1

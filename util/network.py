@@ -5,6 +5,7 @@ from pathlib import Path
 
 import requests
 
+from .msgboxes import MsgBoxes
 from .threading import Thread
 
 data_dir = Path(sys.argv[0]).parent / 'data'
@@ -38,7 +39,12 @@ class GithubDownloadThread(Thread):
             self.log(logging.CRITICAL, 'Failed to restore config files!')
 
         data = resp.json()
-        content = base64.b64decode(data['content'])
+        content = data.get('content')
+        message = data.get('message')
+        if not content:
+            print(MsgBoxes.info(f'Error while restoring config files:\n\n{message}'))
+            return
+        content = base64.b64decode(content)
 
         with open(data_dir / file, 'w+') as f:
             f.write(content.decode())

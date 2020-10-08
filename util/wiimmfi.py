@@ -13,7 +13,8 @@ from bs4 import BeautifulSoup
 from .msgboxes import MsgBoxes
 from .threading import Thread
 
-game_info_base_url = 'https://wiimmfi.de/game/{game_id}'
+game_info_base_url = 'https://wiimmfi.de/stats/game/{game_id}'
+active_game_list_url = 'https://wiimmfi.de/stats/game/'
 mkw_room_info_base_url = 'https://wiimmfi.de/stats/mkw/room/p{pid}/?m=json'
 wiimmfi_game_list_url = 'https://wiimmfi.de/stat?m=25'
 asset_list_base_url = 'https://discordapp.com/api/v6/oauth2/applications/{app_id}/assets'
@@ -99,12 +100,22 @@ class WiimmfiPlayer:
 class WiimmfiPlayerList:
     def __init__(self, players=None):
         self._players = []
+        self._p_index = 0
 
         if players is not None:
             self.add_players(players)
 
     def __len__(self):
         return len(self._players)
+
+    def __iter__(self):
+        return iter(self._players)
+
+    def __next__(self):
+        index = self._p_index
+        self._p_index += 1
+
+        return index
 
     def add_player(self, player):
         if not isinstance(player, WiimmfiPlayer):
@@ -124,15 +135,25 @@ class WiimmfiPlayerList:
         return None
 
 
+class WiimmfiGame:
+    def __init__(self, console: str, game_id: str, game_name: str, online_players: int):
+        self.console = console
+        self.game_id = game_id
+        self.game_name = game_name
+        self.online_players = online_players
+
+
 class WiimmfiCheckThread(Thread):
     friendly_progress = ''
     permanent = True
     name = 'WiimmfiCheckThread'
 
-    def __init__(self, config):
+    def __init__(self, config, status_callback=None):
         super().__init__()
 
         self.config = config
+        self.status_callback = status_callback
+
         self.timeout_backoff = 0
         self.last_player = None
         self.run = True
@@ -158,7 +179,12 @@ class WiimmfiCheckThread(Thread):
         while True:
             if not self.run:
                 time.sleep(1)
-                self.remove_presence()
+                if self.last_player:
+                    self.remove_presence()
+                    self.last_player = None
+
+                self.status_callback()
+
                 continue
 
             online = None
@@ -180,9 +206,13 @@ class WiimmfiCheckThread(Thread):
             if online is None:
                 self.remove_presence()
                 self.last_player = None
+
+                self.status_callback()
             elif online != self.last_player:
                 self.last_player = online
                 self.save_game_art(self.last_player.game_id)
+
+                self.status_callback()
 
                 self.log(logging.INFO, f'Now playing: {online.game_name}')
 
@@ -190,6 +220,8 @@ class WiimmfiCheckThread(Thread):
                 if self.last_player.game_id == 'RMCJ':
                     self.last_player.set_mkw_info()
                 self.set_presence(self.last_player)
+
+                self.status_callback()
 
             time.sleep(self.config.preferences['rpc']['min_timeout'] + self.timeout_backoff)
 
@@ -235,6 +267,47 @@ class WiimmfiCheckThread(Thread):
             players.add_player(player)
 
         return players
+
+    def get_active_games(self):
+        """Retrieves games with online players"""
+        headers = {
+            'User-Agent': 'wiimmfi-rpc by DismissedGuy#2118 - github.com/DismissedGuy/wiimmfi-rpc'
+        }
+        resp = requests.get(active_game_list_url, headers=headers)
+        resp.raise_for_status()
+
+        soup = BeautifulSoup(resp.text, 'html.parser')
+
+        # The game list HTML seems to be a little malformed, and it's messing with our parser.
+        # Workaround: find all "tr0" and "tr1" classes (alternating game list colors) and concat them.
+        # We also unpack dicts here because "class" is a reserved keyword.
+        games_0 = soup.find_all(**{'class': 'tr0'})
+        games_1 = soup.find_all(**{'class': 'tr1'})
+
+        active_games_data = games_0 + games_1
+        if not active_games_data:
+            self.log(logging.WARNING, 'No active games found.')
+
+            return []
+
+        active_games = []
+        for game in active_games_data:
+            rows = game.find_all('td')
+
+            console = rows[0].text
+            game_name = rows[1].text
+            game_id = rows[1].a['href'].split('/')[-1]  # strip url part
+            online_players = int(rows[4].text)
+
+            game = WiimmfiGame(
+                console=console,
+                game_name=game_name,
+                game_id=game_id,
+                online_players=online_players
+            )
+            active_games.append(game)
+
+        return active_games
 
     def get_asset_list(self):
         assets_url = asset_list_base_url.format(app_id=self.config.preferences['rpc']['oauth_id'])

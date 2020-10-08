@@ -1,5 +1,5 @@
 {
-  "debug": true,
+  "debug": false,
   "rpc": {
     "oauth_id": "444906848437665803",
     "min_timeout": 10,
@@ -11,6 +11,13 @@
       "enable_updates": true,
       "auto_install": false,
       "release_type": "latest"
+    },
+    "tray": {
+      "show_notice": true,
+      "minimize_on_exit": true
+    },
+    "sentry": {
+      "user_id": ""
     }
   }
 }
