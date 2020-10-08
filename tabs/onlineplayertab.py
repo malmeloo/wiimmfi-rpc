@@ -123,6 +123,8 @@ class OnlinePlayerTab(Qw.QWidget):
         self.refresh_button.setDisabled(False)
 
     def _search_tree(self, text):
+        search_text = text.lower()
+
         for item_index in range(self.player_tree.topLevelItemCount()):
             item = self.player_tree.topLevelItem(item_index)
 
@@ -130,7 +132,7 @@ class OnlinePlayerTab(Qw.QWidget):
             for child_index in range(item.childCount()):
                 child = item.child(child_index)
 
-                if text in child.text(1) or text in child.text(2):
+                if search_text in child.text(1).lower() or search_text in child.text(2).lower():
                     child.setHidden(False)
                     result_in_category = True
                 else:
