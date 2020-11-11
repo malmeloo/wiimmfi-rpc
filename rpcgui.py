@@ -177,6 +177,7 @@ class Application(Qw.QMainWindow):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.do_close = False
+        self.sys_tray: SystemTrayIcon = None  # init now to prevent race conditions
 
         self.setGeometry(0, 0, 400, 400)
 
@@ -262,6 +263,8 @@ class Application(Qw.QMainWindow):
             sentry_sdk.capture_message('newClient')
 
     def _status_updated(self):
+        if self.sys_tray is None:  # not yet initialized, we drop the update to prevent a race condition.
+            return
         self.sys_tray.update()
 
     def closeEvent(self, event: Qg.QCloseEvent):
