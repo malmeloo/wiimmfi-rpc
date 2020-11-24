@@ -46,7 +46,7 @@ if __name__ == '__main__':
         sys.exit()
 
     print('[!] Installing Packages')
-    if plat == 'Windows':
+    if plat in ('Windows', 'Darwin'):
         command = os.environ['PYTHON']
         os.system(f'{command} -m pip install -q -U -r requirements.txt')
         os.system(f'{command} -m pip install -q -U pyinstaller')
@@ -56,8 +56,12 @@ if __name__ == '__main__':
     print()
 
     print('[!] Building Script')
-    command = os.environ['PYTHON']
-    os.system(f'{command} -m PyInstaller -y -w --onefile -n "Wiimmfi-RPC v{version}" --log-level WARN --additional-hooks-dir=buildhooks/ rpcgui.py')
+    if plat in ('Windows', 'Linux'):
+        command = os.environ['PYTHON'] + '-m PyInstaller'
+    else:
+        command = 'pyinstaller'
+    os.system(
+        f'{command} -y -w --onefile -n "Wiimmfi-RPC v{version}" --log-level WARN --additional-hooks-dir=buildhooks/ rpcgui.py')
     print()
 
     print('[!] Packing Files')
