@@ -13,6 +13,10 @@ skip_commits:
 
 environment:
   matrix:
+    - APPVEYOR_BUILD_WORKER_IMAGE: macOS
+      PLATFORM: x64
+    - APPVEYOR_BUILD_WORKER_IMAGE: macOS
+      PLATFORM: x86
     - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1804
       PLATFORM: x64
     - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1804
