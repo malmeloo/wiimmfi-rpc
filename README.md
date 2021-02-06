@@ -5,7 +5,7 @@ Show your Discord friends what you're playing on Wiimmfi!
 ![Release](https://img.shields.io/github/v/release/DismissedGuy/wiimmfi-rpc)
 ![GitHub All Releases](https://img.shields.io/github/downloads/DismissedGuy/wiimmfi-rpc/total)
 ![GitHub](https://img.shields.io/github/license/DismissedGuy/wiimmfi-rpc)
-![Python Version](https://img.shields.io/badge/python-3.6%20%7C%203.7%20%7C%203.8-blue)
+![Python Version](https://img.shields.io/badge/python-3.6%20%7C%203.7%20%7C%203.8%20%7C%203.9-blue)
 
 ![Discord Preview](https://github.com/DismissedGuy/wiimmfi-rpc/raw/master/assets/discord_preview.png)
 
