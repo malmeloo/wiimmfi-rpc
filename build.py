@@ -40,6 +40,7 @@ except FileNotFoundError:
 
 if __name__ == '__main__':
     if len(sys.argv) == 1 or 'build' not in sys.argv[1]:
+        print()
         print('WARNING: This script will build a bundled PyInstaller file.\n'
               'If you just want to use the program, this isn\'t the right script for you.\n'
               'Buttt... if you\'re convinced it is, use "build" as first argument.')
@@ -57,11 +58,12 @@ if __name__ == '__main__':
 
     print('[!] Building Script')
     if plat in ('Windows', 'Linux'):
-        command = os.environ['PYTHON'] + '-m PyInstaller'
+        command = os.environ['PYTHON'] + ' -m PyInstaller'
     else:
         command = 'pyinstaller'
     os.system(
-        f'{command} -y -w --onefile -n "Wiimmfi-RPC v{version}" --log-level WARN --additional-hooks-dir=buildhooks/ rpcgui.py')
+        f'{command} -y -w --onefile -n "Wiimmfi-RPC v{version}" --log-level WARN ' \
+        f'--additional-hooks-dir=buildhooks/ --hidden-import=PyQt5.sip rpcgui.py')
     print()
 
     print('[!] Packing Files')
