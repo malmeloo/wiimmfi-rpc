@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-    runs-on: [windows_latest, ubuntu_latest, macos_latest]
+    runs-on: [windows-latest, ubuntu-latest, macos-latest]
 
     steps:
     - uses: actions/checkout@v2
