@@ -14,7 +14,13 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [windows-latest, ubuntu-latest, macos-latest]
+        include:
+          - os: windows-latest
+            OS_NAME: Windows
+          - os: ubuntu-latest
+            OS_NAME: Linux
+          - os: macos-latest
+            OS_NAME: macOS
 
     steps:
     - uses: actions/checkout@v2
@@ -31,5 +37,5 @@ jobs:
         python build.py build
     - uses: actions/upload-artifact@v2
       with:
-        name: Build Zip
+        name: Wiimmfi-RPC_${{ matrix.OS_NAME }}-64bit.zip
         path: Wiimmfi-RPC_*-64bit.zip
