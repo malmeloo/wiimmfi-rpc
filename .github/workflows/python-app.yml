@@ -29,3 +29,7 @@ jobs:
     - name: Run build script
       run: |
         python build.py build
+    - uses: actions/upload-artifact@v2
+      with:
+        name: Build Zip
+        path: Wiimmfi-RPC_*-x64.zip
