@@ -32,4 +32,4 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: Build Zip
-        path: Wiimmfi-RPC_*-x64.zip
+        path: Wiimmfi-RPC_*-64bit.zip
