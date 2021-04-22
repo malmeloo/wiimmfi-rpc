@@ -69,12 +69,12 @@ if __name__ == '__main__':
     print('[!] Packing Files')
     exec_path = list((script_dir / 'dist').iterdir())[0]
     to_pack = list((script_dir / 'data').iterdir()) + list((script_dir / 'icons').iterdir())
-    with zipfile.ZipFile((script_dir / f'{plat}-{arch}.zip'), 'x') as archive:
+    with zipfile.ZipFile((script_dir / f'Wiimmfi-RPC_{plat}-{arch}.zip'), 'x') as archive:
         archive.write(exec_path, arcname=exec_path.name)
         for file in to_pack:
             archive.write(file)
     print()
 
     if sys.argv[1] == 'build_appveyor':
-        os.system(f'appveyor PushArtifact {plat}-{arch}.zip')
-    print(f'[!] Finished Building. Output can be found in {plat}-{arch}.zip')
+        os.system(f'appveyor PushArtifact Wiimmfi-RPC_{plat}-{arch}.zip')
+    print(f'[!] Finished Building. Output can be found in Wiimmfi-RPC_{plat}-{arch}.zip')
