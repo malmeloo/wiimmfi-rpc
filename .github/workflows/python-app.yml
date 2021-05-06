@@ -37,5 +37,5 @@ jobs:
         python build.py build
     - uses: actions/upload-artifact@v2
       with:
-        name: Wiimmfi-RPC_${{ matrix.OS_NAME }}-64bit.zip
+        name: Wiimmfi-RPC_${{ matrix.OS_NAME }}-64bit
         path: Wiimmfi-RPC_*-64bit.zip
