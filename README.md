@@ -8,6 +8,7 @@ Show your Discord friends what you're playing on Wiimmfi!
 ![Python Version](https://img.shields.io/badge/python-3.6%20%7C%203.7%20%7C%203.8%20%7C%203.9-blue)
 
 ## ⚠️ Due to recent attacks on Wiimmfi's server, Wiimmfi has deployed a DDoS protection system which unfortunately breaks automated tools such as this one. I am aware of the issue but it is impossible to fix, so please do not use this program until this is changed (if ever). You *will* run into errors.
+#### Update: There is possibly a way to get around this limitation, but it would require refactoring most of the internal code, as well as dropping some features such as the online user tab. I am currently investigating possible solutions.
 
 ![Discord Preview](https://github.com/DismissedGuy/wiimmfi-rpc/raw/master/assets/discord_preview.png)
 
