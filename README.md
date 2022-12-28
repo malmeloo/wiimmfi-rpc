@@ -1,3 +1,8 @@
+# :warning: This project has been discontinued :warning:
+Due to this, I will NOT be providing support or releasing new updates to fix issues.
+Feel free to fork the repository if you want to introduce changes.
+
+
 # Wiimmfi-RPC
 Show your Discord friends what you're playing on Wiimmfi!
 
@@ -6,9 +11,6 @@ Show your Discord friends what you're playing on Wiimmfi!
 ![GitHub All Releases](https://img.shields.io/github/downloads/DismissedGuy/wiimmfi-rpc/total)
 ![GitHub](https://img.shields.io/github/license/DismissedGuy/wiimmfi-rpc)
 ![Python Version](https://img.shields.io/badge/python-3.6%20%7C%203.7%20%7C%203.8%20%7C%203.9-blue)
-
-## ⚠️ Due to recent attacks on Wiimmfi's server, Wiimmfi has deployed a DDoS protection system which unfortunately breaks automated tools such as this one. I am aware of the issue but it is impossible to fix, so please do not use this program until this is changed (if ever). You *will* run into errors.
-#### Update: There is possibly a way to get around this limitation, but it would require refactoring most of the internal code, as well as dropping some features such as the online user tab. I am currently investigating possible solutions.
 
 ![Discord Preview](https://github.com/DismissedGuy/wiimmfi-rpc/raw/master/assets/discord_preview.png)
 
@@ -82,10 +84,3 @@ That sucks. It would be nice if you could create an issue so I can look into it.
 **You're not replying to my issue or messages!**
 
 I must've either missed it or am unavailable at the moment. GitHub notifications are kinda wonky for me sometimes. You could shoot me a Discord DM if I don't reply within a day or so.
-
-## Contact
-Are you stuck somewhere during the installation process, have you found a bug, do you have a question or are you simply up for a chat? You can contact me anytime using one of these methods:
-
-- Discord (preferred): DismissedGuy#2118
-- [GitHub Issues](https://github.com/DismissedGuy/wiimmfi-rpc/issues/)
-- Email: dismissed.is.a.guy \[at] gmail \[dot] com
